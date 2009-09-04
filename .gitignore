@@ -1,0 +1,4 @@
+.*.sw[pon]
+pkg
+coverage
+doc

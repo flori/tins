@@ -1,0 +1,167 @@
+#!/usr/bin/env ruby
+
+require 'spruz'
+include Spruz
+include Spruz::GO
+
+class CompoundRange
+  def initialize
+    @ranges = []
+  end
+
+  def concat(range)
+    @ranges << range
+    self
+  end
+
+  def each(&block)
+    @ranges.each { |r| r.each(&block) }
+  end
+end
+
+class Step
+  def initialize(a, b, step = 1, exclusive = false)
+    @a = a
+    @b = b
+    @step = step
+    if exclusive
+      if step < 0
+        @b += 1
+      else
+        @b -= 1
+      end
+    end
+  end
+
+  def each(&block)
+    @a.step(@b, @step, &block)
+  end
+end
+
+class StringRange
+  def initialize(a, b, exclusive = false)
+    @range = if a > b
+      if exclusive
+        (b.succ..a).to_a.reverse
+      else
+        (b..a).to_a.reverse
+      end
+    else
+      Range.new(a, b, exclusive)
+    end
+  end
+
+  def each(&block)
+    @range.each(&block)
+  end
+end
+
+class IntegerRange < Step
+  def initialize(a, b, exclusive = false)
+    @a = a
+    @b = b
+    super(a, b, a > b ? -1 : 1, exclusive)
+  end
+end
+
+def parse_range(range)
+  case range
+  when /,/
+    range.split(/,/).inject(CompoundRange.new) do |a,x|
+      a.concat(parse_range(x))
+    end
+  when /\A(-?\d+)\Z/
+    ($1.to_i)..($1.to_i)
+  when /\A(\w+)\Z/
+    $1..$1
+  when /\A(-?\d+)..(-?\d+)\Z/
+    IntegerRange.new($1.to_i, $2.to_i)
+  when /\A(-?\d+)...(-?\d+)\Z/
+    IntegerRange.new($1.to_i, $2.to_i, true)
+  when /\A(-?\d+)..(-?\d+)([+-]\d+)\Z/
+    Step.new($1.to_i, $2.to_i, $3.to_i)
+  when /\A(-?\d+)...(-?\d+)([+-]\d+)\Z/
+    Step.new($1.to_i, $2.to_i, $3.to_i, true)
+  when /\A(\w+)..(\w+)\Z/
+    StringRange.new($1, $2)
+  when /\A(\w+)...(\w+)\Z/
+    StringRange.new($1, $2, true)
+  else
+    fail "parsing range failed due to '#{range}'"
+  end
+end
+
+def parse_ranges(pattern)
+  pattern.split(/:/).map { |range| parse_range(range) }
+end
+
+def execute_command(command, format, tuple)
+  formatted = (format % tuple).split(/:/)
+  if $limited
+    $limited.execute do
+      system sprintf(command, *formatted)
+    end
+  else
+    system sprintf(command, *formatted)
+  end
+end
+
+def usage
+  puts <<EOT    
+Usage: #{File.basename($0)} [OPTIONS] RANGES 
+
+RANGES has to be a string of the from R1:R2:...Rn, where R1 to Rn are ranges of
+values for each dimension. A range can be specified like in one of
+those examples:
+  2
+  1..3
+  3..1
+  1...3
+  1,2,4
+  1..2,4
+  b
+  a..c
+  a...c
+  c..a
+  c...a
+  a,b,d
+  a..b,d
+
+
+OPTIONS are
+
+  -p PARALLEL       how many threads in parallel should be forked to handle the
+                    execution of commands.
+
+  -e COMMAND        this command is executed for every created tuple of values.
+                    The tuple values can be fetch by using %s in order,
+                    e. g. COMMAND = "a=%s;b=%s;echo a is $a. b is $b."
+
+  -f FORMAT         format the created values with FORMAT = F1:F2:...:Fn each
+                    format is a sprintf percent format, e. g. %02u.
+
+  -h this help      display this help
+
+EOT
+  exit 1
+end
+
+$opts = {
+}.update(go('p:e:f:h')) do |o,default,set|
+  set || default
+end
+usage if $opts['h'] || ARGV.size != 1
+$ranges = ARGV.shift
+$limited = $opts['p'] ? Limited.new($opts['p']) : nil
+ranges = parse_ranges($ranges)
+generator = Generator.new(ranges)
+$opts['f'] ||= %w[ %s ] * generator.size * ':'
+
+generator.each do |tuple|
+  if $opts['e']
+    execute_command($opts['e'], $opts['f'], tuple)
+  else
+    puts $opts['f'] % tuple
+  end
+end
+exit 0

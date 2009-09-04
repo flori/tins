@@ -1,0 +1,16 @@
+module Spruz
+  autoload :Limited,            'spruz/limited'
+  autoload :PartialApplication, 'spruz/partial'
+  autoload :Generator,          'spruz/generator'
+  autoload :GO,                 'spruz/go'
+  autoload :Minimize,           'spruz/minimize'
+  autoload :IRB,                'spruz/irb'
+  autoload :Round,              'spruz/round'
+  autoload :ModuleGroup,        'spruz/module_group'
+  autoload :Uniq,               'spruz/uniq'
+  autoload :Bijection,          'spruz/bijection'
+  autoload :MvTree,             'spruz/mv_tree'
+  autoload :Once,               'spruz/once'
+  autoload :Memoize,            'spruz/memoize'
+  autoload :Shuffle,            'spruz/shuffle'
+end
