@@ -24,7 +24,7 @@ end
 
 desc "Testing library with coverage"
 task :coverage  do
-  sh 'rcov -Ilib tests/test_spruz.rb'
+  sh "rcov -Ilib -x 'tests/.*\.rb' tests/test_spruz.rb"
 end
 
 desc "Clean created files"
