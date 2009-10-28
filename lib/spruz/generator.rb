@@ -1,6 +1,6 @@
 module Spruz
   # This class can create generator objects, that can produce all tuples, that
-  # would be created by as many for-loops as many dimensions were given.
+  # would be created by as many for-loops as dimensions were given.
   #
   # The generator
   #  g = Spruz::Generator[1..2, %w[a b c]]
