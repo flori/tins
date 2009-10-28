@@ -2,4 +2,4 @@
 
 $outdir = 'doc/'
 puts "Creating documentation in '#$outdir'."
-system "rdoc -o #$outdir lib/spruz/*.rb"
+system "rdoc -o #$outdir -m README #{Dir['lib/spruz/**/*.rb'] * ' '}"

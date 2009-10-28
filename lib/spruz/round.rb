@@ -35,12 +35,4 @@ module Spruz
       t.nan? ? self : t
     end
   end
-
-  class ::Float
-    include Round
-  end
-
-  class ::Integer
-    include Round
-  end
 end

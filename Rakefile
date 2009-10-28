@@ -36,48 +36,26 @@ desc "Prepare a release"
 task :release => [ :clean, :package ]
 
 spec = Gem::Specification.new do |s|
-  #### Basic information.
-
   s.name = PKG_NAME
   s.version = PKG_VERSION
   s.summary = "Useful stuff."
   s.description = "All the stuff that isn't good/big enough for a real library."
-  #### Dependencies and requirements.
-
-  #s.add_dependency('log4r', '> 1.0.4')
-  #s.requirements << ""
 
   s.files = PKG_FILES
 
-  #### C code extensions.
+  s.require_path = 'lib'
 
-  #s.extensions << "ext/extconf.rb"
-
-  #### Load-time details: library and application (you will need one or both).
-
-  s.require_path = 'lib'                         # Use these for libraries.
-  #s.autorequire = 'spruz'
-
-  s.bindir = "bin"                              # Use these for applications.
-  s.executables = ["enum"]
-  #s.default_executable = "bla.rb"
-
-  #### Documentation and testing.
+  s.bindir = "bin"
+  s.executables << "enum"
 
   s.has_rdoc = true
-  #s.extra_rdoc_files = rd.rdoc_files.reject { |fn| fn =~ /\.rb$/ }.to_a
-  #s.rdoc_options <<
-  #  '--title' <<  'Rake -- Ruby Make' <<
-  #  '--main' << 'README' <<
-  #  '--line-numbers'
+  s.extra_rdoc_files << 'README'
+  s.rdoc_options << '--title' <<  'Spruz' << '--main' << 'README'
   s.test_files << 'tests/test_spruz.rb'
-
-  #### Author and project details.
 
   s.author = "Florian Frank"
   s.email = "flori@ping.de"
-  s.homepage = "http://lab.ping.de"
-  #s.rubyforge_project = "spruz"
+  s.homepage = "http://flori.github.com/spruz"
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
