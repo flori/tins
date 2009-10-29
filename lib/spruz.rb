@@ -17,5 +17,6 @@ module Spruz
   require 'spruz/shuffle'
   require 'spruz/subhash'
   require 'spruz/time_dummy'
+  require 'spruz/to_proc'
   require 'spruz/uniq_by'
 end
