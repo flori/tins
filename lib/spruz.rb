@@ -1,4 +1,5 @@
 module Spruz
+  require 'spruz/version'
   require 'spruz/bijection'
   require 'spruz/count_by'
   require 'spruz/generator'
@@ -8,7 +9,6 @@ module Spruz
   require 'spruz/memoize'
   require 'spruz/minimize'
   require 'spruz/module_group'
-  require 'spruz/mv_tree'
   require 'spruz/null'
   require 'spruz/once'
   require 'spruz/p'
