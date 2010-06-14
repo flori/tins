@@ -19,4 +19,5 @@ module Spruz
   require 'spruz/time_dummy'
   require 'spruz/to_proc'
   require 'spruz/uniq_by'
+  require 'spruz/write'
 end

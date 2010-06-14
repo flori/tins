@@ -12,4 +12,5 @@ module Spruz
   require 'spruz/xt/uniq_by'
   require 'spruz/xt/p'
   require 'spruz/xt/symbol_to_proc'
+  require 'spruz/xt/write'
 end
