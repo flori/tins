@@ -1,4 +1,5 @@
 require 'spruz'
+
 module Spruz
   require 'spruz/xt/blank'
   require 'spruz/xt/count_by'
@@ -13,4 +14,5 @@ module Spruz
   require 'spruz/xt/p'
   require 'spruz/xt/symbol_to_proc'
   require 'spruz/xt/write'
+  require 'spruz/xt/deep_dup'
 end

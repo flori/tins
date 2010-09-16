@@ -20,4 +20,5 @@ module Spruz
   require 'spruz/to_proc'
   require 'spruz/uniq_by'
   require 'spruz/write'
+  require 'spruz/deep_dup'
 end
