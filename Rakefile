@@ -23,12 +23,13 @@ end
 
 desc "Testing library"
 task :test  do
-  ruby '-Ilib tests/test_spruz.rb'
+  ENV['RUBYOPT'] = "#{ENV['RUBYOPT']} -Ilib"
+  sh 'testrb tests/test_*.rb'
 end
 
 desc "Testing library with coverage"
 task :coverage  do
-  sh "rcov -Ilib -x 'tests/.*\.rb' tests/test_spruz.rb"
+  sh "rcov -Ilib -x 'tests/.*\.rb' tests/test_*.rb"
 end
 
 if defined? Gem
@@ -48,7 +49,7 @@ if defined? Gem
     s.has_rdoc = true
     s.extra_rdoc_files << 'README'
     s.rdoc_options << '--title' <<  'Spruz' << '--main' << 'README'
-    s.test_files << 'tests/test_spruz.rb'
+    s.test_files.concat Dir['tests/test_*.rb']
 
     s.author = "Florian Frank"
     s.email = "flori@ping.de"

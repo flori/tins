@@ -22,19 +22,18 @@ module Spruz
       # object the method is called on.
       def memoize_method(*method_ids)
         method_ids.each do |method_id|
+          method_id = method_id.to_s.to_sym
           orig_method = instance_method(method_id)
           __send__(:define_method, method_id) do |*args|
             unless mc = ::Module.__memoize_cache__[__id__]
               mc = ::Module.__memoize_cache__[__id__] ||= {}
               ObjectSpace.define_finalizer(self, ::Module.__memoize_cache_delete__)
             end
-            if mc.key?(args)
-              result = mc[args]
+            if mc.key?(method_id) and result = mc[method_id][args]
+              result
             else
-              result = mc[args] = orig_method.bind(self).call(*args)
-              if $DEBUG
-                warn "#{self.class} cached method #{method_id}(#{args.inspect unless args.empty?}) = #{result.inspect} [#{__id__}]"
-              end
+              (mc[method_id] ||= {})[args] = result = orig_method.bind(self).call(*args)
+              $DEBUG and warn "#{self.class} cached method #{method_id}(#{args.inspect unless args.empty?}) = #{result.inspect} [#{__id__}]"
             end
             result
           end
@@ -52,19 +51,25 @@ module Spruz
       def memoize_function(*function_ids)
         mc = @__memoize_cache__ ||= {}
         function_ids.each do |method_id|
+          method_id = method_id.to_s.to_sym
           orig_method = instance_method(method_id)
           __send__(:define_method, method_id) do |*args|
-            if mc.key?(args)
-              result = mc[args]
+            if mc.key?(method_id) and result = mc[method_id][args]
+              result
             else
-              result = mc[args] = orig_method.bind(self).call(*args)
-              if $DEBUG
-                warn "#{self.class} cached function #{method_id}(#{args.inspect unless args.empty?}) = #{result.inspect}"
-              end
+              (mc[method_id] ||= {})[args] = result = orig_method.bind(self).call(*args)
+              $DEBUG and warn "#{self.class} cached function #{method_id}(#{args.inspect unless args.empty?}) = #{result.inspect}"
             end
             result
           end
         end
+      end
+
+      # Clear cached values for all methods and functions.
+      def memoize_cache_clear
+        mc = @__memoize_cache__ and mc.clear
+        mc = ::Module.__memoize_cache__ and mc.clear
+        self
       end
     end
   end
