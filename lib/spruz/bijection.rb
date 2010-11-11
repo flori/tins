@@ -1,5 +1,20 @@
 module Spruz
   class Bijection < Hash
+    def self.[](*pairs)
+      pairs.size % 2 == 0 or
+        raise ArgumentError, "odd number of arguments for #{self}"
+      new.fill do |obj|
+        (pairs.size / 2).times do |i|
+          j = 2 * i
+          key = pairs[j]
+          value = pairs[j + 1]
+          obj.key?(key) and raise ArgumentError, "duplicate key #{key.inspect} for #{self}"
+          obj.inverted.key?(value) and raise ArgumentError, "duplicate value #{value.inspect} for #{self}"
+          obj[pairs[j]] = pairs[j + 1]
+        end
+      end
+    end
+
     def initialize(inverted = Bijection.new(self))
       @inverted = inverted
     end
@@ -21,7 +36,7 @@ module Spruz
     end
 
     def []=(key, value)
-      return if key?(key)
+      key?(key) and return
       super
       @inverted[value] = key
     end

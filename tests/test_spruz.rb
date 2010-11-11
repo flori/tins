@@ -433,7 +433,6 @@ module Spruz
     end
   end
 
-
   class BlankFullTest < Test::Unit::TestCase
     require 'spruz/xt/deep_dup'
 
@@ -449,6 +448,21 @@ module Spruz
       assert_equal f[3], g[3]
       assert_equal f, g
       assert_same  f, g
+    end
+  end
+
+  class BijectionTest < Test::Unit::TestCase
+    def test_bijection
+      assert_equal [ [ 1, 2 ], [ 3, 4 ] ], Spruz::Bijection[ 1, 2, 3, 4 ].to_a
+      assert_raise(ArgumentError) do
+        Spruz::Bijection[1,2,3]
+      end
+      assert_raise(ArgumentError) do
+        Spruz::Bijection[1,2,3,2]
+      end
+      assert_raise(ArgumentError) do
+        Spruz::Bijection[1,2,1,3]
+      end
     end
   end
 end
