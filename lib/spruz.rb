@@ -21,4 +21,5 @@ module Spruz
   require 'spruz/uniq_by'
   require 'spruz/write'
   require 'spruz/deep_dup'
+  require 'spruz/try'
 end

@@ -15,4 +15,5 @@ module Spruz
   require 'spruz/xt/symbol_to_proc'
   require 'spruz/xt/write'
   require 'spruz/xt/deep_dup'
+  require 'spruz/xt/try'
 end
