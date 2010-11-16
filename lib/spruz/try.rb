@@ -1,12 +1,16 @@
 module Spruz
   module Try
-    def try(attempts = 1, exception_class = StandardError, &block)
+    def try(attempts = 1, exception_class = StandardError, sleep_duration = nil, &block)
       return if attempts <= 0
       count = 0
       if exception_class.nil?
         begin
           count += 1
-          return true if block.call(count)
+          if block.call(count)
+            return true
+          elsif sleep_duration and count < attempts
+            sleep sleep_duration
+          end
         end until count == attempts
         false
       else
@@ -15,7 +19,10 @@ module Spruz
           block.call(count)
           true
         rescue exception_class
-          retry if count < attempts
+          if count < attempts
+            sleep_duration and sleep sleep_duration
+            retry
+          end
           false
         end
       end
