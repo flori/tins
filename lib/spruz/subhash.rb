@@ -10,7 +10,10 @@ module Spruz
     # MatchData instance if the matching pattern was a regular rexpression
     # otherwise it is nil.
     def subhash(*patterns)
-      patterns.map! { |pat| pat.respond_to?(:match) ? pat : pat.to_s }
+      patterns.map! do |pat|
+        pat = pat.to_sym.to_s if pat.respond_to?(:to_sym)
+        pat.respond_to?(:match) ? pat : pat.to_s
+      end
       result =
         if default_proc
           self.class.new(&default_proc)
