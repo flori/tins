@@ -467,33 +467,33 @@ module Spruz
   end
   
   class TryTest < Test::Unit::TestCase
-    require 'spruz/xt/try'
+    require 'spruz/xt/attempt'
 
-    def test_try_block_condition
-      assert try(1, nil) { |c| c == 1 }
-      assert try(3, nil) { |c| c == 1 }
-      assert_false try(3, nil) { |c| c == 4 }
-      assert_nil try(0, nil) { |c| c == 4 }
-      assert_raise(Exception) { try(3, nil) { raise Exception } }
+    def test_attempt_block_condition
+      assert attempt(1, nil) { |c| c == 1 }
+      assert attempt(3, nil) { |c| c == 1 }
+      assert_false attempt(3, nil) { |c| c == 4 }
+      assert_nil attempt(0, nil) { |c| c == 4 }
+      assert_raise(Exception) { attempt(3, nil) { raise Exception } }
     end
 
     class MyError < StandardError; end
     class MyException < Exception; end
 
-    def test_try_default_exception
-      assert try(1) { |c| c != 1 and raise MyError }
-      assert try(3) { |c| c != 1 and raise MyError }
-      assert_false try(3) { |c| c != 4 and raise MyError }
-      assert_nil try(0) { |c| c != 4 and raise MyError }
-      assert_raise(Exception) { try(3) { raise Exception } }
+    def test_attempt_default_exception
+      assert attempt(1) { |c| c != 1 and raise MyError }
+      assert attempt(3) { |c| c != 1 and raise MyError }
+      assert_false attempt(3) { |c| c != 4 and raise MyError }
+      assert_nil attempt(0) { |c| c != 4 and raise MyError }
+      assert_raise(Exception) { attempt(3) { raise Exception } }
     end
 
-    def test_try_exception
-      assert try(1, MyException) { |c| c != 1 and raise MyException }
-      assert try(3, MyException) { |c| c != 1 and raise MyException }
-      assert_false try(3, MyException) { |c| c != 4 and raise MyException }
-      assert_nil try(0, MyException) { |c| c != 4 and raise MyException }
-      assert_raise(Exception) { try(3, MyException) { raise Exception } }
+    def test_attempt_exception
+      assert attempt(1, MyException) { |c| c != 1 and raise MyException }
+      assert attempt(3, MyException) { |c| c != 1 and raise MyException }
+      assert_false attempt(3, MyException) { |c| c != 4 and raise MyException }
+      assert_nil attempt(0, MyException) { |c| c != 4 and raise MyException }
+      assert_raise(Exception) { attempt(3, MyException) { raise Exception } }
     end
   end
 end
