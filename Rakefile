@@ -18,7 +18,7 @@ end
 
 desc "Creating documentation"
 task :doc do
-  ruby 'make_doc.rb'
+  sh "sdoc -t Spruz -o doc -m README README #{Dir['lib/**/*.rb']} * ' '}"
 end
 
 desc "Testing library"

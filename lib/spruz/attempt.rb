@@ -1,6 +1,6 @@
 module Spruz
-  module Try
-    def try(attempts = 1, exception_class = StandardError, sleep_duration = nil, &block)
+  module Attempt
+    def attempt(attempts = 1, exception_class = StandardError, sleep_duration = nil, &block)
       return if attempts <= 0
       count = 0
       if exception_class.nil?
