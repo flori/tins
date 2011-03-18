@@ -320,6 +320,18 @@ module Spruz
   class HashUnionTest < Test::Unit::TestCase
     require 'spruz/xt/hash_union'
 
+    class HashLike1
+      def to_hash
+        { 'foo' => true }
+      end
+    end
+
+    class HashLike2
+      def to_h
+        { 'foo' => true }
+      end
+    end
+
     def test_union
       defaults = { 'foo' => true, 'bar' => false, 'quux' => nil }
       hash = { 'foo' => false }
@@ -336,6 +348,11 @@ module Spruz
       assert_equal [ ['bar', false], [ 'baz', 23 ], ['foo', false],
         ['quux', true] ],
         hash.sort
+    end
+
+    def test_hash_conversion
+      assert_equal({ 'foo' => true }, { } | HashLike1.new)
+      assert_equal({ 'foo' => true }, { } | HashLike2.new)
     end
   end
 
