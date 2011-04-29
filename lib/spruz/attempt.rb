@@ -1,6 +1,15 @@
 module Spruz
   module Attempt
-    def attempt(attempts = 1, exception_class = StandardError, sleep_duration = nil, &block)
+    def attempt(opts = {}, &block)
+      sleep           = nil
+      exception_class = StandardError
+      if Numeric === opts
+        attempts = opts
+      else
+        attempts        = opts[:attempts] || 1
+        exception_class = opts[:exception_class] if opts.key?(:exception_class)
+        sleep           = opts[:sleep]
+      end
       return if attempts <= 0
       count = 0
       if exception_class.nil?
@@ -8,8 +17,8 @@ module Spruz
           count += 1
           if block.call(count)
             return true
-          elsif sleep_duration and count < attempts
-            sleep sleep_duration
+          elsif count < attempts
+            sleep_duration(sleep, count)
           end
         end until count == attempts
         false
@@ -20,11 +29,22 @@ module Spruz
           true
         rescue exception_class
           if count < attempts
-            sleep_duration and sleep sleep_duration
+            sleep_duration(sleep, count)
             retry
           end
           false
         end
+      end
+    end
+
+    private
+
+    def sleep_duration(duration, count)
+      case duration
+      when Numeric
+        sleep duration
+      when Proc
+        sleep duration.call(count)
       end
     end
   end

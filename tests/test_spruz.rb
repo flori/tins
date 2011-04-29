@@ -487,11 +487,11 @@ module Spruz
     require 'spruz/xt/attempt'
 
     def test_attempt_block_condition
-      assert attempt(1, nil) { |c| c == 1 }
-      assert attempt(3, nil) { |c| c == 1 }
-      assert_false attempt(3, nil) { |c| c == 4 }
-      assert_nil attempt(0, nil) { |c| c == 4 }
-      assert_raise(Exception) { attempt(3, nil) { raise Exception } }
+      assert attempt(:attempts => 1, :exception_class => nil) { |c| c == 1 }
+      assert attempt(:attempts => 3, :exception_class => nil) { |c| c == 1 }
+      assert_false attempt(:attempts => 3, :exception_class => nil) { |c| c == 4 }
+      assert_nil attempt(:attempts => 0, :exception_class => nil) { |c| c == 4 }
+      assert_raise(Exception) { attempt(:attempts => 3, :exception_class => nil) { raise Exception } }
     end
 
     class MyError < StandardError; end
@@ -506,11 +506,11 @@ module Spruz
     end
 
     def test_attempt_exception
-      assert attempt(1, MyException) { |c| c != 1 and raise MyException }
-      assert attempt(3, MyException) { |c| c != 1 and raise MyException }
-      assert_false attempt(3, MyException) { |c| c != 4 and raise MyException }
-      assert_nil attempt(0, MyException) { |c| c != 4 and raise MyException }
-      assert_raise(Exception) { attempt(3, MyException) { raise Exception } }
+      assert attempt(:attempts => 1, :exception_class => MyException) { |c| c != 1 and raise MyException }
+      assert attempt(:attempts => 3, :exception_class => MyException) { |c| c != 1 and raise MyException }
+      assert_false attempt(:attempts => 3, :exception_class => MyException) { |c| c != 4 and raise MyException }
+      assert_nil attempt(:attempts => 0, :exception_class => MyException) { |c| c != 4 and raise MyException }
+      assert_raise(Exception) { attempt(:attempts => 3, :exception_class => MyException) { raise Exception } }
     end
   end
 end
