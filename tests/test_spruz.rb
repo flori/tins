@@ -356,6 +356,26 @@ module Spruz
     end
   end
 
+  class HashSymbolizeKeysRecursiveTest < Test::Unit::TestCase
+    require 'spruz/xt/hash_symbolize_keys_recursive'
+
+    def test_symbolize
+      hash = {
+        'key' => [
+          {
+            'key' => {
+              'key' => true
+            }
+          }
+        ],
+      }
+      hash2 = hash.symbolize_keys_recursive
+      assert hash2[:key][0][:key][:key]
+      hash.symbolize_keys_recursive!
+      assert hash[:key][0][:key][:key]
+    end
+  end
+
   class SubhashTest < Test::Unit::TestCase
     require 'spruz/xt/subhash'
 

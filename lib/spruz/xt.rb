@@ -16,4 +16,5 @@ module Spruz
   require 'spruz/xt/write'
   require 'spruz/xt/deep_dup'
   require 'spruz/xt/attempt'
+  require 'spruz/xt/hash_symbolize_keys_recursive'
 end

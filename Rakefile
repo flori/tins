@@ -46,7 +46,6 @@ if defined? Gem
     s.bindir = "bin"
     s.executables << "enum"
 
-    s.has_rdoc = true
     s.extra_rdoc_files << 'README'
     s.rdoc_options << '--title' <<  'Spruz' << '--main' << 'README'
     s.test_files.concat Dir['tests/test_*.rb']
@@ -54,6 +53,12 @@ if defined? Gem
     s.author = "Florian Frank"
     s.email = "flori@ping.de"
     s.homepage = "http://flori.github.com/spruz"
+  end
+
+  task :gemspec do
+    File.open('spruz.gemspec', 'w') do |output|
+      output.write spec.to_ruby
+    end
   end
 
   Rake::GemPackageTask.new(spec) do |pkg|
