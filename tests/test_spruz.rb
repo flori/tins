@@ -533,4 +533,15 @@ module Spruz
       assert_raise(Exception) { attempt(:attempts => 3, :exception_class => MyException) { raise Exception } }
     end
   end
+
+  class RangePlustTest < Test::Unit::TestCase
+    require 'spruz/xt/range_plus'
+
+    def test_range_plus
+      assert_equal [], (0...0) + (0...0)
+      assert_equal [ 0 ], (0..0) + (0...0)
+      assert_equal [ 0, 0 ], (0..0) + (0..0)
+      assert_equal((1..5).to_a, (1...3) + (3..5))
+    end
+  end
 end

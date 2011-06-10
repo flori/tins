@@ -24,7 +24,7 @@ end
 desc "Testing library"
 task :test  do
   ENV['RUBYOPT'] = "#{ENV['RUBYOPT']} -Ilib"
-  sh 'testrb tests/test_*.rb'
+  sh 'testrb ./tests/test_*.rb'
 end
 
 desc "Testing library with coverage"

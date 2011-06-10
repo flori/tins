@@ -23,4 +23,5 @@ module Spruz
   require 'spruz/deep_dup'
   require 'spruz/attempt'
   require 'spruz/hash_symbolize_keys_recursive'
+  require 'spruz/range_plus'
 end
