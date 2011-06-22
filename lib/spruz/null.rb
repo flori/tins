@@ -5,6 +5,10 @@ module Spruz
       self
     end
 
+    def const_missing(*)
+      self
+    end
+
     def to_s
       ''
     end
