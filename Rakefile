@@ -1,5 +1,7 @@
+# vim: set filetype=ruby et sw=2 ts=2:
+
 begin
-  require 'rake/gempackagetask'
+  require 'rubygems/package_task'
 rescue LoadError
 end
 require 'rake/clean'
@@ -61,7 +63,7 @@ if defined? Gem
     end
   end
 
-  Rake::GemPackageTask.new(spec) do |pkg|
+  Gem::PackageTask.new(spec) do |pkg|
     pkg.need_tar = true
     pkg.package_files += PKG_FILES
   end
