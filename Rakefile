@@ -31,7 +31,7 @@ end
 
 desc "Testing library with coverage"
 task :coverage  do
-  sh "rcov -Ilib -x 'tests/.*\.rb' tests/test_*.rb"
+  sh "rcov -Ilib -x '/gems/' -x 'tests/.*\.rb' tests/test_*.rb"
 end
 
 if defined? Gem

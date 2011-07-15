@@ -19,4 +19,5 @@ module Spruz
   require 'spruz/xt/hash_symbolize_keys_recursive'
   require 'spruz/xt/range_plus'
   require 'spruz/xt/named'
+  require 'spruz/xt/string'
 end

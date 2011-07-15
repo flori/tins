@@ -573,4 +573,29 @@ module Spruz
       end
     end
   end
+
+  require 'spruz/xt/string'
+  class StringCamelizeTest < Test::Unit::TestCase
+    def test_camelize
+      assert_equal 'FooBar', 'foo_bar'.camelize
+      assert_equal 'FooBar', 'foo_bar'.camelize(:upper)
+      assert_equal 'FooBar', 'foo_bar'.camelize(true)
+      assert_equal 'fooBar', 'foo_bar'.camelize(:lower)
+      assert_equal 'fooBar', 'foo_bar'.camelize(false)
+      assert_equal 'FooBar', 'foo_bar'.camelcase
+      assert_equal 'Foo::Bar', 'foo/bar'.camelize
+      assert_equal 'Foo::Bar', 'foo/bar'.camelize(:upper)
+      assert_equal 'Foo::Bar', 'foo/bar'.camelize(true)
+      assert_equal 'foo::Bar', 'foo/bar'.camelize(:lower)
+      assert_equal 'foo::Bar', 'foo/bar'.camelize(false)
+      assert_equal 'Foo::Bar', 'foo/bar'.camelcase
+    end
+  end
+
+  class StringUnderscoreTest < Test::Unit::TestCase
+    def test_underscore
+      assert_equal 'foo_bar', 'FooBar'.underscore
+      assert_equal 'foo/bar', 'Foo::Bar'.underscore
+    end
+  end
 end
