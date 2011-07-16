@@ -1,93 +1,30 @@
 # vim: set filetype=ruby et sw=2 ts=2:
 
-begin
-  require 'rubygems/package_task'
-rescue LoadError
-end
-require 'rake/clean'
-CLEAN.include 'coverage', 'doc', '**/*.rbc'
-require 'rbconfig'
-include Config
+require 'gem_hadar'
 
-PKG_NAME = 'spruz'
-PKG_VERSION = File.read('VERSION').chomp
-PKG_FILES = FileList['**/*'].exclude(/(CVS|\.svn|pkg|coverage|doc)/)
+GemHadar do
+  name        'spruz'
+  author      'Florian Frank'
+  email       'flori@ping.de'
+  homepage    "http://flori.github.com/#{name}"
+  summary     'Useful stuff.'
+  description 'All the stuff that isn\'t good/big enough for a real library.'
+  bindir      'bin'
+  executables << 'enum'
+  test_dir    'tests'
+  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock'
+  readme      'README.rdoc'
 
-desc "Installing library"
-task :install  do
-  ruby 'install.rb'
-end
 
-desc "Creating documentation"
-task :doc do
-  sh "sdoc -t Spruz -o doc -m README README #{Dir['lib/**/*.rb']} * ' '}"
-end
-
-desc "Testing library"
-task :test  do
-  ENV['RUBYOPT'] = "#{ENV['RUBYOPT']} -Ilib"
-  sh 'testrb ./tests/test_*.rb'
-end
-
-desc "Testing library with coverage"
-task :coverage  do
-  sh "rcov -Ilib -x '/gems/' -x 'tests/.*\.rb' tests/test_*.rb"
-end
-
-if defined? Gem
-  spec = Gem::Specification.new do |s|
-    s.name = PKG_NAME
-    s.version = PKG_VERSION
-    s.summary = "Useful stuff."
-    s.description = "All the stuff that isn't good/big enough for a real library."
-
-    s.files = PKG_FILES
-
-    s.require_path = 'lib'
-
-    s.bindir = "bin"
-    s.executables << "enum"
-
-    s.extra_rdoc_files << 'README'
-    s.rdoc_options << '--title' <<  'Spruz' << '--main' << 'README'
-    s.test_files.concat Dir['tests/test_*.rb']
-
-    s.author = "Florian Frank"
-    s.email = "flori@ping.de"
-    s.homepage = "http://flori.github.com/spruz"
-  end
-
-  task :gemspec do
-    File.open('spruz.gemspec', 'w') do |output|
-      output.write spec.to_ruby
+  install_library do
+    libdir = CONFIG["sitelibdir"]
+    cd 'lib' do
+      for file in Dir['**/*.rb']
+        dst = File.join(libdir, file)
+        mkdir_p File.dirname(dst)
+        install file, dst
+      end
     end
-  end
-
-  Gem::PackageTask.new(spec) do |pkg|
-    pkg.need_tar = true
-    pkg.package_files += PKG_FILES
+    install 'bin/enum', File.join(CONFIG['bindir'], 'enum')
   end
 end
-
-desc m = "Writing version information for #{PKG_VERSION}"
-task :version do
-  puts m
-  File.open(File.join('lib', PKG_NAME, 'version.rb'), 'w') do |v|
-    v.puts <<EOT
-module Spruz
-  # Spruz version
-  VERSION         = '#{PKG_VERSION}'
-  VERSION_ARRAY   = VERSION.split(/\\./).map { |x| x.to_i } # :nodoc:
-  VERSION_MAJOR   = VERSION_ARRAY[0] # :nodoc:
-  VERSION_MINOR   = VERSION_ARRAY[1] # :nodoc:
-  VERSION_BUILD   = VERSION_ARRAY[2] # :nodoc:
-end
-EOT
-  end
-end
-
-desc "Default task: write version and test"
-task :default => [ :version, :test ]
-
-desc "Prepare a release"
-task :release => [ :clean, :version, :package ]

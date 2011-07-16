@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'test/unit'
-require 'spruz/memoize'
+require 'spruz'
 
 module Spruz
   class TestSpruzMemoize < Test::Unit::TestCase
