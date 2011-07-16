@@ -4,13 +4,11 @@ module Spruz
       modul.module_eval do
         class << self
           alias really_new new
+          remove_method :now rescue nil
+          remove_method :new rescue nil
         end
 
         extend ClassMethods
-
-        class << self
-          alias now new
-        end
       end
     end
 
@@ -24,6 +22,8 @@ module Spruz
           really_new
         end
       end
+
+      alias now new
     end
   end
 end

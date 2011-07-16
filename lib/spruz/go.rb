@@ -21,7 +21,11 @@ module Spruz
         until p == ''
           o = p.slice!(0, 1)
           if v.key?(o)
-            v[o] = if p == '' then args.shift or break 1 else p end
+            if p == '' then
+              v[o] = args.shift or break 1
+            else
+              v[0] = p
+            end
             break
           elsif b.key?(o)
             b[o] = true

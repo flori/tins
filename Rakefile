@@ -5,7 +5,7 @@ begin
 rescue LoadError
 end
 require 'rake/clean'
-CLEAN.include 'coverage', 'doc'
+CLEAN.include 'coverage', 'doc', '**/*.rbc'
 require 'rbconfig'
 include Config
 
