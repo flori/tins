@@ -15,7 +15,6 @@ GemHadar do
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock'
   readme      'README.rdoc'
 
-
   install_library do
     libdir = CONFIG["sitelibdir"]
     cd 'lib' do
