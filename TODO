@@ -1,0 +1,1 @@
+- Ruby1.9 has File.write method now, that conflicts with Spruz::Write module's and has to be fixed in some way
