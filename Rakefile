@@ -12,7 +12,7 @@ GemHadar do
   bindir      'bin'
   executables << 'enum'
   test_dir    'tests'
-  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock'
+  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc'
   readme      'README.rdoc'
 
   install_library do

@@ -8,7 +8,7 @@ module Spruz
         self[0].chr.downcase + camelize[1..-1]
       end
     end
-    
+
     alias camelcase camelize
   end
 end

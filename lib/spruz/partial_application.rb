@@ -13,7 +13,7 @@ module Spruz
     end
 
     # Create a partial application of this Proc (or similar object) using
-    # _args_ as the already applied arguments. 
+    # _args_ as the already applied arguments.
     def partial(*args)
       if args.empty?
         dup

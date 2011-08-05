@@ -502,7 +502,7 @@ module Spruz
       end
     end
   end
-  
+
   class TryTest < Test::Unit::TestCase
     require 'spruz/xt/attempt'
 

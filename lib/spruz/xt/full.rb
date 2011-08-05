@@ -15,7 +15,7 @@ module Spruz
       #  dispatch.found?(self)
       elsif dispatch
         obj = __send__(dispatch, *args)
-        obj = nil if obj.blank? 
+        obj = nil if obj.blank?
       else
         obj = self
       end

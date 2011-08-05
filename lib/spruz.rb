@@ -20,6 +20,7 @@ module Spruz
   require 'spruz/to_proc'
   require 'spruz/uniq_by'
   require 'spruz/write'
+  require 'spruz/secure_write'
   require 'spruz/deep_dup'
   require 'spruz/attempt'
   require 'spruz/hash_symbolize_keys_recursive'

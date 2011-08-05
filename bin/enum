@@ -107,8 +107,8 @@ def execute_command(command, format, tuple)
 end
 
 def usage
-  puts <<EOT    
-Usage: #{File.basename($0)} [OPTIONS] RANGES 
+  puts <<EOT
+Usage: #{File.basename($0)} [OPTIONS] RANGES
 
 RANGES has to be a string of the from R1:R2:...Rn, where R1 to Rn are ranges of
 values for each dimension. A range can be specified like in one of

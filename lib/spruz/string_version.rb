@@ -7,7 +7,7 @@ module Spruz
 
       def initialize(string)
         string =~ /\A[\.\d]+\Z/ or raise ArgumentError, "#{string.inspect} isn't a version number"
-        @version = string
+        @version = string.frozen? ? string.dup : string
       end
 
       def major
@@ -93,7 +93,11 @@ module Spruz
     end
 
     def version
-      @version ||= Version.new(self)
+      if frozen?
+        Version.new(self)
+      else
+        @version ||= Version.new(self)
+      end
     end
   end
 end

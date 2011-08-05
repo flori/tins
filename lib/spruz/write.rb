@@ -1,20 +1,17 @@
+require 'spruz/secure_write'
+
 module Spruz
   module Write
-    # Write to a file atomically
-    def write(filename, content = nil, mode = 'w')
-      temp = File.new(filename + ".tmp.#$$.#{Time.now.to_f}", mode)
-      if content.nil? and block_given?
-        yield temp
-      elsif !content.nil?
-        temp.write content
+    def self.extended(modul)
+      modul.extend SecureWrite
+      if modul.respond_to?(:write)
+        $DEBUG and warn "Skipping inclusion of Spruz::Write#write method, include Spruz::Write::SecureWrite#secure_write instead"
       else
-        raise ArgumentError, "either content or block argument required"
+        class << modul; self; end.instance_eval do
+          alias_method :write, :secure_write
+        end
       end
-      temp.close
-      File.rename temp.path, filename
-    ensure
-      temp and !temp.closed? and temp.close
-      File.file?(temp.path) and File.unlink temp.path
+      super
     end
   end
 end

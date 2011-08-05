@@ -26,7 +26,7 @@ module Spruz
       end
       if places < 0
         max_places = -Math.log(self.abs + 1) / Math.log(10)
-        raise ArgumentError, "places has to be >= #{max_places.ceil}" if max_places > places 
+        raise ArgumentError, "places has to be >= #{max_places.ceil}" if max_places > places
       end
       t = self
       f = 10.0 ** places
