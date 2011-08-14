@@ -25,4 +25,5 @@ module Spruz
   require 'spruz/attempt'
   require 'spruz/hash_symbolize_keys_recursive'
   require 'spruz/range_plus'
+  require 'spruz/file_binary'
 end

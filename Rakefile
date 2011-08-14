@@ -14,6 +14,7 @@ GemHadar do
   test_dir    'tests'
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc'
   readme      'README.rdoc'
+  development_dependency 'test-unit', '~>2.3'
 
   install_library do
     libdir = CONFIG["sitelibdir"]

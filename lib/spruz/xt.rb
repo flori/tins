@@ -21,4 +21,5 @@ module Spruz
   require 'spruz/xt/range_plus'
   require 'spruz/xt/named'
   require 'spruz/xt/string'
+  require 'spruz/xt/file_binary'
 end
