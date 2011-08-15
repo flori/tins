@@ -15,6 +15,7 @@ module Spruz
     end
 
     class << self
+      # Default options can be queried/set via this hash.
       attr_accessor :default_options
     end
     self.default_options = {
@@ -28,11 +29,11 @@ module Spruz
     # considered to be binary, and nil if it was empty.
     #
     # A file is considered to be binary if the percentage of zeros exceeds
-    # +options[:percentage_zeros]+ or the percentage of binary bytes (8-th bit
-    # is 1) exceeds +options[:percentage_binary]+ in the buffer of size
-    # options[:buffer_size] that is checked (beginning from offset
-    # options[:offset]). If an option isn't given the one from
-    # FileBinary.default_options is used instead.
+    # <tt>options[:percentage_zeros]</tt> or the percentage of binary bytes
+    # (8-th bit is 1) exceeds <tt>options[:percentage_binary]</tt> in the
+    # buffer of size <tt>options[:buffer_size]</tt> that is checked (beginning
+    # from offset <tt>options[:offset]</tt>). If an option isn't given the one
+    # from FileBinary.default_options is used instead.
     def binary?(options = {})
       options |= FileBinary.default_options
       old_pos = tell
