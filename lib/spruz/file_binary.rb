@@ -15,6 +15,7 @@ module Spruz
     end
 
     class << self
+      # Default options can be queried/set via this hash.
       attr_accessor :default_options
     end
     self.default_options = {
@@ -24,6 +25,15 @@ module Spruz
       :percentage_zeros  => 0.0,
     }
 
+    # Returns true if this file is considered to be binary, false if it is not
+    # considered to be binary, and nil if it was empty.
+    #
+    # A file is considered to be binary if the percentage of zeros exceeds
+    # <tt>options[:percentage_zeros]</tt> or the percentage of binary bytes
+    # (8-th bit is 1) exceeds <tt>options[:percentage_binary]</tt> in the
+    # buffer of size <tt>options[:buffer_size]</tt> that is checked (beginning
+    # from offset <tt>options[:offset]</tt>). If an option isn't given the one
+    # from FileBinary.default_options is used instead.
     def binary?(options = {})
       options |= FileBinary.default_options
       old_pos = tell
@@ -39,6 +49,9 @@ module Spruz
       old_pos and seek old_pos, Constants::SEEK_SET
     end
 
+    # Returns true if FileBinary#binary? returns false, false if
+    # FileBinary#binary? returns true, and nil otherwise. For an explanation of
+    # +options+, see FileBinary#binary?.
     def ascii?(options = {})
       case binary?(options)
       when true   then false
@@ -54,10 +67,14 @@ module Spruz
     end
 
     module ClassMethods
+      # Returns true if the file with name +name+ is considered to be binary
+      # using the FileBinary#binary? method.
       def binary?(name, options = {})
         open(name, 'rb') { |f| f.binary?(options) }
       end
 
+      # Returns true if the file with name +name+ is considered to be ascii
+      # using the FileBinary#ascii? method.
       def ascii?(name, options = {})
         open(name, 'rb') { |f| f.ascii?(options) }
       end
