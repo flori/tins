@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'spruz'
-include Spruz
-include Spruz::GO
+require 'tins'
+include Tins
+include Tins::GO
 
 class CompoundRange
   def initialize

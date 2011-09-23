@@ -1,4 +1,4 @@
-= Spruz - Useful tools library in Ruby
+= Tins - Useful tools library in Ruby
 
 == Description
 
@@ -8,7 +8,7 @@ Non yet.
 
 The homepage of this library is located at
 
-* http://flori.github.com/spruz
+* http://flori.github.com/tins
 
 == Author
 

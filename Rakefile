@@ -3,7 +3,7 @@
 require 'gem_hadar'
 
 GemHadar do
-  name        'spruz'
+  name        'tins'
   author      'Florian Frank'
   email       'flori@ping.de'
   homepage    "http://flori.github.com/#{name}"
