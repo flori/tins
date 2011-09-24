@@ -9,8 +9,6 @@ GemHadar do
   homepage    "http://flori.github.com/#{name}"
   summary     'Useful stuff.'
   description 'All the stuff that isn\'t good/big enough for a real library.'
-  bindir      'bin'
-  executables << 'enum'
   test_dir    'tests'
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc'
   readme      'README.rdoc'
