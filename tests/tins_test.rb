@@ -185,8 +185,9 @@ module Tins
     end
 
     def test_uniq_by
-      assert_equal [ 1, 2, 3 ], [ 1, 2, 2, 3 ].uniq_by
-      assert_equal [ 1, 2, 3 ], [ 1, 2, 2, 3 ].uniq_by!
+      assert_equal [ 1, 2, 3 ], [ 1, 2, 2, 3 ].uniq_by.sort
+      a = [ 1, 2, 2, 3 ]; a.uniq_by!
+      assert_equal [ 1, 2, 3 ], a.sort
       p1 = Point.new 1, 2
       p2 = Point.new 2, 2
       p3 = Point.new 2, 2
@@ -490,7 +491,7 @@ module Tins
 
   class BijectionTest < Test::Unit::TestCase
     def test_bijection
-      assert_equal [ [ 1, 2 ], [ 3, 4 ] ], Tins::Bijection[ 1, 2, 3, 4 ].to_a
+      assert_equal [ [ 1, 2 ], [ 3, 4 ] ], Tins::Bijection[ 1, 2, 3, 4 ].to_a.sort
       assert_raise(ArgumentError) do
         Tins::Bijection[1,2,3]
       end
