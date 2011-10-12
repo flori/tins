@@ -16,11 +16,21 @@ module Tins
     def inspect
       'NULL'
     end
+
+    def nil?
+      true
+    end
+
+    module Kernel
+      def Null(value = nil)
+        value.nil? ? Tins::NULL : value
+      end
+    end
   end
 
   NULL = Class.new do
     include Tins::Null
-  end.new
+  end.new.freeze
 end
 
 require 'tins/alias'
