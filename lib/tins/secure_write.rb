@@ -16,8 +16,10 @@ module Tins
       File.rename temp.path, filename
       size
     ensure
-      temp and !temp.closed? and temp.close
-      File.file?(temp.path) and File.unlink temp.path
+      if temp
+        !temp.closed? and temp.close
+        File.file?(temp.path) and File.unlink temp.path
+      end
     end
   end
 end
