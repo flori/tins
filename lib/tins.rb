@@ -30,5 +30,6 @@ module Tins
   require 'tins/uniq_by'
   require 'tins/version'
   require 'tins/write'
+  require 'tins/require_maybe'
 end
 require 'tins/alias'

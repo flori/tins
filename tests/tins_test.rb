@@ -626,4 +626,24 @@ module Tins
       assert_equal '2.1.0.2', s
     end
   end
+
+  require 'tins/xt/require_maybe'
+  class RequireMaybeTest < Test::Unit::TestCase
+    def test_require_maybe_failed
+      executed = false
+      require_maybe 'nix' do
+        executed = true
+      end
+      assert executed, 'require did not fail'
+    end
+
+    def test_require_maybe_succeeded
+      not_executed = true
+      result = require_maybe 'tins' do
+        not_executed = false
+      end
+      assert [ false, true ].include?(result)
+      assert not_executed, 'require failed'
+    end
+  end
 end

@@ -22,4 +22,5 @@ module Tins
   require 'tins/xt/named'
   require 'tins/xt/string'
   require 'tins/xt/file_binary'
+  require 'tins/xt/require_maybe'
 end
