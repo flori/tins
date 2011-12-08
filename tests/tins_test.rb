@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
-
-require 'test/unit'
+require 'test_helper'
 require 'tins'
 
 module Tins
@@ -181,7 +179,9 @@ module Tins
   class UniqByTest < Test::Unit::TestCase
     require 'tins/xt/uniq_by'
 
-    class Point < Struct.new :x, :y
+    unless defined?(Point)
+      class Point < Struct.new :x, :y
+      end
     end
 
     def test_uniq_by
@@ -410,6 +410,8 @@ module Tins
       assert_equal NULL, NULL.foo.bar
       assert_equal 'NULL', NULL.inspect
       assert_equal '', NULL.to_s
+      assert_equal 1, Null(1)
+      assert_equal NULL, Null(nil)
     end
   end
 

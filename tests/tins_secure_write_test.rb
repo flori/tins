@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
-
-require 'test/unit'
+require 'test_helper'
 require 'tempfile'
 require 'tins'
 
