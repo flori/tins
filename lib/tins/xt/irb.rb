@@ -14,4 +14,10 @@ module Tins
       exit
     end
   end
+
+  class ::Object
+    def examine(binding = TOPLEVEL_BINDING)
+      IRB.examine(binding)
+    end
+  end
 end
