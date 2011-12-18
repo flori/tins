@@ -28,7 +28,7 @@ module Tins
     end
   end
 
-  NULL = Class.new do
+  NULL = Class.new(Module) do
     include Tins::Null
   end.new.freeze
 end

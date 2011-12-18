@@ -1,6 +1,6 @@
 require 'test_helper'
 require 'tempfile'
-require 'tins/xt/file_binary'
+require 'tins/xt'
 
 module Tins
   class TinsFileBinaryTest < Test::Unit::TestCase

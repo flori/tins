@@ -23,4 +23,5 @@ module Tins
   require 'tins/xt/string'
   require 'tins/xt/file_binary'
   require 'tins/xt/require_maybe'
+  require 'tins/xt/partial_application'
 end

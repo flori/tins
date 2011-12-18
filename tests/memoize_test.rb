@@ -2,7 +2,7 @@ require 'test_helper'
 require 'tins'
 
 module Tins
-  class TestTinsMemoize < Test::Unit::TestCase
+  class MemoizeTest < Test::Unit::TestCase
     class FooBar
       def foo(*a)
         @@foo ||= 0
