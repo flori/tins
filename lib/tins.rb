@@ -4,6 +4,7 @@ module Tins
   require 'tins/count_by'
   require 'tins/deep_dup'
   require 'tins/file_binary'
+  require 'tins/find'
   require 'tins/generator'
   require 'tins/go'
   require 'tins/hash_symbolize_keys_recursive'
@@ -18,6 +19,7 @@ module Tins
   require 'tins/p'
   require 'tins/partial_application'
   require 'tins/range_plus'
+  require 'tins/require_maybe'
   require 'tins/round'
   require 'tins/secure_write'
   require 'tins/shuffle'
@@ -30,6 +32,5 @@ module Tins
   require 'tins/uniq_by'
   require 'tins/version'
   require 'tins/write'
-  require 'tins/require_maybe'
 end
 require 'tins/alias'

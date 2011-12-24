@@ -1,0 +1,75 @@
+require 'test_helper'
+require 'tins/find'
+require 'fileutils'
+require 'tempfile'
+
+module Tins
+  class FindTest < Test::Unit::TestCase
+    include Tins::Find
+    include FileUtils
+
+    def setup
+      mkdir_p @work_dir = File.join(Dir.tmpdir, "test.#$$")
+    end
+
+    def teardown
+      rm_rf @work_dir
+    end
+
+    def test_raising_errors
+      assert_equal [], find(File.join(@work_dir, 'nix'), :raise_errors => false).to_a
+      assert_equal [], find(File.join(@work_dir, 'nix')).to_a
+      assert_raise(Errno::ENOENT) do
+        find(File.join(@work_dir, 'nix'), :raise_errors => true).to_a
+      end
+    end
+
+    def test_showing_hidden
+      touch file = File.join(@work_dir, '.foo')
+      assert_equal [ @work_dir ], find(@work_dir, :show_hidden => false).to_a
+      assert_equal [ @work_dir, file ], find(@work_dir).to_a
+      assert_equal [ @work_dir, file ], find(@work_dir, :show_hidden => true).to_a
+    end
+
+    def test_check_directory_without_access
+      mkdir_p directory1 = File.join(@work_dir, 'foo')
+      mkdir_p directory2 = File.join(directory1, 'bar')
+      touch file = File.join(directory2, 'file')
+      chmod 'a-x', directory2
+      assert_equal [ @work_dir, directory1, directory2 ], find(@work_dir, :raise_errors => false).to_a
+      assert_equal [ @work_dir, directory1, directory2 ], find(@work_dir).to_a
+      assert_raise(Errno::EACCES) do
+        find(@work_dir, :raise_errors => true).to_a
+      end
+    ensure
+      File.exist?(directory2) and chmod 'a+x', directory2
+    end
+
+    def test_follow_symlinks
+      mkdir_p directory1 = File.join(@work_dir, 'foo1')
+      mkdir_p directory2 = File.join(@work_dir, 'foo2')
+      mkdir_p directory3 = File.join(directory1, 'bar')
+      touch file = File.join(directory3, 'foo')
+      ln_s directory3, link = File.join(directory2, 'baz')
+      assert_equal [ directory2, link ], find(directory2, :follow_symlinks => false).to_a
+      assert_equal [ directory2, link, linked = File.join(link, 'foo') ], find(directory2).to_a
+      assert_equal [ directory2, link, linked ], find(directory2, :follow_symlinks => true).to_a
+    end
+
+    def test_path_file
+      File.open(File.join(@work_dir, 'foo'), 'w') do |f|
+        f.print "hello"
+        f.fsync
+        assert_equal "hello", find(@work_dir).select { |f| f.stat.file? }.first.file.read
+      end
+    end
+
+    def test_prune
+      mkdir_p directory1 = File.join(@work_dir, 'foo1')
+      mkdir_p directory2 = File.join(@work_dir, 'foo2')
+      result = []
+      find(@work_dir) { |f| f =~ /foo2\Z/ and prune; result << f }
+      assert_equal [ @work_dir, directory1 ], result
+    end
+  end
+end
