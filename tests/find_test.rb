@@ -23,7 +23,7 @@ module Tins
         find(File.join(@work_dir, 'nix'), :raise_errors => true).to_a
       end
     end
-
+    
     def test_showing_hidden
       touch file = File.join(@work_dir, '.foo')
       assert_equal [ @work_dir ], find(@work_dir, :show_hidden => false).to_a
@@ -35,14 +35,14 @@ module Tins
       mkdir_p directory1 = File.join(@work_dir, 'foo')
       mkdir_p directory2 = File.join(directory1, 'bar')
       touch file = File.join(directory2, 'file')
-      chmod 'a-x', directory2
+      chmod 0, directory2
       assert_equal [ @work_dir, directory1, directory2 ], find(@work_dir, :raise_errors => false).to_a
       assert_equal [ @work_dir, directory1, directory2 ], find(@work_dir).to_a
       assert_raise(Errno::EACCES) do
         find(@work_dir, :raise_errors => true).to_a
       end
     ensure
-      File.exist?(directory2) and chmod 'a+x', directory2
+      File.exist?(directory2) and chmod 0777, directory2
     end
 
     def test_follow_symlinks
