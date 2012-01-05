@@ -9,6 +9,7 @@ module Tins
         attempts        = opts[:attempts] || 1
         exception_class = opts[:exception_class] if opts.key?(:exception_class)
         sleep           = opts[:sleep]
+        reraise         = opts[:reraise]
       end
       return if attempts <= 0
       count = 0
@@ -32,7 +33,7 @@ module Tins
             sleep_duration(sleep, count)
             retry
           end
-          false
+          reraise ? raise : false
         end
       end
     end

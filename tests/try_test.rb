@@ -26,9 +26,14 @@ module Tins
     def test_attempt_exception
       assert attempt(:attempts => 1, :exception_class => MyException) { |c| c != 1 and raise MyException }
       assert attempt(:attempts => 3, :exception_class => MyException) { |c| c != 1 and raise MyException }
-      assert_equal false, attempt(:attempts => 3, :exception_class => MyException) { |c| c != 4 and raise MyException }
       assert_nil attempt(:attempts => 0, :exception_class => MyException) { |c| c != 4 and raise MyException }
       assert_raise(Exception) { attempt(:attempts => 3, :exception_class => MyException) { raise Exception } }
+    end
+
+    def test_reraise_exception
+      tries = 0
+      assert_raise(MyException) { attempt(:attempts => 3, :exception_class => MyException, :reraise => true) { |c| tries = c; raise MyException } }
+      assert_equal 3, tries
     end
   end
 end
