@@ -32,7 +32,11 @@ module Tins
 
     def test_reraise_exception
       tries = 0
-      assert_raise(MyException) { attempt(:attempts => 3, :exception_class => MyException, :reraise => true) { |c| tries = c; raise MyException } }
+      assert_raise(MyException) do
+        attempt(:attempts => 3, :exception_class => MyException, :reraise => true) do |c|
+          tries = c; raise MyException
+        end
+      end
       assert_equal 3, tries
     end
   end
