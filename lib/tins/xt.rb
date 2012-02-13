@@ -24,4 +24,5 @@ module Tins
   require 'tins/xt/time_dummy'
   require 'tins/xt/uniq_by'
   require 'tins/xt/write'
+  require 'tins/xt/if_predicate'
 end
