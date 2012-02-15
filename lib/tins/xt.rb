@@ -25,4 +25,5 @@ module Tins
   require 'tins/xt/uniq_by'
   require 'tins/xt/write'
   require 'tins/xt/if_predicate'
+  require 'tins/xt/ask_and_send'
 end
