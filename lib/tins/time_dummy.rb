@@ -13,7 +13,21 @@ module Tins
     end
 
     module ClassMethods
-      attr_accessor :dummy
+      attr_writer :dummy
+
+      def dummy(value = nil)
+        if value.nil?
+          @dummy
+        else
+          begin
+            old_dummy = @dummy
+            @dummy = value
+            yield
+          ensure
+            @dummy = old_dummy
+          end
+        end
+      end
 
       def new
         if dummy
