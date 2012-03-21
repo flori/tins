@@ -32,5 +32,6 @@ module Tins
   require 'tins/uniq_by'
   require 'tins/version'
   require 'tins/write'
+  require 'tins/extract_last_argument_options'
 end
 require 'tins/alias'
