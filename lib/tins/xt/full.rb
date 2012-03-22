@@ -25,6 +25,12 @@ module Tins
         obj
       end
     end
+
+    def all_full?
+      if respond_to?(:all?) && all?(&:full?)
+        block_given? ? yield(self) : self
+      end
+    end
   end
 
   class ::Object

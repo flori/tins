@@ -42,5 +42,21 @@ module Tins
       assert_nil "    ".full?(:size)
       assert_equal 3, "foo".full?(:size)
     end
+
+    def test_all_full
+      assert_equal [1, 2], [1, 2].all_full?
+      assert_nil [nil, 2].all_full?
+      assert_nil [1, ''].all_full?
+    end
+
+    def test_all_full_with_block
+      [1, 2].all_full? do |x, y|
+        assert_equal 1, x
+        assert_equal 2, y
+      end
+      ['', 2].all_full? do |x, y|
+        assert false
+      end
+    end
   end
 end
