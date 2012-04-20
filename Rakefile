@@ -13,6 +13,7 @@ GemHadar do
   test_files.concat Dir["#{test_dir}/*_test.rb"]
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage'
   readme      'README.rdoc'
+
   development_dependency 'test-unit', '~>2.3'
   development_dependency 'utils'
 

@@ -1,11 +1,10 @@
 module Tins
-  module TimeDummy
+  module DateTimeDummy
     def self.included(modul)
       class << modul
-        alias really_new new
+        alias really_now now
 
         remove_method :now rescue nil
-        remove_method :new rescue nil
 
         include ClassMethods
       end
@@ -29,15 +28,13 @@ module Tins
         end
       end
 
-      def new
+      def now
         if dummy
           dummy.dup
         else
-          really_new
+          really_now
         end
       end
-
-      alias now new
     end
   end
 end
