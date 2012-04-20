@@ -7,37 +7,33 @@ module Tins
         remove_method :now rescue nil
         remove_method :new rescue nil
 
-        include ClassMethods
-      end
-      super
-    end
+        attr_writer :dummy
 
-    module ClassMethods
-      attr_writer :dummy
-
-      def dummy(value = nil)
-        if value.nil?
-          @dummy
-        else
-          begin
-            old_dummy = @dummy
-            @dummy = value
-            yield
-          ensure
-            @dummy = old_dummy
+        def dummy(value = nil)
+          if value.nil?
+            @dummy
+          else
+            begin
+              old_dummy = @dummy
+              @dummy = value
+              yield
+            ensure
+              @dummy = old_dummy
+            end
           end
         end
-      end
 
-      def new
-        if dummy
-          dummy.dup
-        else
-          really_new
+        def new
+          if dummy
+            dummy.dup
+          else
+            really_new
+          end
         end
-      end
 
-      alias now new
+        alias now new
+      end
+      super
     end
   end
 end

@@ -6,35 +6,32 @@ module Tins
 
         remove_method :today rescue nil
 
-        include ClassMethods
-      end
-      super
-    end
+        attr_writer :dummy
 
-    module ClassMethods
-      attr_writer :dummy
-
-      def dummy(value = nil)
-        if value.nil?
-          @dummy
-        else
-          begin
-            old_dummy = @dummy
-            @dummy = value
-            yield
-          ensure
-            @dummy = old_dummy
+        def dummy(value = nil)
+          if value.nil?
+            @dummy
+          else
+            begin
+              old_dummy = @dummy
+              @dummy = value
+              yield
+            ensure
+              @dummy = old_dummy
+            end
           end
         end
-      end
 
-      def today
-        if dummy
-          dummy.dup
-        else
-          really_today
+        def today
+          if dummy
+            dummy.dup
+          else
+            really_today
+          end
         end
-      end
+
+        end
+      super
     end
   end
 end
