@@ -1,3 +1,5 @@
+require 'date'
+
 module Tins
   module DateTimeDummy
     def self.included(modul)
