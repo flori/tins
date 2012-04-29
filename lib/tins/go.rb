@@ -24,7 +24,6 @@ module Tins
     # An option hash is returned with all found options set to true or the
     # found option argument.
     def go(s, args = ARGV)
-      args = args.map(&:dup)
       b, v = s.scan(/(.)(:?)/).inject([ {}, {} ]) { |t, (o, a)|
         a = a == ':'
         t[a ? 1 : 0][o] = a ? nil : false
@@ -42,6 +41,7 @@ module Tins
               a = p
             end
             if v[o].nil?
+              a = a.dup
               a.extend EnumerableExtension
               a.push a
               v[o] = a
