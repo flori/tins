@@ -32,5 +32,13 @@ module Tins
       assert_equal({ 'a' => 2, 'b' => 'hello' }, r)
       assert_equal %w[hello world], r['b'].to_a
     end
+
+    def test_complex_frozen
+      args = %w[-b hello -aa -b world -c]
+      args = args.map(&:freeze)
+      r = go 'ab:', args
+      assert_equal({ 'a' => 2, 'b' => 'hello' }, r)
+      assert_equal %w[hello world], r['b'].to_a
+    end
   end
 end
