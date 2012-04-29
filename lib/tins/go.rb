@@ -1,5 +1,19 @@
 module Tins
   module GO
+    module EnumerableExtension
+      def push(argument)
+        @arguments ||= []
+        @arguments.push argument
+        self
+      end
+
+      def each(&block)
+        @arguments.each(&block)
+        self
+      end
+      include Enumerable
+    end
+
     module_function
 
     # Parses the argument array _args_, according to the pattern _s_, to
@@ -10,7 +24,7 @@ module Tins
     # An option hash is returned with all found options set to true or the
     # found option argument.
     def go(s, args = ARGV)
-      b,v = s.scan(/(.)(:?)/).inject([{},{}]) { |t,(o,a)|
+      b, v = s.scan(/(.)(:?)/).inject([ {}, {} ]) { |t, (o, a)|
         a = a == ':'
         t[a ? 1 : 0][o] = a ? nil : false
         t
@@ -22,13 +36,24 @@ module Tins
           o = p.slice!(0, 1)
           if v.key?(o)
             if p == '' then
-              v[o] = args.shift or break 1
+              a = args.shift or break 1
             else
-              v[0] = p
+              a = p
+            end
+            if v[o].nil?
+              a.extend EnumerableExtension
+              a.push a
+              v[o] = a
+            else
+              v[o].push a
             end
             break
           elsif b.key?(o)
-            b[o] = true
+            if b[o] == false
+              b[o]= 1
+            else
+              b[o] += 1
+            end
           else
             args.unshift a
             break 1

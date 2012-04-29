@@ -2,7 +2,7 @@ require 'test_helper'
 require 'tins/xt'
 
 module Tins
-  class AskAndSendTest
+  class AskAndSendTest < Test::Unit::TestCase
     class A
       public
       
