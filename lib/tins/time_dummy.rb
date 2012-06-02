@@ -3,6 +3,7 @@ module Tins
     def self.included(modul)
       class << modul
         alias really_new new
+        alias really_now now
 
         remove_method :now rescue nil
         remove_method :new rescue nil
@@ -23,15 +24,19 @@ module Tins
           end
         end
 
-        def new
+        def new(*a)
           if dummy
             dummy.dup
+          elsif caller.first =~ /now/
+            really_now
           else
-            really_new
+            really_new(*a)
           end
         end
 
-        alias now new
+        def now
+          new
+        end
       end
       super
     end
