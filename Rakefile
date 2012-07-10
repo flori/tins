@@ -14,7 +14,7 @@ GemHadar do
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx'
   readme      'README.rdoc'
 
-  development_dependency 'test-unit', '~>2.3'
+  development_dependency 'test-unit', '~>2.5'
   development_dependency 'utils'
 
   install_library do
