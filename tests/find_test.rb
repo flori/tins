@@ -31,8 +31,13 @@ module Tins
       assert_equal [ @work_dir, file ], find(@work_dir, :show_hidden => true).to_a
     end
 
-    if RUBY_PLATFORM !~ /java/
-      def test_check_directory_without_access
+    def test_check_directory_without_access
+      # do not run this test on JRuby
+      omit_if(RUBY_PLATFORM =~ /java/, "Can't run the test on JRuby")
+      # do not run this test if we're root, as it will fail.
+      omit_if(Process::UID.eid == 0, "Can't run the test as root")
+
+      begin
         mkdir_p directory1 = File.join(@work_dir, 'foo')
         mkdir_p directory2 = File.join(directory1, 'bar')
         touch file = File.join(directory2, 'file')
