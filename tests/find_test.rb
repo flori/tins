@@ -66,11 +66,44 @@ module Tins
       end
     end
 
+    def test_path_extension
+      finder = Tins::Find::Finder.new
+      f = File.open(path = File.join(@work_dir, 'foo.bar'), 'w')
+      ln_s path, path2 = File.join(@work_dir, 'foo2.bar')
+      path2 = finder.prepare_path path2
+      path = finder.prepare_path path
+      assert_true path.exist?
+      assert_true path.file?
+      assert_false path.directory?
+      assert_true finder.prepare_path(Dir.pwd).directory?
+      assert_equal Pathname.new(path), path.pathname
+      assert_equal 'bar', path.suffix
+      assert_true path2.lstat.symlink?
+    ensure
+      f and rm_f f.path
+    end
+
+    def test_suffix
+      finder = Tins::Find::Finder.new(:suffix => 'bar')
+      f = File.open(fpath = File.join(@work_dir, 'foo.bar'), 'w')
+      g = File.open(gpath = File.join(@work_dir, 'foo.baz'), 'w')
+      fpath = finder.prepare_path fpath
+      gpath = finder.prepare_path gpath
+      assert_true finder.visit_path?(fpath)
+      assert_false finder.visit_path?(gpath)
+      finder.suffix = nil
+      assert_true finder.visit_path?(fpath)
+      assert_true finder.visit_path?(gpath)
+    ensure
+      f and rm_f f.path
+      g and rm_f g.path
+    end
+
     def test_prune
       mkdir_p directory1 = File.join(@work_dir, 'foo1')
       mkdir_p directory2 = File.join(@work_dir, 'foo2')
       result = []
-      find(@work_dir) { |f| f =~ /foo2\Z/ and prune; result << f }
+      find(@work_dir) { |f| f =~ /foo2\z/ and prune; result << f }
       assert_equal [ @work_dir, directory1 ], result
     end
   end

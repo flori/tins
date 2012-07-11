@@ -6,7 +6,7 @@ module Tins
       include Comparable
 
       def initialize(string)
-        string =~ /\A[\.\d]+\Z/ or raise ArgumentError, "#{string.inspect} isn't a version number"
+        string =~ /\A[\.\d]+\z/ or raise ArgumentError, "#{string.inspect} isn't a version number"
         @version = string.frozen? ? string.dup : string
       end
 

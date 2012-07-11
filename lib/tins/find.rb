@@ -9,17 +9,68 @@ module Tins
     ]
 
     class Finder
+      module PathExtension
+        attr_accessor :finder
+
+        def finder_stat
+          finder.protect_from_errors do
+            finder.follow_symlinks ? File.stat(self) : File.lstat(self)
+          end
+        end
+
+        def file
+          finder.protect_from_errors do
+            File.new(self) if file?
+          end
+        end
+
+        def file?
+          finder.protect_from_errors { s = finder_stat and s.file? }
+        end
+
+        def directory?
+          finder.protect_from_errors { s = finder_stat and s.directory? }
+        end
+
+        def exist?
+          finder.protect_from_errors { File.exist?(self) }
+        end
+
+        def stat
+          finder.protect_from_errors { File.stat(self) }
+        end
+
+        def lstat
+          finder.protect_from_errors { File.lstat(self) }
+        end
+
+        def pathname
+          Pathname.new(self)
+        end
+
+        def suffix
+          pathname.extname[1..-1] || ''
+        end
+      end
+
       def initialize(opts = {})
         @show_hidden     = opts.fetch(:show_hidden)     { true }
         @raise_errors    = opts.fetch(:raise_errors)    { false }
         @follow_symlinks = opts.fetch(:follow_symlinks) { true }
+        opts[:suffix].full? { |s| @suffix = [*s] }
       end
 
-      attr_reader :show_hidden
+      attr_accessor :show_hidden
 
-      attr_reader :raise_errors
+      attr_accessor :raise_errors
 
-      attr_reader :follow_symlinks
+      attr_accessor :follow_symlinks
+
+      attr_accessor :suffix
+
+      def visit_path?(path)
+        @suffix.nil? || @suffix.include?(path.suffix)
+      end
 
       def find(*paths)
         block_given? or return enum_for(__method__, *paths)
@@ -27,14 +78,10 @@ module Tins
         while path = paths.shift
           path = prepare_path(path)
           catch(:prune) do
-            path.stat or next
-            yield path
-            if path.stat.directory?
-              begin
-                ps = Dir.entries(path)
-              rescue EXPECTED_STANDARD_ERRORS
-                @raise_errors ? raise : next
-              end
+            stat = path.finder_stat or next
+            visit_path?(path) and yield path
+            if stat.directory?
+              ps = protect_from_errors { Dir.entries(path) } or next
               ps.sort!
               ps.reverse_each do |p|
                 next if p == "." or p == ".."
@@ -47,38 +94,18 @@ module Tins
         end
       end
 
-      private
-
       def prepare_path(path)
         path = path.dup.taint
         path.extend PathExtension
         path.finder = self
         path
       end
-    end
 
-    module PathExtension
-      attr_accessor :finder
-
-      def stat
-        begin
-          @stat ||=
-            if finder.follow_symlinks
-              File.stat(self)
-            else
-              File.lstat(self)
-            end
-        rescue EXPECTED_STANDARD_ERRORS
-          if finder.raise_errors
-            raise
-          end
-        end
-      end
-
-      def file
-        if stat.file?
-          File.new(self)
-        end
+      def protect_from_errors(errors = Find::EXPECTED_STANDARD_ERRORS)
+        yield
+      rescue errors
+        raise_errors and raise
+        return
       end
     end
 
