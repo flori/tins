@@ -33,6 +33,10 @@ module Tins
       true
     end
 
+    def blank?
+      true
+    end
+
     module Kernel
       def Null(value = nil)
         value.nil? ? Tins::NULL : value

@@ -17,6 +17,7 @@ module Tins
       assert_equal NULL, Null(nil)
       assert_equal NULL, NULL::NULL
       assert NULL.nil?
+      assert NULL.blank?
     end
   end
 end
