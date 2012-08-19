@@ -1,4 +1,5 @@
 require 'enumerator'
+require 'pathname'
 require 'tins/module_group'
 
 module Tins
