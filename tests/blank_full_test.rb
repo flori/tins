@@ -20,6 +20,21 @@ module Tins
       assert !"foo".blank?
     end
 
+    def test_present
+      assert true.present?
+      assert !false.present?
+      assert !nil.present?
+      assert ![].present?
+      assert [23].present?
+      assert !Set[].present?
+      assert Set[23].present?
+      assert !{}.present?
+      assert({ :foo => 23 }.present?)
+      assert !"".present?
+      assert !"   ".present?
+      assert "foo".present?
+    end
+
     def test_full
       assert_equal true, true.full?
       assert_nil false.full?
