@@ -11,7 +11,10 @@ GemHadar do
   description 'All the stuff that isn\'t good/big enough for a real library.'
   test_dir    'tests'
   test_files.concat Dir["#{test_dir}/*_test.rb"]
-  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx'
+  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx',
+              '.AppleDouble'
+
+
   readme      'README.rdoc'
 
   development_dependency 'test-unit', '~>2.5'

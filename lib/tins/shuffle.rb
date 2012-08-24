@@ -1,5 +1,6 @@
 module Tins
   module Shuffle
+    # :nocov:
     def shuffle!
       (size - 1) .downto(1) do |i|
         j = rand(i + 1)

@@ -31,6 +31,7 @@ module Tins
       assert_equal 6, fb2.foo(1, 2)
       assert_equal 5, fb1.foo(1, 2)
       assert_equal 6, fb2.foo(1, 2)
+      assert_equal false, Module.__memoize_cache__.empty?
     end
 
     def test_bar
@@ -45,6 +46,7 @@ module Tins
       FooBar.memoize_cache_clear
       assert_equal 3, fb1.bar(1, 2)
       assert_equal 3, fb2.bar(1, 2)
+      assert_equal false, FooBar.__memoize_cache__.empty?
     end
   end
 end
