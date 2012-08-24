@@ -13,6 +13,10 @@ module Tins
       ''
     end
 
+    def to_str
+      nil
+    end
+
     def to_f
       0.0
     end
@@ -21,8 +25,16 @@ module Tins
       0
     end
 
+    def to_int
+      nil
+    end
+
     def to_a
       []
+    end
+
+    def to_ary
+      nil
     end
 
     def inspect
@@ -44,9 +56,11 @@ module Tins
     end
   end
 
-  NULL = Class.new(Module) do
+  class NullClass < Module
     include Tins::Null
-  end.new.freeze
+  end
+
+  NULL = NullClass.new.freeze
 end
 
 require 'tins/alias'

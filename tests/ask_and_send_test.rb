@@ -5,7 +5,7 @@ module Tins
   class AskAndSendTest < Test::Unit::TestCase
     class A
       public
-      
+
       def foo
         :foo
       end

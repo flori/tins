@@ -23,7 +23,7 @@ module Tins
         find(File.join(@work_dir, 'nix'), :raise_errors => true).to_a
       end
     end
-    
+
     def test_showing_hidden
       touch file = File.join(@work_dir, '.foo')
       assert_equal [ @work_dir ], find(@work_dir, :show_hidden => false).to_a
