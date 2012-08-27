@@ -35,5 +35,6 @@ module Tins
   require 'tins/version'
   require 'tins/write'
   require 'tins/extract_last_argument_options'
+  require 'tins/deep_const_get'
 end
 require 'tins/alias'

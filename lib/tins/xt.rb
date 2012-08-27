@@ -29,4 +29,5 @@ module Tins
   require 'tins/xt/if_predicate'
   require 'tins/xt/ask_and_send'
   require 'tins/xt/extract_last_argument_options'
+  require 'tins/xt/deep_const_get'
 end
