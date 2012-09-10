@@ -36,5 +36,6 @@ module Tins
   require 'tins/write'
   require 'tins/extract_last_argument_options'
   require 'tins/deep_const_get'
+  require 'tins/responding'
 end
 require 'tins/alias'
