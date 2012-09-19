@@ -31,4 +31,5 @@ module Tins
   require 'tins/xt/extract_last_argument_options'
   require 'tins/xt/deep_const_get'
   require 'tins/xt/responding'
+  require 'tins/xt/proc_compose'
 end

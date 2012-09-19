@@ -37,5 +37,6 @@ module Tins
   require 'tins/extract_last_argument_options'
   require 'tins/deep_const_get'
   require 'tins/responding'
+  require 'tins/proc_compose'
 end
 require 'tins/alias'
