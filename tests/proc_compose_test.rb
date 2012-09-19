@@ -13,7 +13,11 @@ module Tins
     def test_proc_compose_more_complex
       f = lambda { |x, y| 2 * x + y * 3 }
       g = lambda { |x| x + 1 }
-      assert_raise(ArgumentError) { (f * g).call(2, 3) }
+      if RUBY_VERSION >= "1.9"
+        assert_raise(ArgumentError) { (f * g).call(2, 3) }
+      else
+        assert_raise(TypeError) { (f * g).call(2, 3) }
+      end
       d = lambda { |x| [ x, x ] }
       assert_equal 15, (f * d * g).call(2)
     end
