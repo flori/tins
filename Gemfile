@@ -4,4 +4,7 @@ source :rubygems
 
 gemspec
 
-gem 'simplecov', '0.6.4', :platform => :mri_19
+group :development do
+  gem 'simplecov', :platform => :mri_19
+  gem 'debugger', :platform => :mri_19
+end
