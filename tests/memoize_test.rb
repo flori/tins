@@ -17,24 +17,30 @@ module Tins
       memoize_function :bar
     end
 
-    def test_foo
+    def test_method_cache
       fb1 = FooBar.new
       fb2 = FooBar.new
+      assert_equal true, fb1.__memoize_cache__.empty?
+      assert_equal true, fb2.__memoize_cache__.empty?
       assert_equal 1, fb1.foo(1, 2)
       assert_equal 2, fb2.foo(1, 2)
       assert_equal 3, fb1.foo(1, 2, 3)
       assert_equal 4, fb2.foo(1, 2, 3)
       assert_equal 1, fb1.foo(1, 2)
       assert_equal 2, fb2.foo(1, 2)
-      FooBar.memoize_cache_clear
+      fb1.memoize_cache_clear
+      fb2.memoize_cache_clear
+      assert_equal true, fb1.__memoize_cache__.empty?
+      assert_equal true, fb2.__memoize_cache__.empty?
       assert_equal 5, fb1.foo(1, 2)
       assert_equal 6, fb2.foo(1, 2)
       assert_equal 5, fb1.foo(1, 2)
       assert_equal 6, fb2.foo(1, 2)
-      assert_equal false, Module.__memoize_cache__.empty?
+      assert_equal false, fb1.__memoize_cache__.empty?
+      assert_equal false, fb2.__memoize_cache__.empty?
     end
 
-    def test_bar
+    def test_function_cache
       fb1 = FooBar.new
       fb2 = FooBar.new
       assert_equal 1, fb1.bar(1, 2)

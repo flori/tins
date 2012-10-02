@@ -1,34 +1,29 @@
 module Tins
   module Memoize
-    class ::Module
-      class << self
-        # Returns the current memoize cache for all the stored objects and
-        # method call results.
-        def __memoize_cache__
-          @__memoize_cache__ ||= {}
-        end
-
-        # Finalizer to delete the stored result for a garbage collected object.
-        def __memoize_cache_delete__
-          lambda do |id|
-            $DEBUG and warn "Deleted method results for object id='#{id}'"
-            __memoize_cache__.delete(id)
-          end
-        end
+    module CacheMethods
+      # Return the cache object.
+      def __memoize_cache__
+        @__memoize_cache__ ||= {}
       end
 
+      # Clear cached values for all methods/functions.
+      def memoize_cache_clear
+         __memoize_cache__.clear
+        self
+      end
+    end
+
+    class ::Module
       # Automatically memoize calls of the the methods +method_ids+. The
       # memoized results do NOT ONLY depend on the arguments, but ALSO on the
       # object the method is called on.
       def memoize_method(*method_ids)
+        include CacheMethods
         method_ids.each do |method_id|
           method_id = method_id.to_s.to_sym
           orig_method = instance_method(method_id)
           __send__(:define_method, method_id) do |*args|
-            unless mc = ::Module.__memoize_cache__[__id__]
-              mc = ::Module.__memoize_cache__[__id__] ||= {}
-              ObjectSpace.define_finalizer(self, ::Module.__memoize_cache_delete__)
-            end
+            mc = __memoize_cache__
             if mc.key?(method_id) and result = mc[method_id][args]
               result
             else
@@ -40,16 +35,13 @@ module Tins
         end
       end
 
-      # Returns the current memoize cache for this Module.
-      def __memoize_cache__
-        @__memoize_cache__
-      end
+      include CacheMethods
 
       # Automatically memoize calls of the functions +function_ids+. The
       # memoized result does ONLY depend on the arguments given to the
       # function.
       def memoize_function(*function_ids)
-        mc = @__memoize_cache__ ||= {}
+        mc = __memoize_cache__
         function_ids.each do |method_id|
           method_id = method_id.to_s.to_sym
           orig_method = instance_method(method_id)
@@ -63,13 +55,6 @@ module Tins
             result
           end
         end
-      end
-
-      # Clear cached values for all methods and functions.
-      def memoize_cache_clear
-        mc = @__memoize_cache__ and mc.clear
-        mc = ::Module.__memoize_cache__ and mc.clear
-        self
       end
     end
   end
