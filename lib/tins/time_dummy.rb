@@ -1,3 +1,5 @@
+require 'time'
+
 module Tins
   module TimeDummy
     def self.included(modul)
@@ -10,16 +12,23 @@ module Tins
 
         attr_writer :dummy
 
+        def dummy=(value)
+          if value.respond_to?(:to_str)
+            value = Time.parse(value.to_str)
+          end
+          @dummy = value
+        end
+
         def dummy(value = nil)
           if value.nil?
             @dummy
           else
             begin
               old_dummy = @dummy
-              @dummy = value
+              self.dummy = value
               yield
             ensure
-              @dummy = old_dummy
+              self.dummy = old_dummy
             end
           end
         end
