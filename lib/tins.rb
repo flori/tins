@@ -38,6 +38,7 @@ module Tins
   require 'tins/deep_const_get'
   require 'tins/responding'
   require 'tins/proc_compose'
+  require 'tins/proc_prelude'
   require 'tins/concern'
 end
 require 'tins/alias'
