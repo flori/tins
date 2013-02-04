@@ -9,8 +9,8 @@ module Tins
       self
     end
 
-    def rotate
-      clone.rotate!
+    def rotate(n = 1)
+      clone.rotate!(n)
     end
   end
 end
