@@ -1,6 +1,4 @@
-require 'tins/memoize'
-require 'tins/extract_last_argument_options'
-require 'tins/proc_compose'
+require 'tins/xt'
 
 module Tins
   module ProcPrelude
@@ -46,10 +44,9 @@ module Tins
     end
     memoize_function :last, :freeze =>  true
 
-    def rotate
-      lambda { |*list| list.rotate }
+    def rotate(n = 1)
+      lambda { |*list| list.rotate(n) }
     end
-    memoize_function :rotate, :freeze =>  true
 
     alias swap rotate
 

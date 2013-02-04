@@ -40,5 +40,6 @@ module Tins
   require 'tins/proc_compose'
   require 'tins/proc_prelude'
   require 'tins/concern'
+  require 'tins/rotate'
 end
 require 'tins/alias'
