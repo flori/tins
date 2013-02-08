@@ -63,5 +63,11 @@ module Tins
     def nth(n)
       lambda { |*list| list[n] }
     end
+
+    def from(&block)
+      my_method, binding = block.call, block.binding
+      my_self = eval 'self', binding
+      lambda { |*list| my_self.__send__(my_method, *list) }
+    end
   end
 end

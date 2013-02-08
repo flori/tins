@@ -69,5 +69,13 @@ module Tins
     def test_nth
       assert_equal 2, Proc.nth(1).call(1,2,3)
     end
+
+    def square(x)
+      x ** 2
+    end
+
+    def test_from
+      assert_equal [ 1, 4, 9 ], [ 1, 2, 3 ].map(&Proc.from{:square})
+    end
   end
 end
