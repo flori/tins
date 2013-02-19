@@ -1,3 +1,5 @@
+require 'tins/extract_last_argument_options'
+
 module Tins
   module Memoize
     module CacheMethods
