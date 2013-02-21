@@ -41,5 +41,6 @@ module Tins
   require 'tins/proc_prelude'
   require 'tins/concern'
   require 'tins/rotate'
+  require 'tins/to'
 end
 require 'tins/alias'
