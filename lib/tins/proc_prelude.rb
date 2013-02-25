@@ -1,4 +1,4 @@
-require 'tins/xt'
+require 'tins/memoize'
 
 module Tins
   module ProcPrelude
