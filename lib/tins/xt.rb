@@ -34,4 +34,5 @@ module Tins
   require 'tins/xt/proc_compose'
   require 'tins/xt/proc_prelude'
   require 'tins/xt/rotate'
+  require 'tins/xt/to'
 end

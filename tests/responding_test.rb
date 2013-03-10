@@ -6,7 +6,7 @@ module Tins
     class A
       def foo() end
 
-      def bar() end 
+      def bar() end
     end
 
     def test_responding
