@@ -42,5 +42,6 @@ module Tins
   require 'tins/concern'
   require 'tins/rotate'
   require 'tins/to'
+  require 'tins/terminal'
 end
 require 'tins/alias'
