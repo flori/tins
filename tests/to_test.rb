@@ -10,6 +10,16 @@ module Tins
       assert_equal "hello, world\n", doc
     end
 
+    def test_to_removing_leading_spaces_depending_on_first_line
+      doc = to(<<-end)
+        hello
+          world,
+            how are
+          things?
+      end
+      assert_equal "hello\n  world,\n    how are\n  things?\n", doc
+    end
+
     def test_to_not_removing_empty_lines
       doc = to(<<-end)
         hello, world
