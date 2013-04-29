@@ -15,7 +15,7 @@ GemHadar do
               '.AppleDouble'
 
   readme      'README.rdoc'
-  licenses << 'GPL-2'
+  licenses << 'MIT'
 
   development_dependency 'test-unit', '~>2.5'
   development_dependency 'utils'
