@@ -43,5 +43,6 @@ module Tins
   require 'tins/rotate'
   require 'tins/to'
   require 'tins/terminal'
+  require 'tins/sexy_singleton'
 end
 require 'tins/alias'
