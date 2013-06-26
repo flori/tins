@@ -1,4 +1,5 @@
 require 'tins/xt/blank'
+require 'tins/xt/empty'
 
 module Tins
   module Full

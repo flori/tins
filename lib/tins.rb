@@ -44,5 +44,6 @@ module Tins
   require 'tins/to'
   require 'tins/terminal'
   require 'tins/sexy_singleton'
+  require 'tins/empty'
 end
 require 'tins/alias'
