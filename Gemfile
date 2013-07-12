@@ -5,6 +5,5 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'simplecov', :platform => :mri_19
-  gem 'debugger', :platform => :mri_19
+  gem 'simplecov'
 end
