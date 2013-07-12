@@ -36,4 +36,5 @@ module Tins
   require 'tins/xt/rotate'
   require 'tins/xt/to'
   require 'tins/xt/sexy_singleton'
+  require 'tins/xt/method_description'
 end

@@ -12,7 +12,7 @@ GemHadar do
   test_dir    'tests'
   test_files.concat Dir["#{test_dir}/*_test.rb"]
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx',
-              '.AppleDouble'
+              '.AppleDouble', '.DS_Store'
 
   readme      'README.rdoc'
   licenses << 'MIT'
