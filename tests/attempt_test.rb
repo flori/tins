@@ -2,7 +2,7 @@ require 'test_helper'
 require 'tins/xt'
 
 module Tins
-  class TryTest < Test::Unit::TestCase
+  class AttemptTest < Test::Unit::TestCase
 
     def test_attempt_block_condition
       assert attempt(:attempts => 1, :exception_class => nil) { |c| c == 1 }
