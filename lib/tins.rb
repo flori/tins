@@ -45,5 +45,6 @@ module Tins
   require 'tins/terminal'
   require 'tins/sexy_singleton'
   require 'tins/method_description'
+  require 'tins/annotate'
 end
 require 'tins/alias'

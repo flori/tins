@@ -37,4 +37,5 @@ module Tins
   require 'tins/xt/to'
   require 'tins/xt/sexy_singleton'
   require 'tins/xt/method_description'
+  require 'tins/xt/annotate'
 end
