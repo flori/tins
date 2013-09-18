@@ -46,5 +46,6 @@ module Tins
   require 'tins/sexy_singleton'
   require 'tins/method_description'
   require 'tins/annotate'
+  require 'tins/token'
 end
 require 'tins/alias'
