@@ -15,7 +15,7 @@ module Tins
         length = (Math.log(1 << bits) / Math.log(alphabet.size)).ceil
       end
       self.bits = (Math.log(alphabet.size ** length) / Math.log(2)).floor
-      token = length.times.map { alphabet.sample } * ''
+      token = length.times.map { alphabet[rand(alphabet.size)] } * ''
       super token
     end
 
