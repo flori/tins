@@ -50,9 +50,23 @@ module Tins
     end
 
     module Kernel
-      def Null(value = nil)
+      def null(value = nil)
         value.nil? ? Tins::NULL : value
       end
+
+      alias Null null
+
+      def null_plus(opts = {})
+        value = opts[:value]
+        opts[:caller] = caller
+        if respond_to?(:caller_locations, true)
+          opts[:caller_locations] = caller_locations
+        end
+
+        value.nil? ? Tins::NullPlus.new(opts) : value
+      end
+
+      alias NullPlus null_plus
     end
   end
 
@@ -61,6 +75,18 @@ module Tins
   end
 
   NULL = NullClass.new.freeze
+
+  class NullPlus
+    include Tins::Null
+
+    def initialize(opts = {})
+      class << self; self; end.class_eval do
+        opts.each do |name, value|
+          define_method(name) { value }
+        end
+      end
+    end
+  end
 end
 
 require 'tins/alias'
