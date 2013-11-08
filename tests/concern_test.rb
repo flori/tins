@@ -1,36 +1,35 @@
 require 'test_helper'
-require 'tins/concern'
+require 'tins'
 
-module Tins
-  class ConcernTest < Test::Unit::TestCase
-    module ConcernTroll
-      extend ::Tins::Concern[:complain => true]
+class ConcernTest < Test::Unit::TestCase
+  module AC
+    extend Tins::Concern
 
-      included do
-        @included = :included
-        @options  = tins_concern_args.first
-      end
-
-      module ClassMethods
-        def class_foo
-          :class_foo
-        end
-      end
-
-      def foo
-        :foo
-      end
+    included do
+      $included = self
     end
 
-    class Troll
-      include ConcernTroll
+    def foo
+      :foo
     end
 
-    def test_concern
-      assert_equal :class_foo, Troll.class_foo
-      assert_equal :foo, Troll.new.foo
-      assert_equal :included, Troll.instance_variable_get(:@included)
-      assert_equal true, Troll.instance_variable_get(:@options)[:complain]
+    module ClassMethods
+      def bar
+        :bar
+      end
     end
+  end
+
+  $included = nil
+
+  class A
+    include AC
+  end
+
+  def test_concern
+    a = A.new
+    assert_equal A, $included
+    assert_equal :foo, a.foo
+    assert_equal :bar, A.bar
   end
 end

@@ -1,6 +1,7 @@
 .*.sw[pon]
 .AppleDouble
 .DS_Store
+.bundle
 .rbx
 .rvmrc
 Gemfile.lock
