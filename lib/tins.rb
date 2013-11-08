@@ -47,5 +47,8 @@ module Tins
   require 'tins/method_description'
   require 'tins/annotate'
   require 'tins/token'
+  if defined? ::Encoding
+    require 'tins/string_byte_order_mark'
+  end
 end
 require 'tins/alias'
