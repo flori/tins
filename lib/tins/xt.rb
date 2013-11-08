@@ -39,4 +39,5 @@ module Tins
   require 'tins/xt/method_description'
   require 'tins/xt/annotate'
   require 'tins/xt/concern'
+  require 'tins/xt/dslkit'
 end
