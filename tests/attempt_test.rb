@@ -39,5 +39,47 @@ module Tins
       end
       assert_equal 3, tries
     end
+
+    def test_reraise_exception_with_numeric_sleep
+      tries = 0
+      singleton_class.class_eval do
+        define_method(:sleep_duration) do |duration, count|
+          assert_equal 10, duration
+          tries = count
+          super 0, count # Let's not really sleep that long…
+        end
+      end
+      assert_raise(MyException) do
+        attempt(:attempts => 3, :exception_class => MyException, :reraise => true, :sleep => 10) do |c|
+          raise MyException
+        end
+      end
+      assert_equal 2, tries
+    ensure
+      singleton_class.class_eval do
+        method_defined?(:sleep_duration) and remove_method :sleep_duration
+      end
+    end
+
+    def test_reraise_exception_with_proc_sleep
+      tries = 0
+      singleton_class.class_eval do
+        define_method(:sleep_duration) do |duration, count|
+          assert_kind_of Proc, duration
+          tries = count
+          super duration, count
+        end
+      end
+      assert_raise(MyException) do
+        attempt(:attempts => 3, :exception_class => MyException, :reraise => true, :sleep => -> x { 0 }) do |c|
+          raise MyException
+        end
+      end
+      assert_equal 2, tries
+    ensure
+      singleton_class.class_eval do
+        method_defined?(:sleep_duration) and remove_method :sleep_duration
+      end
+    end
   end
 end
