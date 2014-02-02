@@ -19,16 +19,4 @@ GemHadar do
 
   development_dependency 'test-unit', '~>2.5'
   development_dependency 'utils'
-
-  install_library do
-    libdir = CONFIG["sitelibdir"]
-    cd 'lib' do
-      for file in Dir['**/*.rb']
-        dst = File.join(libdir, file)
-        mkdir_p File.dirname(dst)
-        install file, dst
-      end
-    end
-    install 'bin/enum', File.join(CONFIG['bindir'], 'enum')
-  end
 end
