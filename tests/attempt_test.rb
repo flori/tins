@@ -81,5 +81,11 @@ module Tins
         method_defined?(:sleep_duration) and remove_method :sleep_duration
       end
     end
+
+    private
+
+    def singleton_class
+      class << self; self; end
+    end unless method_defined?(:singleton_class)
   end
 end
