@@ -71,7 +71,7 @@ module Tins
         end
       end
       assert_raise(MyException) do
-        attempt(:attempts => 3, :exception_class => MyException, :reraise => true, :sleep => -> x { 0 }) do |c|
+        attempt(:attempts => 3, :exception_class => MyException, :reraise => true, :sleep => lambda { |x| 0 }) do |c|
           raise MyException
         end
       end
