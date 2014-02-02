@@ -25,5 +25,13 @@ module Tins
       assert_equal [ [ 'foo1', 1 ], [ 'foo2', 2 ] ],
         h.subhash(/\Afoo(\d)/) { |_,_,m| Integer(m[1]) }.to_a.sort
     end
+
+    def test_subhash_with_default_proc
+      h = Hash.new { |h, k| h[k] = :foo }
+      h.update('foo' => 1, 'bar' => 2)
+      s = h.subhash('foo')
+      assert_equal 1, s['foo']
+      assert_equal :foo, s['bar']
+    end
   end
 end
