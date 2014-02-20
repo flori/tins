@@ -38,6 +38,7 @@ module Tins
             result
           end
         end
+        method_ids.size == 1 ? method_ids.first : method_ids
       end
 
       include CacheMethods
@@ -49,20 +50,21 @@ module Tins
         function_ids.extend(ExtractLastArgumentOptions)
         function_ids, opts = function_ids.extract_last_argument_options
         mc = __memoize_cache__
-        function_ids.each do |method_id|
-          method_id = method_id.to_s.to_sym
-          orig_method = instance_method(method_id)
-          __send__(:define_method, method_id) do |*args|
-            if mc.key?(method_id) and result = mc[method_id][args]
+        function_ids.each do |function_id|
+          function_id = function_id.to_s.to_sym
+          orig_function = instance_method(function_id)
+          __send__(:define_method, function_id) do |*args|
+            if mc.key?(function_id) and result = mc[function_id][args]
               result
             else
-              (mc[method_id] ||= {})[args] = result = orig_method.bind(self).call(*args)
+              (mc[function_id] ||= {})[args] = result = orig_function.bind(self).call(*args)
               opts[:freeze] and result.freeze
-              $DEBUG and warn "#{self.class} cached function #{method_id}(#{args.inspect unless args.empty?}) = #{result.inspect}"
+              $DEBUG and warn "#{self.class} cached function #{function_id}(#{args.inspect unless args.empty?}) = #{result.inspect}"
             end
             result
           end
         end
+        function_ids.size == 1 ? function_ids.first : function_ids
       end
     end
   end
