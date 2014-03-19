@@ -49,6 +49,13 @@ module Tins
       true
     end
 
+    def as_json(*)
+    end
+
+    def to_json(*)
+      'null'
+    end
+
     module Kernel
       def null(value = nil)
         value.nil? ? Tins::NULL : value

@@ -20,6 +20,8 @@ module Tins
       assert_equal NULL, NULL::NULL
       assert NULL.nil?
       assert NULL.blank?
+      assert_equal nil, NULL.as_json
+      assert_equal 'null', NULL.to_json
     end
 
     def test_null_plus
@@ -35,8 +37,12 @@ module Tins
       assert_kind_of Tins::NullPlus, NullPlus().foo.bar
       assert null_plus.nil?
       assert null_plus().blank?
+      assert_equal nil, null_plus().as_json
+      assert_equal 'null', null_plus.to_json
       assert NullPlus().nil?
       assert NullPlus().blank?
+      assert_equal nil, NullPlus().as_json
+      assert_equal 'null', NullPlus().to_json
     end
 
     def foo
