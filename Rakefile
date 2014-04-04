@@ -18,5 +18,5 @@ GemHadar do
   licenses << 'MIT'
 
   development_dependency 'test-unit', '~>2.5'
-  development_dependency 'utils'
+  development_dependency 'byebug'
 end

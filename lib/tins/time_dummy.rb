@@ -10,8 +10,6 @@ module Tins
         remove_method :now rescue nil
         remove_method :new rescue nil
 
-        attr_writer :dummy
-
         def dummy=(value)
           if value.respond_to?(:to_str)
             value = Time.parse(value.to_str)
@@ -36,7 +34,7 @@ module Tins
         def new(*a)
           if dummy
             dummy.dup
-          elsif caller.first =~ /now/
+          elsif caller.first =~ /`now`/
             really_now
           else
             really_new(*a)

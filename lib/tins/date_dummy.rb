@@ -8,7 +8,12 @@ module Tins
 
         remove_method :today rescue nil
 
-        attr_writer :dummy
+        def dummy=(value)
+          if value.respond_to?(:to_str)
+            value = Date.parse(value.to_str)
+          end
+          @dummy = value
+        end
 
         def dummy(value = nil)
           if value.nil?
@@ -16,10 +21,10 @@ module Tins
           else
             begin
               old_dummy = @dummy
-              @dummy = value
+              self.dummy = value
               yield
             ensure
-              @dummy = old_dummy
+              self.dummy = old_dummy
             end
           end
         end
@@ -27,6 +32,8 @@ module Tins
         def today
           if dummy
             dummy.dup
+          elsif caller.first =~ /`today`/
+            really_today
           else
             really_today
           end
