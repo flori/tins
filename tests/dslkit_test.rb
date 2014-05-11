@@ -89,20 +89,6 @@ module D
   extend Tins::Deflect
 end
 
-class D2
-  extend Tins::Delegate
-
-  def initialize
-    @ary = [ 1, 2, 3 ]
-  end
-  attr_reader :ary
-
-  delegate :my_size1, :@ary, :size
-  delegate :my_size2, :ary, :size
-  delegate :size, :ary
-  delegate :length, :ary
-end
-
 class D3 < Tins::MethodMissingDelegator::DelegatorClass
 end
 
@@ -285,14 +271,6 @@ class PoliteTest < Test::Unit::TestCase
     D.deflect_stop(Integer, :method_missing)
     assert !D.deflect?(Integer, :method_missing)
     assert_raises(NoMethodError) { 1.foo }
-  end
-
-  def test_delegate
-    d = D2.new
-    assert_equal 3, d.my_size1
-    assert_equal 3, d.my_size2
-    assert_equal 3, d.size
-    assert_equal 3, d.length
   end
 
   def test_delegate_d3

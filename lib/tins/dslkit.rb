@@ -465,6 +465,8 @@ module Tins
   # This module can be included into modules/classes to make the delegate
   # method available.
   module Delegate
+    UNSET = Object.new
+
     # A method to easily delegate methods to an object, stored in an
     # instance variable or returned by a method call.
     #
@@ -478,29 +480,29 @@ module Tins
     #   end
     #
     # _other_method_name_ defaults to method_name, if it wasn't given.
-    def delegate(method_name, obj, other_method_name = method_name)
-      raise ArgumentError, "obj wasn't defined" unless obj
-=begin
-1.9 only:
-      define_method(method_name) do |*args, &block|
-        instance_variable_get(obj).__send__(other_method_name, *args, &block)
-      end
-=end
-      obj = obj.to_s
-      if obj[0] == ?@
-        class_eval <<-EOS
-          def #{method_name}(*args, &block)
-            instance_variable_get('#{obj}').__send__(
-              '#{other_method_name}', *args, &block)
-          end
-        EOS
+    #def delegate(method_name, to: UNSET, as: method_name)
+    def delegate(method_name, opts = {})
+      to = opts[:to] || UNSET
+      as = opts[:as] || method_name
+      raise ArgumentError, "to argument wasn't defined" if to == UNSET
+      to = to.to_s
+      case
+      when to[0, 2] == '@@'
+        define_method(as) do |*args, &block|
+          self.class.class_variable_get(to).__send__(method_name, *args, &block)
+        end
+      when to[0] == ?@
+        define_method(as) do |*args, &block|
+          instance_variable_get(to).__send__(method_name, *args, &block)
+        end
+      when (?A..?Z).include?(to[0])
+        define_method(as) do |*args, &block|
+          Tins::DeepConstGet.deep_const_get(to).__send__(method_name, *args, &block)
+        end
       else
-        class_eval <<-EOS
-          def #{method_name}(*args, &block)
-            __send__('#{obj}').__send__(
-              '#{other_method_name}', *args, &block)
-          end
-        EOS
+        define_method(as) do |*args, &block|
+          __send__(to).__send__(method_name, *args, &block)
+        end
       end
     end
   end

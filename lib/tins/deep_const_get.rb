@@ -13,7 +13,7 @@ module Tins
       end
     end
 
-    def deep_const_get(path, start_module = Object)
+    def self.deep_const_get(path, start_module = Object)
       path.to_s.split('::').inject(start_module) do |p, c|
         case
         when c.empty?
@@ -23,7 +23,8 @@ module Tins
             raise ArgumentError, "top level constants cannot be reached from"\
               " start module #{start_module.inspect}"
           end
-        when ::Tins::DeepConstGet.const_defined_in?(p, c) then p.const_get(c)
+        when const_defined_in?(p, c)
+          p.const_get(c)
         else
           begin
             p.const_missing(c)
@@ -32,6 +33,10 @@ module Tins
           end
         end
       end
+    end
+
+    def deep_const_get(path, start_module = Object)
+      ::Tins::DeepConstGet.deep_const_get(path, start_module)
     end
   end
 end
