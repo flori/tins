@@ -3,7 +3,7 @@ require 'tins/concern'
 module Tins
   module Concern
     module ModuleMixin
-      def [](*args)
+      def tins_concern_configure(*args)
         Thread.current[:tin_concern_args] = args
         self
       end
