@@ -25,7 +25,7 @@ if RUBY_VERSION >= "1.9"
       end
 
       def test_standard_parameters
-        assert_equal 'Tins::MethodDescriptionTest::B#foo(x,y=,*r,&b)', B.instance_method(:foo).to_s
+        assert_equal 'Tins::MethodDescriptionTest::B#foo(x,y=?,*r,&b)', B.instance_method(:foo).to_s
       end
 
       if RUBY_VERSION >= "2.0"
@@ -39,8 +39,21 @@ if RUBY_VERSION >= "1.9"
           end
 
           def test_keyword_parameters
-            assert_equal 'Tins::MethodDescriptionTest::C#foo(x,k:,&b)', C.instance_method(:foo).to_s
+            assert_equal 'Tins::MethodDescriptionTest::C#foo(x,k:?,&b)', C.instance_method(:foo).to_s
             assert_equal 'Tins::MethodDescriptionTest::C#bar(x,**k,&b)', C.instance_method(:bar).to_s
+          end
+        }
+      end
+
+      if RUBY_VERSION >= "2.1"
+        eval %{
+          class D
+            def foo(x, k:, &b)
+            end
+          end
+
+          def test_keyword_parameters_required
+            assert_equal 'Tins::MethodDescriptionTest::D#foo(x,k:,&b)', D.instance_method(:foo).to_s
           end
         }
       end

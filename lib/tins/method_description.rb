@@ -22,8 +22,10 @@ module Tins
           when :req
             p_name
           when :opt
-            "#{p_name}="
+            "#{p_name}=?"
           when :key
+            "#{p_name}:?"
+          when :keyreq
             "#{p_name}:"
           else
             [ p_name, p_type ] * ':'
