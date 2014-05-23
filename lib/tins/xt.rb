@@ -40,4 +40,5 @@ module Tins
   require 'tins/xt/annotate'
   require 'tins/xt/concern'
   require 'tins/xt/dslkit'
+  require 'tins/xt/time_freezer'
 end

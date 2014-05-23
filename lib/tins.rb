@@ -30,7 +30,6 @@ module Tins
   require 'tins/time_dummy'
   require 'tins/date_dummy'
   require 'tins/date_time_dummy'
-  require 'tins/time_freezer'
   require 'tins/to_proc'
   require 'tins/uniq_by'
   require 'tins/version'

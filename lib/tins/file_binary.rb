@@ -1,5 +1,3 @@
-require 'tins/xt/hash_union'
-
 module Tins
   module FileBinary
     module Constants
@@ -35,7 +33,7 @@ module Tins
     # from offset <tt>options[:offset]</tt>). If an option isn't given the one
     # from FileBinary.default_options is used instead.
     def binary?(options = {})
-      options |= FileBinary.default_options
+      options = FileBinary.default_options.merge(options)
       old_pos = tell
       seek options[:offset], Constants::SEEK_SET
       data = read options[:buffer_size]

@@ -1,5 +1,3 @@
-require 'tins/xt/symbol_to_proc'
-
 module Tins
   module StringVersion
     class Version
@@ -76,7 +74,7 @@ module Tins
       end
 
       def array
-         @version.split('.').map(&:to_i)
+        @version.split('.').map { |x| x.to_i }
       end
 
       alias to_a array

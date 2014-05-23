@@ -1,5 +1,3 @@
-require 'tins/xt/ask_and_send'
-
 begin
   require 'io/console'
 rescue LoadError
@@ -10,11 +8,23 @@ module Tins
 
     module_function
 
+    def winsize
+      if IO.respond_to?(:console)
+        console = IO.console
+        if console.respond_to?(:winsize)
+          console.winsize
+        else
+          []
+        end
+      else
+        []
+      end
+    end
+
+
     def rows
-      IO.ask_and_send(:console).ask_and_send(:winsize).ask_and_send(:[], 0) ||
-        `stty size 2>/dev/null`.split[0].to_i.nonzero? ||
-        `tput lines 2>/dev/null`.to_i.nonzero? ||
-        25
+      winsize[0] || `stty size 2>/dev/null`.split[0].to_i.nonzero? ||
+        `tput lines 2>/dev/null`.to_i.nonzero? || 25
     end
 
     def lines
@@ -22,10 +32,8 @@ module Tins
     end
 
     def columns
-      IO.ask_and_send(:console).ask_and_send(:winsize).ask_and_send(:[], 1) ||
-        `stty size 2>/dev/null`.split[1].to_i.nonzero? ||
-        `tput cols 2>/dev/null`.to_i.nonzero? ||
-        80
+      winsize[1] || `stty size 2>/dev/null`.split[1].to_i.nonzero? ||
+        `tput cols 2>/dev/null`.to_i.nonzero? || 80
     end
 
     def cols
