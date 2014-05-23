@@ -20,7 +20,6 @@ module Tins
   require 'tins/partial_application'
   require 'tins/range_plus'
   require 'tins/require_maybe'
-  require 'tins/round'
   require 'tins/secure_write'
   require 'tins/shuffle'
   require 'tins/string_camelize'

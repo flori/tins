@@ -16,7 +16,6 @@ module Tins
   require 'tins/xt/partial_application'
   require 'tins/xt/range_plus'
   require 'tins/xt/require_maybe'
-  require 'tins/xt/round'
   require 'tins/xt/secure_write'
   require 'tins/xt/string'
   require 'tins/xt/subhash'

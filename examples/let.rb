@@ -50,8 +50,8 @@ if $0 == __FILE__
     end
 
     def test
-      let :x => 1, :y => twice(1) do
-        let :z => twice(x) do
+      let x: 1, y: twice(1) do
+        let z: twice(x) do
           puts "#{x} * #{y} == #{z} # => #{x * y == twice(x)}"
         end
       end

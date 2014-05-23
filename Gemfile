@@ -6,4 +6,5 @@ gemspec
 
 group :development do
   gem 'simplecov'
+  gem 'term-ansicolor'
 end
