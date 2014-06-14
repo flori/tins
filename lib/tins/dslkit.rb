@@ -12,14 +12,10 @@ module Tins
   #
   # The module can be included into other modules/classes to make the methods available.
   module Eigenclass
-    if Object.respond_to?(:singleton_class)
-      alias eigenclass singleton_class
-    else
-      # Returns the eigenclass of this object.
-      def eigenclass
-        class << self; self; end
-      end
+    # Returns the eigenclass of this object.
+    def eigenclass
     end
+    alias eigenclass singleton_class
 
     # Evaluates the _block_ in context of the eigenclass of this object.
     def eigenclass_eval(&block)
@@ -30,8 +26,7 @@ module Tins
   module ClassMethod
     include Eigenclass
 
-    # Define a class method named _name_ using _block_. To be able to take
-    # blocks as arguments in the given _block_ Ruby 1.9 is required.
+    # Define a class method named _name_ using _block_.
     def class_define_method(name, &block)
       eigenclass_eval { define_method(name, &block) }
     end
