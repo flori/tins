@@ -63,35 +63,3 @@ class Unit
     "#@n #{name}#{@n > 1 ? 's' : ''}"
   end
 end
-
-class Unit
-  class << self
-    def inherited(klass)
-      units << klass
-    end
-
-    attr_accessor :units
-
-    def unit(name, amount)
-      name = name.to_s.gsub(/s$/, '').capitalize
-      if klass = units.find { |n| n.to_s == name }
-        klass.new(amount)
-      end
-    end
-  end
-  self.units = []
-
-  def initialize(n = 1)
-    @n = n
-  end
-
-  def name
-    self.class.name.downcase
-  end
-
-  attr_reader :n
-
-  def to_s
-    "#@n #{name}#{@n > 1 ? 's' : ''}"
-  end
-end
