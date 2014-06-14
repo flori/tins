@@ -14,7 +14,7 @@ GemHadar do
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx',
     '.AppleDouble', '.DS_Store', 'tags', '.bundle'
 
-  readme      'README.rdoc'
+  readme      'README.md'
   licenses << 'MIT'
 
   development_dependency 'test-unit', '~>2.5'
