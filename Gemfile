@@ -7,4 +7,5 @@ gemspec
 group :development do
   gem 'simplecov'
   gem 'term-ansicolor'
+  gem "codeclimate-test-reporter", group: :test, require: nil
 end
