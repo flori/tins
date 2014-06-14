@@ -19,7 +19,6 @@ class TL
 end
 
 class IE
-  include Tins::InstanceExec
 
   def initialize(&block)
     @block = block
@@ -77,7 +76,6 @@ class I
 end
 
 class S
-  include Tins::InstanceExec
   include Tins::SymbolMaker
 end
 

@@ -92,55 +92,13 @@ module Tins
   end
 
   module InstanceExec
-    unless (Object.instance_method(:instance_exec) rescue nil)
-      class << self
-        attr_accessor :pool
-        attr_accessor :count
-      end
-      self.count = 0
-      self.pool = []
-
-      # This is a pure ruby implementation of Ruby 1.9's instance_exec method. It
-      # executes _block_ in the context of this object while parsing <i>*args</i> into
-      # the block.
-      def instance_exec(*args, &block)
-        instance = self
-        id = instance_exec_fetch_symbol
-        InstanceExec.module_eval do
-          begin
-            define_method id, block
-            instance.__send__ id, *args
-          ensure
-            remove_method id if method_defined?(id)
-          end
-        end
-      ensure
-        InstanceExec.pool << id
-      end
-
-      private
-
-      @@mutex = Mutex.new
-
-      # Fetch a symbol from a pool in thread save way. If no more symbols are
-      # available create a new one, that will be pushed into the pool later.
-      def instance_exec_fetch_symbol
-        @@mutex.synchronize do
-          if InstanceExec.pool.empty?
-            InstanceExec.count += 1
-            symbol = :"__instance_exec_#{InstanceExec.count}__"
-          else
-            symbol = InstanceExec.pool.shift
-          end
-          return symbol
-        end
-      end
+    def self.included(*)
+      super
+      warn "#{self} is deprecated, but included at #{caller.first[/(.*):/, 1]}"
     end
   end
 
   module Interpreter
-    include InstanceExec
-
     # Interpret the string _source_ as a body of a block, while passing
     # <i>*args</i> into the block.
     #

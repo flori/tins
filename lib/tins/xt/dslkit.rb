@@ -13,7 +13,6 @@ module Tins
   class ::Object
     include Tins::ThreadLocal
     include Tins::ThreadGlobal
-    include Tins::InstanceExec
     include Tins::Interpreter
     include Tins::Deflect
     include Tins::ThreadLocal
