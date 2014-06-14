@@ -1,6 +1,6 @@
 module Tins::Annotate
   def annotate(name)
-    class << self; self; end.class_eval do
+    singleton_class.class_eval do
       define_method(name) do |annotation|
         instance_variable_set "@__annotation_#{name}__", annotation
       end

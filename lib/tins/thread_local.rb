@@ -41,11 +41,10 @@ module Tins
     # Define a thread local variable for the current instance with name _name_.
     # If the value _value_ is given, it is used to initialize the variable.
     def instance_thread_local(name, value = nil)
-      sc = class << self
+      class << self
         extend Tins::ThreadLocal
         self
-      end
-      sc.thread_local name, value
+      end.thread_local name, value
       self
     end
   end

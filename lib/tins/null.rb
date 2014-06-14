@@ -87,7 +87,7 @@ module Tins
     include Tins::Null
 
     def initialize(opts = {})
-      class << self; self; end.class_eval do
+      singleton_class.class_eval do
         opts.each do |name, value|
           define_method(name) { value }
         end
