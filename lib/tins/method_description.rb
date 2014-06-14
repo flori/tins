@@ -3,7 +3,7 @@ module Tins
     def description
       result = ''
       if owner <= Module
-        result << receiver.to_s << '.'
+        result << receiver.to_s << '.' # XXX Better to use owner here as well?
       else
         result << owner.name.to_s << '#'
       end
