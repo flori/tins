@@ -11,6 +11,8 @@ module Tins
         def dummy=(value)
           if value.respond_to?(:to_str)
             value = DateTime.parse(value.to_str)
+          elsif value.respond_to?(:to_datetime)
+            value = value.to_datetime
           end
           @dummy = value
         end

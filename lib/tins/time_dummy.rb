@@ -13,6 +13,8 @@ module Tins
         def dummy=(value)
           if value.respond_to?(:to_str)
             value = Time.parse(value.to_str)
+          elsif value.respond_to?(:to_time)
+            value = value.to_time
           end
           @dummy = value
         end
