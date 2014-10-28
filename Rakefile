@@ -6,7 +6,7 @@ GemHadar do
   name        'tins'
   author      'Florian Frank'
   email       'flori@ping.de'
-  homepage    "http://flori.github.com/#{name}"
+  homepage    "https://github.com/flori/#{name}"
   summary     'Useful stuff.'
   description 'All the stuff that isn\'t good/big enough for a real library.'
   test_dir    'tests'
