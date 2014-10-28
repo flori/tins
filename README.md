@@ -10,6 +10,17 @@ Non yet.
 
 [![Code Coverage](https://codeclimate.com/github/flori/tins/coverage.png)](https://codeclimate.com/github/flori/tins)
 
+## Changes
+
+* 2014-10-28 Release 1.3.4
+  - Add changes to Readme
+
+## Download
+
+The homepage of this library is located at
+
+* http://flori.github.com/tins
+
 ## Author
 
 Florian Frank mailto:flori@ping.de
