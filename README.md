@@ -10,12 +10,6 @@ Non yet.
 
 [![Code Coverage](https://codeclimate.com/github/flori/tins/coverage.png)](https://codeclimate.com/github/flori/tins)
 
-## Download
-
-The homepage of this library is located at
-
-* http://flori.github.com/tins
-
 ## Author
 
 Florian Frank mailto:flori@ping.de
