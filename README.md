@@ -13,6 +13,7 @@ Non yet.
 ## Changes
 
 * 2015-02-04 Release 1.3.4
+  - Add some default alphabets to Tins::Token, e. g. Base64
   - Add changes to Readme
 
 ## Download
