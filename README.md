@@ -12,7 +12,7 @@ Non yet.
 
 ## Changes
 
-* 2014-10-28 Release 1.3.4
+* 2015-02-04 Release 1.3.4
   - Add changes to Readme
 
 ## Download

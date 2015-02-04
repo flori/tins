@@ -2,14 +2,22 @@ require 'securerandom'
 
 module Tins
   class Token < String
-    DEFAULT_ALPHABET = ((?0..?9).to_a + (?a..?z).to_a + (?A..?Z).to_a).freeze
+    DEFAULT_ALPHABET =
+      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".freeze
 
-    #def initialize(bits: 128, length: nil, alphabet: DEFAULT_ALPHABET)
-    def initialize(options = {})
-      bits     = options[:bits] || 128
-      length   = options[:length]
-      alphabet = options[:alphabet] || DEFAULT_ALPHABET
-      random   = options[:random] || SecureRandom
+    BASE64_ALPHABET =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".freeze
+
+    BASE64_URL_FILENAME_SAFE_ALPHABET =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".freeze
+
+    BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".freeze
+
+    BASE32_EXTENDED_HEX_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUV".freeze
+
+    BASE16_ALPHABET = "0123456789ABCDEF".freeze
+
+    def initialize(bits: 128, length: nil, alphabet: DEFAULT_ALPHABET, random: SecureRandom)
       alphabet.size > 1 or raise ArgumentError, 'need at least 2 symbols in alphabet'
       if length
         length > 0 or raise ArgumentError, 'length has to be positive'
