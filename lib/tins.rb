@@ -14,6 +14,7 @@ module Tins
   require 'tins/memoize'
   require 'tins/minimize'
   require 'tins/module_group'
+  require 'tins/named_set'
   require 'tins/null'
   require 'tins/once'
   require 'tins/p'
