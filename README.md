@@ -12,6 +12,9 @@ Non yet.
 
 ## Changes
 
+* 2015-03-03 Release 1.3.5
+  - Don't automatically include #to method into Object, this can lead to some
+    confusion.
 * 2015-02-04 Release 1.3.4
   - Add some default alphabets to Tins::Token, e. g. Base64
   - Add changes to Readme
