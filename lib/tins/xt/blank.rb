@@ -56,12 +56,12 @@ module Tins
       end
     end
   end
+end
 
-  unless Object.respond_to?(:blank?)
-    for k in Blank.constants
-      Object.const_get(k).class_eval do
-        include Blank.const_get(k)
-      end
+unless Object.respond_to?(:blank?)
+  for k in Tins::Blank.constants
+    Object.const_get(k).class_eval do
+      include Tins::Blank.const_get(k)
     end
   end
 end
