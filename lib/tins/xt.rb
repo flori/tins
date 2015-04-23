@@ -40,4 +40,5 @@ module Tins
   require 'tins/xt/dslkit'
   require 'tins/xt/time_freezer'
   require 'tins/xt/case_predicate'
+  require 'tins/xt/implement'
 end
