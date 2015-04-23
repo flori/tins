@@ -8,13 +8,16 @@ module Tins
     class A
       implement :foo
 
-      implement :bar, :subclass
+      implement :bar, in: :subclass
 
-      implement :baz, :submodule
+      implement :baz, in: :submodule
 
       implement :qux, 'blub %{method_name} blob %{module}'
 
       implement :quux, 'blab'
+
+      implement def foobar(x1, x2)
+      end, in: :subclass
     end
 
     def test_implement_default
@@ -49,6 +52,14 @@ module Tins
 
     def test_implement_custom_without_vars
       assert_equal('blab', error_message { A.new.quux })
+    end
+
+    def test_implement_def_subclass
+      assert_equal(
+        'method foobar has to be implemented in subclasses of '\
+        'Tins::ImplementTest::A',
+        error_message { A.new.foobar }
+      )
     end
 
     private

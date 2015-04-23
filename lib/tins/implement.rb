@@ -9,8 +9,11 @@ module Tins
     }
 
     def implement(method_name, msg = :default)
-      if ::Symbol === msg
+      case msg
+      when ::Symbol
         msg = MESSAGES.fetch(msg)
+      when ::Hash
+        return implement method_name, msg.fetch(:in)
       end
       begin
         msg = msg % { method_name: method_name, module: self }
