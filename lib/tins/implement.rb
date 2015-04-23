@@ -9,14 +9,20 @@ module Tins
     }
 
     def implement(method_name, msg = :default)
+      method_name.nil? and return
       case msg
       when ::Symbol
         msg = MESSAGES.fetch(msg)
       when ::Hash
         return implement method_name, msg.fetch(:in)
       end
+      display_method_name = method_name
+      if m = instance_method(method_name) rescue nil
+        m.extend Tins::MethodDescription
+        display_method_name = m.description(style: :name)
+      end
       begin
-        msg = msg % { method_name: method_name, module: self }
+        msg = msg % { method_name: display_method_name, module: self }
       rescue KeyError
       end
       define_method(method_name) do |*|

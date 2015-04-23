@@ -1,13 +1,20 @@
 module Tins
   module MethodDescription
-    def description
+    def description(style: :namespace)
+      valid_styles = %i[ namespace name parameters ]
+      valid_styles.include?(style) or
+        raise ArgumentError, "style has to be one of #{valid_styles * ', '}"
       result = ''
-      if owner <= Module
-        result << receiver.to_s << '.' # XXX Better to use owner here as well?
-      else
-        result << owner.name.to_s << '#'
+      if style == :namespace
+        if owner <= Module
+          result << receiver.to_s << '.' # XXX Better to use owner here as well?
+        else
+          result << owner.name.to_s << '#'
+        end
       end
-      result << name.to_s << '('
+      if %i[ namespace name ].include?(style)
+        result << name.to_s << '('
+      end
       if respond_to?(:parameters)
         generated_name = 'x0'
         result << parameters.map { |p_type, p_name|
@@ -34,7 +41,10 @@ module Tins
       else
         result << arity.to_s
       end
-      result << ')'
+      if %i[ namespace name ].include?(style)
+        result << ')'
+      end
+      result
     end
   end
 end

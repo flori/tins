@@ -24,8 +24,19 @@ if RUBY_VERSION >= "1.9"
         end
       end
 
-      def test_standard_parameters
-        assert_equal 'Tins::MethodDescriptionTest::B#foo(x,y=?,*r,&b)', B.instance_method(:foo).to_s
+      def test_standard_parameters_namespace
+        assert_equal 'Tins::MethodDescriptionTest::B#foo(x,y=?,*r,&b)',
+          B.instance_method(:foo).to_s
+      end
+
+      def test_standard_parameters_name
+        assert_equal 'foo(x,y=?,*r,&b)',
+          B.instance_method(:foo).description(style: :name)
+      end
+
+      def test_standard_parameters_parameters
+        assert_equal 'x,y=?,*r,&b',
+          B.instance_method(:foo).description(style: :parameters)
       end
 
       if RUBY_VERSION >= "2.0"
