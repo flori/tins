@@ -49,6 +49,7 @@ module Tins
   require 'tins/token'
   require 'tins/dslkit'
   require 'tins/case_predicate'
+  require 'tins/implement'
   if defined? ::Encoding
     require 'tins/string_byte_order_mark'
   end
