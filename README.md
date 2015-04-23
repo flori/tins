@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2015-04-23 Release 1.4.0
+  - Add implement module helper method.
 * 2015-03-03 Release 1.3.5
   - Don't automatically include #to method into Object, this can lead to some
     confusion.
