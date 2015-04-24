@@ -27,5 +27,16 @@ module Tins
       s.version.minor = 1
       assert_equal '2.1.0.2', s
     end
+
+    def test_bump
+      s = '1.2.3'
+      assert_equal '2.0.0', s.version.bump(:major).to_s
+      s = '1.2.3'
+      assert_equal '1.3.0', s.version.bump(:minor).to_s
+      s = '1.2.3'
+      assert_equal '1.2.4', s.version.bump(:build).to_s
+      s = '1.2.3'
+      assert_equal '1.2.4', s.version.bump.to_s
+    end
   end
 end

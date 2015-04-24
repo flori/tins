@@ -1,5 +1,9 @@
 module Tins
   module StringVersion
+    LEVELS  = %i[ major minor build revision ].each_with_index.to_h.freeze
+
+    SYMBOLS = LEVELS.invert.freeze
+
     class Version
       include Comparable
 
@@ -9,64 +13,51 @@ module Tins
         @version = string.frozen? ? string.dup : string
       end
 
-      def major
-        self[0]
+      LEVELS.each do |symbol, level|
+        define_method(symbol) do
+          self[level]
+        end
+
+        define_method("#{symbol}=") do |new_level|
+          self[level] = new_level
+        end
       end
 
-      def major=(number)
-        self[0] = number
+      def bump(level = array.size - 1)
+        level = level_of(level)
+        self[level] += 1
+        for l in level.succ..3
+          self[l] &&= 0
+        end
+        self
       end
 
-      def minor
-        self[1]
+      def level_of(specifier)
+        if specifier.respond_to?(:to_sym)
+          LEVELS.fetch(specifier)
+        else
+          specifier
+        end
       end
 
-      def minor=(number)
-        self[1] = number
+      def [](level)
+        array[level_of(level)]
       end
 
-      def build
-        self[2]
-      end
-
-      def build=(number)
-        self[2] = number
-      end
-
-      def revision
-        self[3]
-      end
-
-      def revision=(number)
-        self[3] = number
-      end
-
-      def [](index)
-        array[index]
-      end
-
-      def []=(index, value)
+      def []=(level, value)
+        level = level_of(level)
         value = value.to_i
         value >= 0 or raise ArgumentError,
           "version numbers can't contain negative numbers like #{value}"
         a = array
-        @array = nil
-        a[index] = value
+        a[level] = value
         a.map!(&:to_i)
         @version.replace a * ?.
-      end
-
-      def succ
-        dup.succ!
       end
 
       def succ!
         self[-1] += 1
         self
-      end
-
-      def pred
-        dup.pred!
       end
 
       def pred!
@@ -96,10 +87,6 @@ module Tins
       end
 
       alias inspect to_s
-
-      def version
-        self
-      end
     end
 
     def version
