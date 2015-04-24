@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: tins 1.5.0 ruby lib
+# stub: tins 1.5.1 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "tins"
-  s.version = "1.5.0"
+  s.version = "1.5.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
@@ -24,14 +24,14 @@ Gem::Specification.new do |s|
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<gem_hadar>, ["~> 1.0.0"])
+      s.add_development_dependency(%q<gem_hadar>, ["~> 1.2.0"])
       s.add_development_dependency(%q<test-unit>, ["~> 2.5"])
     else
-      s.add_dependency(%q<gem_hadar>, ["~> 1.0.0"])
+      s.add_dependency(%q<gem_hadar>, ["~> 1.2.0"])
       s.add_dependency(%q<test-unit>, ["~> 2.5"])
     end
   else
-    s.add_dependency(%q<gem_hadar>, ["~> 1.0.0"])
+    s.add_dependency(%q<gem_hadar>, ["~> 1.2.0"])
     s.add_dependency(%q<test-unit>, ["~> 2.5"])
   end
 end
