@@ -4,7 +4,8 @@ module Tins
       include Comparable
 
       def initialize(string)
-        string =~ /\A[\.\d]+\z/ or raise ArgumentError, "#{string.inspect} isn't a version number"
+        string =~ /\A\d+(\.\d+)*\z/ or
+          raise ArgumentError, "#{string.inspect} isn't a version number"
         @version = string.frozen? ? string.dup : string
       end
 
@@ -46,25 +47,36 @@ module Tins
 
       def []=(index, value)
         value = value.to_i
-        value >= 0 or raise ArgumentError, "version numbers can't contain negative numbers like #{value}"
+        value >= 0 or raise ArgumentError,
+          "version numbers can't contain negative numbers like #{value}"
         a = array
         @array = nil
         a[index] = value
-        a.map! { |x| x.nil? ? 0 : x }
-        @version.replace a * '.'
+        a.map!(&:to_i)
+        @version.replace a * ?.
+      end
+
+      def succ
+        dup.succ!
       end
 
       def succ!
         self[-1] += 1
+        self
+      end
+
+      def pred
+        dup.pred!
       end
 
       def pred!
         self[-1] -= 1
+        self
       end
 
       def <=>(other)
         pairs = array.zip(other.array)
-        pairs.map! { |a, b| [ a.nil? ? 0 : a, b.nil? ? 0 : b ] }
+        pairs.map! { |a, b| [ a.to_i, b.to_i ] }
         a, b = pairs.transpose
         a <=> b
       end
@@ -74,7 +86,7 @@ module Tins
       end
 
       def array
-        @version.split('.').map { |x| x.to_i }
+        @version.split(?.).map(&:to_i)
       end
 
       alias to_a array
@@ -91,11 +103,7 @@ module Tins
     end
 
     def version
-      if frozen?
-        Version.new(self)
-      else
-        @version ||= Version.new(self)
-      end
+      Version.new(self)
     end
   end
 end
