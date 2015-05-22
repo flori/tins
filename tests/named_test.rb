@@ -12,21 +12,19 @@ module Tins
       assert_equal [ 3 ], a.plus1.odd
     end
 
-    if RUBY_VERSION >= '1.9'
-      def foo(x, y, &block)
-        block.call x * y
-      end
+    def foo(x, y, &block)
+      block.call x * y
+    end
 
-      def test_more_complex
-        Object.named(:foo_with_block, :foo) do |z|
-          z ** 2
-        end
-        assert_equal foo(2, 3) { |z| z ** 2 }, foo_with_block(2, 3)
-        Object.named(:foo_23, :foo, 2, 3)
-        assert_equal foo(2, 3) { |z| z ** 2 }, foo_23 { |z| z ** 2 }
-        Object.named(:foo_2, :foo, 2)
-        assert_equal foo(2, 3) { |z| z ** 2 }, foo_2(3) { |z| z ** 2 }
+    def test_more_complex
+      Object.named(:foo_with_block, :foo) do |z|
+        z ** 2
       end
+      assert_equal foo(2, 3) { |z| z ** 2 }, foo_with_block(2, 3)
+      Object.named(:foo_23, :foo, 2, 3)
+      assert_equal foo(2, 3) { |z| z ** 2 }, foo_23 { |z| z ** 2 }
+      Object.named(:foo_2, :foo, 2)
+      assert_equal foo(2, 3) { |z| z ** 2 }, foo_2(3) { |z| z ** 2 }
     end
   end
 end
