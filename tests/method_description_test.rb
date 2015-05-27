@@ -38,6 +38,10 @@ module Tins
         B.instance_method(:foo).description(style: :parameters)
     end
 
+    def test_a_cstyle_method_from_hash
+      assert_equal "Hash#store(x1,x2)", ({}.method(:store).description)
+    end
+
     if RUBY_VERSION >= "2.0"
       eval %{
         class C

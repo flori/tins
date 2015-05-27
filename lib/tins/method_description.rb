@@ -18,7 +18,7 @@ module Tins
       if respond_to?(:parameters)
         generated_name = 'x0'
         result << parameters.map { |p_type, p_name|
-          p_name ||= generated_name.succ!
+          p_name ||= generated_name.succ!.dup
           case p_type
           when :block
             "&#{p_name}"
