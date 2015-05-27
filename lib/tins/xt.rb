@@ -32,7 +32,6 @@ module Tins
   require 'tins/xt/responding'
   require 'tins/xt/proc_compose'
   require 'tins/xt/proc_prelude'
-  require 'tins/xt/rotate'
   require 'tins/xt/sexy_singleton'
   require 'tins/xt/method_description'
   require 'tins/xt/annotate'

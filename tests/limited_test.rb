@@ -3,10 +3,6 @@ require 'tins'
 
 module Tins
   class LimitedTest < Test::Unit::TestCase
-    class ::Array
-      include Tins::Shuffle
-    end
-
     def test_limited
       count = {}
       limited = Tins::Limited.new(5)
