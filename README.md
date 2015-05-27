@@ -12,6 +12,10 @@ Non yet.
 
 ## Changes
 
+* 2015-05-27 Release 1.5.2
+  - Fix parameter naming for c-methods in method descriptions.
+* 2015-04-24 Release 1.5.0/1.5.1
+  - Implement bump logic for StringVersion
 * 2015-04-23 Release 1.4.0
   - Add implement module helper method.
 * 2015-03-03 Release 1.3.5
