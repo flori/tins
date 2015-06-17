@@ -12,6 +12,9 @@ Non yet.
 
 ## Changes
 
+* 2015-06-17 Release 1.5.3
+  - Make it run on 1.9 again.
+  - Avoid a warning in Time.dummy implementation.
 * 2015-05-27 Release 1.5.2
   - Fix parameter naming for c-methods in method descriptions.
 * 2015-04-24 Release 1.5.0/1.5.1
