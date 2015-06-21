@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2015-06-21 Release 1.5.4
+ - Avoid %i syntax for now
 * 2015-06-17 Release 1.5.3
   - Make it run on 1.9 again.
   - Avoid a warning in Time.dummy implementation.

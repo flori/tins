@@ -1,6 +1,6 @@
 module Tins
   module StringVersion
-    LEVELS  = %i[ major minor build revision ].each_with_index.
+    LEVELS  = [ :major, :minor, :build, :revision ].each_with_index.
       each_with_object({}) { |(k, v), h| h[k] = v }.freeze
 
     SYMBOLS = LEVELS.invert.freeze
