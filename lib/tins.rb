@@ -53,5 +53,6 @@ module Tins
   if defined? ::Encoding
     require 'tins/string_byte_order_mark'
   end
+  require 'tins/complete'
 end
 require 'tins/alias'

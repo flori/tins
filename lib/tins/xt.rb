@@ -41,4 +41,5 @@ module Tins
   require 'tins/xt/time_freezer'
   require 'tins/xt/case_predicate'
   require 'tins/xt/implement'
+  require 'tins/xt/complete'
 end

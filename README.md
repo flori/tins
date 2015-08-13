@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2015-08-13 Release 1.6.0
+  - Add complete method for readline completion
 * 2015-06-21 Release 1.5.4
  - Avoid %i syntax for now
 * 2015-06-17 Release 1.5.3
