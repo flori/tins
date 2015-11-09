@@ -14,7 +14,8 @@ Non yet.
 
 * 2015-11-09 Release 1.7.0
   - Officially require ruby >= 2.0 and use new hash syntax.
-
+  - New feature attempt: sleep:-30 sleeps upto 30 seconds while retrying with
+    an exponential waiting pattern.
 * 2015-08-13 Release 1.6.0
   - Add complete method for readline completion
 * 2015-06-21 Release 1.5.4
