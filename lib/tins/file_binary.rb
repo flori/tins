@@ -17,10 +17,10 @@ module Tins
       attr_accessor :default_options
     end
     self.default_options = {
-      :offset            => 0,
-      :buffer_size       => 2 ** 13,
-      :percentage_binary => 30.0,
-      :percentage_zeros  => 0.0,
+      offset:            0,
+      buffer_size:       2 ** 13,
+      percentage_binary: 30.0,
+      percentage_zeros:  0.0,
     }
 
     # Returns true if this file is considered to be binary, false if it is not

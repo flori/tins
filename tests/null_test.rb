@@ -25,10 +25,10 @@ module Tins
     end
 
     def test_null_plus
-      assert_equal 1, null_plus(:value => 1)
-      assert_equal 1, NullPlus(:value => 1)
-      assert_kind_of Tins::NullPlus, null_plus(:value => nil)
-      assert_kind_of Tins::NullPlus, NullPlus(:value => nil)
+      assert_equal 1, null_plus(value: 1)
+      assert_equal 1, NullPlus(value: 1)
+      assert_kind_of Tins::NullPlus, null_plus(value: nil)
+      assert_kind_of Tins::NullPlus, NullPlus(value: nil)
       assert_kind_of Tins::NullPlus, null_plus
       assert_kind_of Tins::NullPlus, NullPlus()
       assert_kind_of Tins::NullPlus, null_plus.foo
@@ -48,7 +48,7 @@ module Tins
     def foo
       1 / 0
     rescue => e
-      null_plus(:error => e)
+      null_plus(error: e)
     end
 
     def test_null_plus_caller_and_misc

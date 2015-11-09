@@ -7,10 +7,10 @@ module Tins
     def test_ascii_buffer_size
       write_file do |file|
         file.write "A" * 10 + "\x00"
-        assert_equal true,  file.ascii?(:buffer_size => 10)
-        assert_equal true,  File.ascii?(file.path, :buffer_size => 10)
-        assert_equal false, file.binary?(:buffer_size => 10)
-        assert_equal false, File.binary?(file.path, :buffer_size => 10)
+        assert_equal true,  file.ascii?(buffer_size: 10)
+        assert_equal true,  File.ascii?(file.path, buffer_size: 10)
+        assert_equal false, file.binary?(buffer_size: 10)
+        assert_equal false, File.binary?(file.path, buffer_size: 10)
       end
     end
 
@@ -27,10 +27,10 @@ module Tins
     def test_ascii_offset
       write_file do |file|
         file.write "\x01" * 31 + "A" * 70
-        assert_equal false, file.binary?(:offset => 1)
-        assert_equal false, File.binary?(file.path, :offset => 1)
-        assert_equal true,  file.ascii?(:offset => 1)
-        assert_equal true,  File.ascii?(file.path, :offset => 1)
+        assert_equal false, file.binary?(offset: 1)
+        assert_equal false, File.binary?(file.path, offset: 1)
+        assert_equal true,  file.ascii?(offset: 1)
+        assert_equal true,  File.ascii?(file.path, offset: 1)
       end
     end
 

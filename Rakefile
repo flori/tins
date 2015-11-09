@@ -17,5 +17,6 @@ GemHadar do
   readme      'README.md'
   licenses << 'MIT'
 
+  required_ruby_version  '>= 2.0'
   development_dependency 'test-unit', '~>2.5'
 end

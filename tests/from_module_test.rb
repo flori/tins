@@ -25,7 +25,7 @@ class FromModuleTest < Test::Unit::TestCase
   class DerivedKlass < MyKlass
     extend Tins::FromModule
 
-    include from :module => MyIncludedModule, :methods => [ :foo ]
+    include from module: MyIncludedModule, methods: [ :foo ]
   end
 
   module MyModule
@@ -44,7 +44,7 @@ class FromModuleTest < Test::Unit::TestCase
 
     extend Tins::FromModule
 
-    include from :module => MyIncludedModule, :methods => :foo
+    include from module: MyIncludedModule, methods: :foo
   end
 
   def test_derived_klass

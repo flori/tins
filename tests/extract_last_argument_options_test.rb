@@ -20,9 +20,9 @@ module Tins
     end
 
     def test_argument_array_witt_options
-      arguments = [ 1, 2, 3, { :foo => :bar } ]
+      arguments = [ 1, 2, 3, { foo: :bar } ]
       result = arguments.extract_last_argument_options
-      assert_equal [ [ 1, 2, 3 ], { :foo => :bar } ], result
+      assert_equal [ [ 1, 2, 3 ], { foo: :bar } ], result
       assert_not_same arguments, result.first
       assert_not_same arguments.last, result.last
     end

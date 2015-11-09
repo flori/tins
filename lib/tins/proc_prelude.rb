@@ -20,29 +20,29 @@ module Tins
     def array
       lambda { |*list| list }
     end
-    memoize_function :array, :freeze =>  true
+    memoize_function :array, freeze:  true
 
     def first
       lambda { |*list| list.first }
     end
-    memoize_function :first, :freeze =>  true
+    memoize_function :first, freeze:  true
 
     alias head first
 
     def second
       lambda { |*list| list[1] }
     end
-    memoize_function :second, :freeze =>  true
+    memoize_function :second, freeze:  true
 
     def tail
       lambda { |*list| list[1..-1] }
     end
-    memoize_function :tail, :freeze =>  true
+    memoize_function :tail, freeze:  true
 
     def last
       lambda { |*list| list.last }
     end
-    memoize_function :last, :freeze =>  true
+    memoize_function :last, freeze:  true
 
     def rotate(n = 1)
       lambda { |*list| list.rotate(n) }
@@ -53,7 +53,7 @@ module Tins
     def id1
       lambda { |obj| obj }
     end
-    memoize_function :id1, :freeze =>  true
+    memoize_function :id1, freeze:  true
 
     def const(konst = nil, &my_proc)
       konst ||= my_proc.call

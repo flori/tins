@@ -14,7 +14,7 @@ module Tins
       assert Set[].blank?
       assert !Set[23].blank?
       assert({}.blank?)
-      assert !{ :foo => 23 }.blank?
+      assert !{ foo: 23 }.blank?
       assert "".blank?
       assert "   ".blank?
       assert !"foo".blank?
@@ -29,7 +29,7 @@ module Tins
       assert !Set[].present?
       assert Set[23].present?
       assert !{}.present?
-      assert({ :foo => 23 }.present?)
+      assert({ foo: 23 }.present?)
       assert !"".present?
       assert !"   ".present?
       assert "foo".present?
@@ -44,7 +44,7 @@ module Tins
       assert_nil Set[].full?
       assert_equal Set[23], Set[23].full?
       assert_nil({}.full?)
-      assert_equal({ :foo => 23 }, { :foo => 23 }.full?)
+      assert_equal({ foo: 23 }, { foo: 23 }.full?)
       assert_nil "".full?
       assert_nil "   ".full?
       assert_equal "foo", "foo".full?

@@ -17,18 +17,18 @@ module Tins
     end
 
     def test_raising_errors
-      assert_equal [], find(File.join(@work_dir, 'nix'), :raise_errors => false).to_a
+      assert_equal [], find(File.join(@work_dir, 'nix'), raise_errors: false).to_a
       assert_equal [], find(File.join(@work_dir, 'nix')).to_a
       assert_raise(Errno::ENOENT) do
-        find(File.join(@work_dir, 'nix'), :raise_errors => true).to_a
+        find(File.join(@work_dir, 'nix'), raise_errors: true).to_a
       end
     end
 
     def test_showing_hidden
       touch file = File.join(@work_dir, '.foo')
-      assert_equal [ @work_dir ], find(@work_dir, :show_hidden => false).to_a
+      assert_equal [ @work_dir ], find(@work_dir, show_hidden: false).to_a
       assert_equal [ @work_dir, file ], find(@work_dir).to_a
-      assert_equal [ @work_dir, file ], find(@work_dir, :show_hidden => true).to_a
+      assert_equal [ @work_dir, file ], find(@work_dir, show_hidden: true).to_a
     end
 
     def test_check_directory_without_access
@@ -42,10 +42,10 @@ module Tins
         mkdir_p directory2 = File.join(directory1, 'bar')
         touch file = File.join(directory2, 'file')
         chmod 0, directory2
-        assert_equal [ @work_dir, directory1, directory2 ], find(@work_dir, :raise_errors => false).to_a
+        assert_equal [ @work_dir, directory1, directory2 ], find(@work_dir, raise_errors: false).to_a
         assert_equal [ @work_dir, directory1, directory2 ], find(@work_dir).to_a
         assert_raise(Errno::EACCES) do
-          find(@work_dir, :raise_errors => true).to_a
+          find(@work_dir, raise_errors: true).to_a
         end
       ensure
         File.exist?(directory2) and chmod 0777, directory2
@@ -58,9 +58,9 @@ module Tins
       mkdir_p directory3 = File.join(directory1, 'bar')
       touch file = File.join(directory3, 'foo')
       ln_s directory3, link = File.join(directory2, 'baz')
-      assert_equal [ directory2, link ], find(directory2, :follow_symlinks => false).to_a
+      assert_equal [ directory2, link ], find(directory2, follow_symlinks: false).to_a
       assert_equal [ directory2, link, linked = File.join(link, 'foo') ], find(directory2).to_a
-      assert_equal [ directory2, link, linked ], find(directory2, :follow_symlinks => true).to_a
+      assert_equal [ directory2, link, linked ], find(directory2, follow_symlinks: true).to_a
     end
 
     def test_path_file
@@ -89,7 +89,7 @@ module Tins
     end
 
     def test_suffix
-      finder = Tins::Find::Finder.new(:suffix => 'bar')
+      finder = Tins::Find::Finder.new(suffix: 'bar')
       f = File.open(fpath = File.join(@work_dir, 'foo.bar'), 'w')
       g = File.open(gpath = File.join(@work_dir, 'foo.baz'), 'w')
       fpath = finder.prepare_path fpath
