@@ -5,11 +5,11 @@ module Tins
   class AttemptTest < Test::Unit::TestCase
 
     def test_attempt_block_condition
-      assert attempt(:attempts => 1, :exception_class => nil) { |c| c == 1 }
-      assert attempt(:attempts => 3, :exception_class => nil) { |c| c == 1 }
-      assert_equal false, attempt(:attempts => 3, :exception_class => nil) { |c| c == 4 }
-      assert_nil attempt(:attempts => 0, :exception_class => nil) { |c| c == 4 }
-      assert_raise(Exception) { attempt(:attempts => 3, :exception_class => nil) { raise Exception } }
+      assert attempt(attempts: 1, exception_class: nil) { |c| c == 1 }
+      assert attempt(attempts: 3, exception_class: nil) { |c| c == 1 }
+      assert_equal false, attempt(attempts: 3, exception_class: nil) { |c| c == 4 }
+      assert_nil attempt(attempts: 0, exception_class: nil) { |c| c == 4 }
+      assert_raise(Exception) { attempt(attempts: 3, exception_class: nil) { raise Exception } }
     end
 
     class MyError < StandardError; end
@@ -24,16 +24,16 @@ module Tins
     end
 
     def test_attempt_exception
-      assert attempt(:attempts => 1, :exception_class => MyException) { |c| c != 1 and raise MyException }
-      assert attempt(:attempts => 3, :exception_class => MyException) { |c| c != 1 and raise MyException }
-      assert_nil attempt(:attempts => 0, :exception_class => MyException) { |c| c != 4 and raise MyException }
-      assert_raise(Exception) { attempt(:attempts => 3, :exception_class => MyException) { raise Exception } }
+      assert attempt(attempts: 1, exception_class: MyException) { |c| c != 1 and raise MyException }
+      assert attempt(attempts: 3, exception_class: MyException) { |c| c != 1 and raise MyException }
+      assert_nil attempt(attempts: 0, exception_class: MyException) { |c| c != 4 and raise MyException }
+      assert_raise(Exception) { attempt(attempts: 3, exception_class: MyException) { raise Exception } }
     end
 
     def test_reraise_exception
       tries = 0
       assert_raise(MyException) do
-        attempt(:attempts => 3, :exception_class => MyException, :reraise => true) do |c|
+        attempt(attempts: 3, exception_class: MyException, reraise: true) do |c|
           tries = c; raise MyException
         end
       end
@@ -50,7 +50,7 @@ module Tins
         end
       end
       assert_raise(MyException) do
-        attempt(:attempts => 3, :exception_class => MyException, :reraise => true, :sleep => 10) do |c|
+        attempt(attempts: 3, exception_class: MyException, reraise: true, sleep: 10) do |c|
           raise MyException
         end
       end
@@ -71,7 +71,7 @@ module Tins
         end
       end
       assert_raise(MyException) do
-        attempt(:attempts => 3, :exception_class => MyException, :reraise => true, :sleep => lambda { |x| 0 }) do |c|
+        attempt(attempts: 3, exception_class: MyException, reraise: true, sleep: -> x { 0 }) do |c|
           raise MyException
         end
       end
