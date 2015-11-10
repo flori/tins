@@ -12,11 +12,11 @@ GemHadar do
   test_dir    'tests'
   test_files.concat Dir["#{test_dir}/*_test.rb"]
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx',
-    '.AppleDouble', '.DS_Store', 'tags', '.bundle'
+    '.AppleDouble', '.DS_Store', 'tags', '.bundle', '.byebug_history'
 
   readme      'README.md'
   licenses << 'MIT'
 
   required_ruby_version  '>= 2.0'
-  development_dependency 'test-unit', '~>2.5'
+  development_dependency 'test-unit', '~>3.1'
 end

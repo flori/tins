@@ -21,6 +21,15 @@ module Tins
     class B
       def foo(x, y = 1, *r, &b)
       end
+
+      def bar(x, y = 2, *r, &b)
+      end
+
+      def bar2(x, z = 2, *r, &b)
+      end
+
+      def baz(x, y = 2, z = 3, *r, &b)
+      end
     end
 
     def test_standard_parameters_namespace
@@ -33,30 +42,50 @@ module Tins
         B.instance_method(:foo).description(style: :name)
     end
 
-    def test_standard_parameters_parameters
-      assert_equal 'x,y=?,*r,&b',
-        B.instance_method(:foo).description(style: :parameters)
+    def test_standard_parameters_signature
+      assert_kind_of Tins::MethodDescription::Signature,
+        B.instance_method(:foo).signature
+    end
+
+    def test_signature_equalitites
+      assert_equal(
+        B.instance_method(:foo).signature,
+        B.instance_method(:bar).signature
+      )
+      assert_equal(
+        B.instance_method(:foo).signature,
+        B.instance_method(:bar2).signature
+      )
+      assert_false\
+        B.instance_method(:foo).signature.eql?(
+          B.instance_method(:bar2).signature
+        )
+      assert_operator(
+        B.instance_method(:foo).signature,
+        :===,
+        B.instance_method(:bar2)
+      )
+      assert_not_equal(
+        B.instance_method(:bar).signature,
+        B.instance_method(:baz).signature
+      )
     end
 
     def test_a_cstyle_method_from_hash
       assert_equal "Hash#store(x1,x2)", ({}.method(:store).description)
     end
 
-    if RUBY_VERSION >= "2.0"
-      eval %{
-        class C
-          def foo(x, k: true, &b)
-          end
+    class C
+      def foo(x, k: true, &b)
+      end
 
-          def bar(x, **k, &b)
-          end
-        end
+      def bar(x, **k, &b)
+      end
+    end
 
-        def test_keyword_parameters
-          assert_equal 'Tins::MethodDescriptionTest::C#foo(x,k:?,&b)', C.instance_method(:foo).to_s
-          assert_equal 'Tins::MethodDescriptionTest::C#bar(x,**k,&b)', C.instance_method(:bar).to_s
-        end
-      }
+    def test_keyword_parameters
+      assert_equal 'Tins::MethodDescriptionTest::C#foo(x,k:?,&b)', C.instance_method(:foo).to_s
+      assert_equal 'Tins::MethodDescriptionTest::C#bar(x,**k,&b)', C.instance_method(:bar).to_s
     end
 
     if RUBY_VERSION >= "2.1"
