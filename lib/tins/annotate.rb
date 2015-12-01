@@ -26,5 +26,13 @@ module Tins::Annotate
         instance_variable_set "@__annotation_#{name}__", nil
       end
     end
+
+    define_method("#{name}_annotations") do
+      self.class.__send__("#{name}_annotations")
+    end
+
+    define_method("#{name}_of") do |method_name|
+      self.class.__send__("#{name}_of", method_name)
+    end
   end
 end

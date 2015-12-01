@@ -12,6 +12,9 @@ Non yet.
 
 ## Changes
 
+* 2015-12-01 Release 1.8.0
+  - Add `foo_of` and `foo_annotations` methods to instances of classes with
+    annotated methods.
 * 2015-11-09 Release 1.7.0
   - Officially require ruby >= 2.0 and use new hash syntax.
   - New feature attempt: sleep:-30 sleeps upto 30 seconds while retrying with
