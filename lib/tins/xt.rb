@@ -19,7 +19,6 @@ module Tins
   require 'tins/xt/secure_write'
   require 'tins/xt/string'
   require 'tins/xt/subhash'
-  require 'tins/xt/symbol_to_proc'
   require 'tins/xt/time_dummy'
   require 'tins/xt/date_dummy'
   require 'tins/xt/date_time_dummy'

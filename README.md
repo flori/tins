@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2015-12-03 Release 1.8.1
+  - Remove some backports already existant in the newer supported rubies.
 * 2015-12-01 Release 1.8.0
   - Add `foo_of` and `foo_annotations` methods to instances of classes with
     annotated methods.
