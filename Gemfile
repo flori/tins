@@ -8,5 +8,5 @@ group :development, :test do
   gem 'simplecov'
   gem 'term-ansicolor'
   gem "codeclimate-test-reporter", require: nil
-  gem 'byebug', platform: :mri
+  gem 'byebug', platform: :mri if RUBY_VERSION >= '2'
 end
