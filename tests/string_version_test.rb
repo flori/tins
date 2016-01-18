@@ -38,5 +38,23 @@ module Tins
       s = '1.2.3'
       assert_equal '1.2.4', s.version.bump.to_s
     end
+
+    def test_dup
+      s = '1.2.3'
+      v = s.version
+      w = v.dup
+      v.succ!
+      assert_equal '1.2.4', v.to_s
+      assert_equal '1.2.3', w.to_s
+    end
+
+    def test_clone
+      s = '1.2.3'
+      v = s.version
+      w = v.clone
+      v.succ!
+      assert_equal '1.2.4', v.to_s
+      assert_equal '1.2.3', w.to_s
+    end
   end
 end

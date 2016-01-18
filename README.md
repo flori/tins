@@ -12,6 +12,10 @@ Non yet.
 
 ## Changes
 
+
+* 2016-01-18 Release 1.8.2
+  - Implement Tins::StringVersion::Version#dup and
+    Tins::StringVersion::Version#clone.
 * 2015-12-03 Release 1.8.1
   - Remove some backports already existant in the newer supported rubies.
 * 2015-12-01 Release 1.8.0

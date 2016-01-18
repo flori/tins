@@ -87,6 +87,11 @@ module Tins
         @version
       end
 
+      def initialize_copy(source)
+        super
+        @version = source.instance_variable_get(:@version).dup
+      end
+
       alias inspect to_s
     end
 
