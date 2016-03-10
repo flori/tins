@@ -12,7 +12,8 @@ Non yet.
 
 ## Changes
 
-
+* 2016-03-10 Release 1.9.0
+  - Add Tins::Duration for displaying durations.
 * 2016-01-18 Release 1.8.2
   - Implement Tins::StringVersion::Version#dup and
     Tins::StringVersion::Version#clone.
