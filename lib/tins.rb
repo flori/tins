@@ -52,5 +52,6 @@ module Tins
     require 'tins/string_byte_order_mark'
   end
   require 'tins/complete'
+  require 'tins/duration'
 end
 require 'tins/alias'
