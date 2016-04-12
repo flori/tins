@@ -6,6 +6,7 @@ module Tins
         @arguments.push argument
         self
       end
+      alias << push
 
       def each(&block)
         @arguments.each(&block)
@@ -29,38 +30,41 @@ module Tins
         t[a ? 1 : 0][o] = a ? nil : false
         t
       }
+      r = []
       while a = args.shift
-        a !~ /\A-(.+)/ and args.unshift a and break
-        p = $1
+        /\A-(?<p>.+)/ =~ a or (r << a; next)
         until p == ''
           o = p.slice!(0, 1)
           if v.key?(o)
-            if p == '' then
-              a = args.shift or break 1
+            if args.empty?
+              r << a
+              break 1
+            elsif p == ''
+              a = args.shift
             else
               a = p
             end
             if v[o].nil?
               a = a.dup
               a.extend EnumerableExtension
-              a.push a
+              a << a
               v[o] = a
             else
-              v[o].push a
+              v[o] << a
             end
             break
           elsif b.key?(o)
-            if b[o] == false
-              b[o]= 1
-            else
+            if b[o]
               b[o] += 1
+            else
+              b[o] = 1
             end
           else
-            args.unshift a
-            break 1
+            r << a
           end
-        end and break
+        end && break
       end
+      args.replace r
       b.merge(v)
     end
   end

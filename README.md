@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2016-04-12 Release 1.10.0
+  - Support mixed rest arguments in go argument parsing.
 * 2016-03-10 Release 1.9.0
   - Add Tins::Duration for displaying durations.
 * 2016-01-18 Release 1.8.2

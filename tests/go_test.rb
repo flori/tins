@@ -5,7 +5,6 @@ module Tins
   class GoTest < Test::Unit::TestCase
     include Tins::GO
 
-
     def test_empty_string
       r = go '', args = %w[a b c]
       assert_equal({}, r)
@@ -45,6 +44,13 @@ module Tins
       assert_equal({ 'a' => 2, 'b' => 'hello' }, r)
       assert_equal %w[hello world], r['b'].to_a
       assert_equal %w[-c rest], args
+    end
+
+    def test_mixed_rest
+      r = go 'ab:e:', args = %w[-b hello -c rest -aa -b world -d rest -e]
+      assert_equal({ 'a' => 2, 'b' => 'hello', 'e' => nil }, r)
+      assert_equal %w[hello world], r['b'].to_a
+      assert_equal %w[-c rest -d rest -e], args
     end
   end
 end
