@@ -11,7 +11,8 @@ Non yet.
 [![Code Coverage](https://codeclimate.com/github/flori/tins/coverage.png)](https://codeclimate.com/github/flori/tins)
 
 ## Changes
-
+* 2016-04-15 Release 1.10.1
+  - Fix bug in go if a concatenated argument comes last.
 * 2016-04-12 Release 1.10.0
   - Support mixed rest arguments in go argument parsing.
 * 2016-03-10 Release 1.9.0

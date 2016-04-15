@@ -36,7 +36,7 @@ module Tins
         until p == ''
           o = p.slice!(0, 1)
           if v.key?(o)
-            if args.empty?
+            if p.empty? && args.empty?
               r << a
               break 1
             elsif p == ''

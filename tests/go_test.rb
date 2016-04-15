@@ -52,5 +52,11 @@ module Tins
       assert_equal %w[hello world], r['b'].to_a
       assert_equal %w[-c rest -d rest -e], args
     end
+
+    def test_concatenated_argument_at_end
+      r = go 'ab:e:', args = %w[-a -bhello]
+      assert_equal({ 'a' => 1, 'b' => 'hello', 'e' => nil }, r)
+      assert_equal [], args
+    end
   end
 end
