@@ -41,7 +41,7 @@ module Tins
           end
         end
 
-        end
+      end
       super
     end
   end

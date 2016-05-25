@@ -1,4 +1,3 @@
-require 'tins'
 require 'thread'
 require 'sync'
 
