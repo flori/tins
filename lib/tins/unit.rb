@@ -63,7 +63,6 @@ module Tins::Unit
       @number       = 1.0
     end
 
-    private\
     def unit_re(prefixes, unit)
       re = Regexp.new(
         "(#{prefixes.reverse.map { |pre| Regexp.quote(pre.name) } * ?|})(#{unit})"
@@ -73,6 +72,8 @@ module Tins::Unit
       end
       re
     end
+
+    private :unit_re
 
     attr_reader :number
 
@@ -122,10 +123,11 @@ module Tins::Unit
       @unit_parser.reset
     end
 
-    private\
     def location
       @unit_parser.peek(10).inspect
     end
+
+    private :location
 
     def parse
       reset
