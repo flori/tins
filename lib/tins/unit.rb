@@ -16,7 +16,8 @@ module Tins::Unit
     '', 'm', 'µ', 'n', 'p', 'f', 'a', 'z', 'y',
   ].each_with_index.map { |n, i| Prefix.new(n.freeze, 1000, 1000 ** -i, true) }.freeze
 
-  module_function\
+  module_function
+
   def prefixes(identifier)
     case identifier
     when :uppercase, :uc, 1024
@@ -30,7 +31,6 @@ module Tins::Unit
     end
   end
 
-  module_function\
   def format(value, format: '%f %U', prefix: 1024, unit: ?b)
     prefixes = prefixes(prefix)
     first_prefix = prefixes.first or
@@ -155,7 +155,6 @@ module Tins::Unit
     end
   end
 
-  module_function\
   def parse(string, format: '%f %U', unit: ?b, prefix: nil)
     prefixes = prefixes(prefix)
     FormatParser.new(format, UnitParser.new(string, unit, prefixes)).parse
