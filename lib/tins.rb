@@ -53,5 +53,6 @@ module Tins
   end
   require 'tins/complete'
   require 'tins/duration'
+  require 'tins/unit'
 end
 require 'tins/alias'
