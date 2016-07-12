@@ -89,17 +89,15 @@ module Tins::Unit
 
     def scan_unit
       case
-      when unit = scan(@unit_re)
+      when scan(@unit_re)
         prefix = @unit_re.prefixes.find { |pre| pre.name == self[1] } or return
         @number *= prefix.multiplier
-      when unit = scan(@unit_lc_re)
+      when scan(@unit_lc_re)
         prefix = @unit_lc_re.prefixes.find { |pre| pre.name == self[1] } or return
         @number *= prefix.multiplier
-      when unit = scan(@unit_uc_re)
+      when scan(@unit_uc_re)
         prefix = @unit_uc_re.prefixes.find { |pre| pre.name == self[1] } or return
         @number *= prefix.multiplier
-      else
-        return
       end
     end
 
