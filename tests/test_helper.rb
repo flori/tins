@@ -8,5 +8,8 @@ if ENV['CODECLIMATE_REPO_TOKEN']
   require "codeclimate-test-reporter"
   CodeClimate::TestReporter.start
 end
-require 'byebug'
+begin
+  require 'byebug'
+rescue LoadError
+end
 require 'test/unit'
