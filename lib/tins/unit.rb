@@ -16,6 +16,8 @@ module Tins::Unit
     '', 'm', 'µ', 'n', 'p', 'f', 'a', 'z', 'y',
   ].each_with_index.map { |n, i| Prefix.new(n.freeze, 1000, 1000 ** -i, true) }.freeze
 
+  class ParserError < ArgumentError; end
+
   module_function
 
   def prefixes(identifier)
@@ -34,7 +36,7 @@ module Tins::Unit
   def format(value, format: '%f %U', prefix: 1024, unit: ?b)
     prefixes = prefixes(prefix)
     first_prefix = prefixes.first or
-      raise ArgumentError, 'a non-empty of prefixes is required'
+      raise ArgumentError, 'a non-empty array of prefixes is required'
     prefix = prefixes[
       (first_prefix.fraction ? -1 : 1) * Math.log(value) / Math.log(first_prefix.step)
     ]
@@ -133,21 +135,21 @@ module Tins::Unit
         case
         when scan(/%f/)
           @unit_parser.scan_number or
-            raise ArgumentError, "\"%f\" expected at #{location}"
+            raise ParserError, "\"%f\" expected at #{location}"
         when scan(/%U/)
           @unit_parser.scan_unit or
-            raise ArgumentError, "\"%U\" expected at #{location}"
+            raise ParserError, "\"%U\" expected at #{location}"
         when scan(/%%/)
           @unit_parser.scan_char(?%) or
-            raise ArgumentError, "#{?%.inspect} expected at #{location}"
+            raise ParserError, "#{?%.inspect} expected at #{location}"
         else
           char = scan(/./)
           @unit_parser.scan_char(char) or
-            raise ArgumentError, "#{char.inspect} expected at #{location}"
+            raise ParserError, "#{char.inspect} expected at #{location}"
         end
       end
       unless eos? && @unit_parser.eos?
-        raise ArgumentError,
+        raise ParserError,
           "format #{string.inspect} and string "\
             "#{@unit_parser.string.inspect} do not match"
       end
@@ -155,8 +157,16 @@ module Tins::Unit
     end
   end
 
+  # Parse the string +string+ if it matches +format+ with the unit +unit+ and
+  # the prefixes specified by +prefix+.
   def parse(string, format: '%f %U', unit: ?b, prefix: nil)
     prefixes = prefixes(prefix)
     FormatParser.new(format, UnitParser.new(string, unit, prefixes)).parse
+  end
+
+  def parse?(string, **options)
+    parse(string, **options)
+  rescue ParserError
+    nil
   end
 end

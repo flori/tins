@@ -41,12 +41,17 @@ module Tins
       assert_in_delta 17_301_504, parse('16.5 Mb').to_i, 1e-5
       assert_in_delta 16_500_000, parse('16.5 mbps', unit: 'bps').to_i, 1e-5
       assert_in_delta 0.1234e-5, parse('1.234 µS', unit: ?S, prefix: :f).to_s, 1e-5
-      assert_raise(ArgumentError) { parse('16.5 nix', unit: ?b) }
-      assert_raise(ArgumentError) { parse('nix Mb') }
+      assert_raise(ParserError) { parse('16.5 nix', unit: ?b) }
+      assert_raise(ParserError) { parse('nix Mb') }
       assert_in_delta 17_301_504, parse('16.5 % Mb', format: '%f %% %U').to_i, 1e-5
-      assert_raise(ArgumentError) { parse('16.5 Mb', format: '%f %% %U') }
-      assert_raise(ArgumentError) { parse('16.5 Mb foo', format: '%f %U') }
-      assert_raise(ArgumentError) { parse('16.5 Mb', format: '%f %U foo') }
+      assert_raise(ParserError) { parse('16.5 Mb', format: '%f %% %U') }
+      assert_raise(ParserError) { parse('16.5 Mb foo', format: '%f %U') }
+      assert_raise(ParserError) { parse('16.5 Mb', format: '%f %U foo') }
+    end
+
+    def test_parse_predicate
+      assert_in_delta 17_301_504, parse?('16.5 Mb').to_i, 1e-5
+      assert_nil parse?('16.5 nix', unit: ?b)
     end
   end
 end
