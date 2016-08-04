@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2016-08-04 Release 1.12.0
+  - Add Tins::Unit.parse? method to check for units in strings.
 * 2016-07-12 Release 1.11.0
   - Provide Tins::Unit.format and Tins::Unit.parse methods.
 * 2016-05-25 Release 1.10.2
