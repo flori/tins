@@ -21,5 +21,4 @@ GemHadar do
   development_dependency 'test-unit', '~>3.1'
   development_dependency "codeclimate-test-reporter"
   development_dependency 'simplecov'
-  development_dependency 'term-ansicolor'
 end
