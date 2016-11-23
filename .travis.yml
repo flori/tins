@@ -5,6 +5,8 @@ rvm:
   - 2.3.3
   - ruby-head
   - rbx-head
+script:
+  - rake && codeclimate-test-reporter --file coverage
 matrix:
   allow_failures:
     - rvm: ruby-head
