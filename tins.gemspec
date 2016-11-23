@@ -25,20 +25,20 @@ Gem::Specification.new do |s|
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 1.7.1"])
+      s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 1.9.1"])
       s.add_development_dependency(%q<test-unit>.freeze, ["~> 3.1"])
       s.add_development_dependency(%q<codeclimate-test-reporter>.freeze, [">= 0"])
       s.add_development_dependency(%q<simplecov>.freeze, [">= 0"])
       s.add_development_dependency(%q<term-ansicolor>.freeze, [">= 0"])
     else
-      s.add_dependency(%q<gem_hadar>.freeze, ["~> 1.7.1"])
+      s.add_dependency(%q<gem_hadar>.freeze, ["~> 1.9.1"])
       s.add_dependency(%q<test-unit>.freeze, ["~> 3.1"])
       s.add_dependency(%q<codeclimate-test-reporter>.freeze, [">= 0"])
       s.add_dependency(%q<simplecov>.freeze, [">= 0"])
       s.add_dependency(%q<term-ansicolor>.freeze, [">= 0"])
     end
   else
-    s.add_dependency(%q<gem_hadar>.freeze, ["~> 1.7.1"])
+    s.add_dependency(%q<gem_hadar>.freeze, ["~> 1.9.1"])
     s.add_dependency(%q<test-unit>.freeze, ["~> 3.1"])
     s.add_dependency(%q<codeclimate-test-reporter>.freeze, [">= 0"])
     s.add_dependency(%q<simplecov>.freeze, [">= 0"])
