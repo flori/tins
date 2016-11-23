@@ -40,4 +40,5 @@ module Tins
   require 'tins/xt/case_predicate'
   require 'tins/xt/implement'
   require 'tins/xt/complete'
+  require 'tins/xt/expose'
 end

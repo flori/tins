@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2016-11-23 Release 1.13.0
+  - Add expose method mostly for testing hidden methods.
 * 2016-08-04 Release 1.12.0
   - Add Tins::Unit.parse? method to check for units in strings.
 * 2016-07-12 Release 1.11.0
