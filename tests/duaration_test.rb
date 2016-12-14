@@ -57,6 +57,12 @@ module Tins
       s += 0.1
       assert_true Tins::Duration.new(s).fractional_seconds?
     end
+
+    def test_comparison
+      t1 = Tins::Duration.new(666.23456)
+      t2 = Tins::Duration.new(666.12345)
+      assert_operator t1, :>, t2
+    end
   end
 end
 

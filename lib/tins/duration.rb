@@ -1,6 +1,9 @@
 module Tins
   class Duration
+    include Comparable
+
     def initialize(seconds)
+      @original_seconds = seconds
       @days, @hours, @minutes, @seconds, @fractional_seconds =
         [ 86_400, 3600, 60, 1, 0 ].inject([ [], seconds ]) {|(r, s), d|
           if d > 0
@@ -11,6 +14,14 @@ module Tins
             r << s
           end
         }
+    end
+
+    def to_f
+      @original_seconds.to_f
+    end
+
+    def <=>(other)
+      to_f <=> other.to_f
     end
 
     def days?
