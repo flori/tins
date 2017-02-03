@@ -4,13 +4,15 @@ require 'tins/xt/expose'
 module Tins
   class ExposeTest < Test::Unit::TestCase
     class A
-      private def priv
+      def priv
         :priv
       end
+      private :priv
 
-      protected def prot(x)
+      def prot(x)
         :prot
       end
+      protected :prot
     end
 
     def setup
