@@ -19,6 +19,10 @@ module Tins
       assert_equal nil, prefixes(:nix)
     end
 
+    def test_0_format
+      assert_equal '0 b', format(0, format: '%d %U')
+    end
+
     def test_format_multipliers
       assert_equal '23 Kb',
         format(23 * 1024, format: '%d %U')

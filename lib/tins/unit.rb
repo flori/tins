@@ -37,11 +37,16 @@ module Tins::Unit
     prefixes = prefixes(prefix)
     first_prefix = prefixes.first or
       raise ArgumentError, 'a non-empty array of prefixes is required'
-    prefix = prefixes[
-      (first_prefix.fraction ? -1 : 1) * Math.log(value) / Math.log(first_prefix.step)
-    ]
-    result = format.sub('%U', "#{prefix.name}#{unit}")
-    result %= (value / prefix.multiplier.to_f)
+    if value.zero?
+      result = format.sub('%U', unit)
+      result %= value
+    else
+      prefix = prefixes[
+        (first_prefix.fraction ? -1 : 1) * Math.log(value) / Math.log(first_prefix.step)
+      ]
+      result = format.sub('%U', "#{prefix.name}#{unit}")
+      result %= (value / prefix.multiplier.to_f)
+    end
   end
 
   class UnitParser < StringScanner

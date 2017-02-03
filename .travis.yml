@@ -3,17 +3,11 @@ rvm:
   - 2.1
   - 2.2
   - 2.3.3
+  - 2.4.0
   - ruby-head
   - rbx-head
-script:
-  - rake && codeclimate-test-reporter --file coverage
 matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: rbx-head
 sudo: false
-addons:
-  code_climate:
-    repo_token: 62d082406430ccf662c2e401976b613c0091e26fcfb546f92b1f2b391951cf50
-env:
-  - START_SIMPLECOV=1
