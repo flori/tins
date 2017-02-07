@@ -52,12 +52,12 @@ module Tins
     end
 
     def test_null_plus_caller_and_misc
-      assert_match /foo/, foo.caller.first
+      assert_match(/foo/, foo.caller.first)
       if foo.respond_to?(:caller_locations)
         assert_kind_of Thread::Backtrace::Location, foo.caller_locations.first
-        assert_match /foo/, foo.caller_locations.first.to_s
+        assert_match(/foo/, foo.caller_locations.first.to_s)
       end
-      assert_match /foo/, foo.caller.first
+      assert_match(/foo/, foo.caller.first)
       assert_kind_of ZeroDivisionError, foo.error
     end
   end

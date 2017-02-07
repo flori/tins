@@ -62,10 +62,12 @@ module Tins::Unit
     def initialize(source, unit, prefixes = nil)
       super source
       if prefixes
-        @unit_re = unit_re(Tins::Unit.prefixes(prefixes), unit)
+        @unit_re    = unit_re(Tins::Unit.prefixes(prefixes), unit)
+        @unit_lc_re = @unit_uc_re                                  = nil
       else
         @unit_lc_re = unit_re(Tins::Unit.prefixes(:lc), unit)
         @unit_uc_re = unit_re(Tins::Unit.prefixes(:uc), unit)
+        @unit_re    = nil
       end
       @number       = 1.0
     end

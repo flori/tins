@@ -19,7 +19,9 @@ module Tins
 
         def dummy(value = nil)
           if value.nil?
-            @dummy
+            if defined?(@dummy)
+              @dummy
+            end
           else
             begin
               old_dummy = @dummy

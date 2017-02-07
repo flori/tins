@@ -11,16 +11,16 @@ module Tins
     # @return [ Object ] result of the method or block call
     def expose(method_name = nil, *args, &block)
       if block
-        instance_eval &block
+        instance_eval(&block)
       elsif method_name.nil?
         methods = private_methods(true) + protected_methods(true)
         o = dup
         o.singleton_class.class_eval do
-          public *methods
+          public(*methods)
         end
         o
       elsif method_name
-        __send__ method_name, *args
+        __send__(method_name, *args)
       end
     end
   end

@@ -6,7 +6,7 @@ module Tins
       modul.module_eval do
         old_arity = instance_method(:arity)
         define_method(:arity) do
-          @__arity__ or old_arity.bind(self).call
+          defined?(@__arity__) or old_arity.bind(self).call
         end
       end
       super

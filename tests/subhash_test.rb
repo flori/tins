@@ -27,9 +27,9 @@ module Tins
     end
 
     def test_subhash_with_default_proc
-      h = Hash.new { |h, k| h[k] = :foo }
-      h.update('foo' => 1, 'bar' => 2)
-      s = h.subhash('foo')
+      hash = Hash.new { |h, k| h[k] = :foo }
+      hash.update('foo' => 1, 'bar' => 2)
+      s = hash.subhash('foo')
       assert_equal 1, s['foo']
       assert_equal :foo, s['bar']
     end

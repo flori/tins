@@ -58,7 +58,7 @@ module Tins
         @show_hidden     = opts.fetch(:show_hidden)     { true }
         @raise_errors    = opts.fetch(:raise_errors)    { false }
         @follow_symlinks = opts.fetch(:follow_symlinks) { true }
-        opts[:suffix].full? { |s| @suffix = [*s] }
+        @suffix          = opts[:suffix].full? { |s| [*s] }
       end
 
       attr_accessor :show_hidden

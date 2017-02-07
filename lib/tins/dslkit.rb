@@ -207,7 +207,10 @@ module Tins
       variable = "@#{name}"
       define_method(name) do |*args|
         if args.empty?
-          result = instance_variable_get(variable)
+          result =
+            if instance_variable_defined?(variable)
+              instance_variable_get(variable)
+            end
           if result.nil?
             result = if default.empty?
               block && instance_eval(&block)
@@ -233,7 +236,10 @@ module Tins
       variable = "@#{name}"
       define_method(name) do |*args|
         if args.empty?
-          result = instance_variable_get(variable)
+          result =
+            if instance_variable_defined?(variable)
+              instance_variable_get(variable)
+            end
           if result.nil?
             if default.empty?
               block && instance_eval(&block)
@@ -441,11 +447,15 @@ module Tins
       case
       when to[0, 2] == '@@'
         define_method(as) do |*args, &block|
-          self.class.class_variable_get(to).__send__(method_name, *args, &block)
+          if self.class.class_variable_defined?(to)
+            self.class.class_variable_get(to).__send__(method_name, *args, &block)
+          end
         end
       when to[0] == ?@
         define_method(as) do |*args, &block|
-          instance_variable_get(to).__send__(method_name, *args, &block)
+          if instance_variable_defined?(to)
+            instance_variable_get(to).__send__(method_name, *args, &block)
+          end
         end
       when (?A..?Z).include?(to[0])
         define_method(as) do |*args, &block|
