@@ -12,6 +12,10 @@ Non yet.
 
 ## Changes
 
+* 2017-02-03 Release 1.13.2
+  - Fix test on older rubies
+* 2016-11-23 Release 1.13.1
+  - Fix comparibility of Tins::Duration instances
 * 2016-11-23 Release 1.13.0
   - Add expose method mostly for testing hidden methods.
 * 2016-08-04 Release 1.12.0
