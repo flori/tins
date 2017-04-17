@@ -63,9 +63,9 @@ Non yet.
 
 ## Download
 
-The homepage of this library is located at
-
-* http://flori.github.com/tins
+```ruby
+gem install tins
+```
 
 ## Author
 
