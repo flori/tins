@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2017-05-14 Release 1.13.3
+ - Fix some debugging warnings
 * 2017-02-03 Release 1.13.2
   - Fix test on older rubies
 * 2016-11-23 Release 1.13.1
