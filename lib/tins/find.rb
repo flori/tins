@@ -58,7 +58,14 @@ module Tins
         @show_hidden     = opts.fetch(:show_hidden)     { true }
         @raise_errors    = opts.fetch(:raise_errors)    { false }
         @follow_symlinks = opts.fetch(:follow_symlinks) { true }
-        @suffix          = opts[:suffix].full? { |s| [*s] }
+        if opts.key?(:visit) && opts.key?(:suffix)
+          raise ArgumentError, 'either use visit or suffix argument'
+        elsif opts.key?(:visit)
+          @visit = opts.fetch(:visit) { -> path { true } }
+        elsif opts.key?(:suffix)
+          @suffix = Array(opts[:suffix])
+          @visit = -> path { @suffix.nil? || @suffix.empty? || @suffix.include?(path.suffix) }
+        end
       end
 
       attr_accessor :show_hidden
@@ -70,7 +77,11 @@ module Tins
       attr_accessor :suffix
 
       def visit_path?(path)
-        @suffix.nil? || @suffix.include?(path.suffix)
+        if !defined?(@visit) || @visit.nil?
+          true
+        else
+          @visit.(path)
+        end
       end
 
       def find(*paths)

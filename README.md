@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2017-05-16 Release 1.14.0
+ - Add visit proc to determine if file should be visited.
 * 2017-05-14 Release 1.13.3
  - Fix some debugging warnings
 * 2017-02-03 Release 1.13.2

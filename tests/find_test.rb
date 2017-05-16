@@ -105,6 +105,25 @@ module Tins
       g and rm_f g.path
     end
 
+    def test_visit
+      assert_raise(ArgumentError) do
+        Tins::Find::Finder.new(visit: :foo, suffix: 'bla')
+      end
+      finder = Tins::Find::Finder.new(visit: -> path { path.stat.file? })
+      f = File.open(fpath = File.join(@work_dir, 'foo.bar'), 'w')
+      mkdir_p(gpath = File.join(@work_dir, 'dir'))
+      fpath = finder.prepare_path fpath
+      gpath = finder.prepare_path gpath
+      assert_true finder.visit_path?(fpath)
+      assert_false finder.visit_path?(gpath)
+      found = []
+      Tins::Find.find(
+        @work_dir,
+        visit: -> path { path.stat.directory? or prune }
+      ) { |f| found << f }
+      assert_equal [ @work_dir, gpath ], found
+    end
+
     def test_prune
       mkdir_p directory1 = File.join(@work_dir, 'foo1')
       mkdir_p File.join(@work_dir, 'foo2')
