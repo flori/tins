@@ -45,12 +45,15 @@ module Tins
     end
 
     def format(template = '%d+%h:%m:%s.%f', precision: nil)
-      result = template.gsub(/%[dhms]/,
-        '%d' => @days,
-        '%h' => '%02u' % @hours,
-        '%m' => '%02u' % @minutes,
-        '%s' => '%02u' % @seconds,
-      )
+      result = template.gsub(/%[Ddhms]/) { |directive|
+        case directive
+        when '%d' then @days
+        when '%h' then '%02u' % @hours
+        when '%m' then '%02u' % @minutes
+        when '%s' then '%02u' % @seconds
+        when '%D' then format_smart
+        end
+      }
       if result.include?('%f')
         if precision
           fractional_seconds = "%.#{precision}f" % @fractional_seconds
@@ -63,6 +66,12 @@ module Tins
     end
 
     def to_s
+      format_smart
+    end
+
+    private
+
+    def format_smart
       template  = '%h:%m:%s'
       precision = nil
       if days?
