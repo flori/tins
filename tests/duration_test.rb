@@ -23,6 +23,11 @@ module Tins
       assert_equal '0+00:11:06.123456', Tins::Duration.new(666.123456).format
     end
 
+    def test_smart_format
+      assert_equal '00:11:06.123', Tins::Duration.new(666.123456).format('%D')
+      assert_equal '7+17:11:06.123', Tins::Duration.new(666666.123456).format('%D')
+    end
+
     def test_predicate_days
       s = 0
       assert_false Tins::Duration.new(s).days?

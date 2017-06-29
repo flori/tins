@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2017-06-29 Release 1.15.0
+- Add support for smart duration formats with %D directive
 * 2017-05-16 Release 1.14.0
  - Add visit proc to determine if file should be visited.
 * 2017-05-14 Release 1.13.3
