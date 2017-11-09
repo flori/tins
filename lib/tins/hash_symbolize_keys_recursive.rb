@@ -3,7 +3,6 @@ module Tins
     def symbolize_keys_recursive
       inject(self.class.new) do |h,(k, v)|
         k = k.to_s
-        k.empty? and next
         case v
         when Hash
           h[k.to_sym] = v.symbolize_keys_recursive
