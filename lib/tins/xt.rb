@@ -41,4 +41,5 @@ module Tins
   require 'tins/xt/implement'
   require 'tins/xt/complete'
   require 'tins/xt/expose'
+  require 'tins/xt/temp_io'
 end

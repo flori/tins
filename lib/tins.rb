@@ -55,5 +55,6 @@ module Tins
   require 'tins/duration'
   require 'tins/unit'
   require 'tins/expose'
+  require 'tins/temp_io'
 end
 require 'tins/alias'
