@@ -18,5 +18,13 @@ module Tins
       }
       assert_equal returned, :done
     end
+
+    def test_with_proc_and_io_arg
+      returned = temp_io(-> io { io << 'foo' }) { |io|
+        assert_equal 'foo', io.read
+        :done
+      }
+      assert_equal returned, :done
+    end
   end
 end
