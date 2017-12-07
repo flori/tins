@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* 2017-12-05 Release 1.16.3
+ - Improve `temp_io` method by not changing working dir.
 * 2017-12-05 Release 1.16.2
  - Improve `temp_io` method with a given name.
 * 2017-12-05 Release 1.16.1
