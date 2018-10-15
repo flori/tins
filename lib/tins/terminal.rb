@@ -21,7 +21,6 @@ module Tins
       end
     end
 
-
     def rows
       winsize[0] || `stty size 2>/dev/null`.split[0].to_i.nonzero? ||
         `tput lines 2>/dev/null`.to_i.nonzero? || 25

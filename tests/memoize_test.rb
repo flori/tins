@@ -58,8 +58,8 @@ module Tins
     def test_method_cache_protected
       fb1 = FooBar.new
       fb2 = FooBar.new
-      assert_raises(NoMethodError) { fb1.footsie(1, 2) }
-      assert_raises(NoMethodError) { fb2.footsie(1, 2) }
+      assert_raise(NoMethodError) { fb1.footsie(1, 2) }
+      assert_raise(NoMethodError) { fb2.footsie(1, 2) }
       assert_equal true, fb1.__memoize_cache__.empty?
       assert_equal true, fb2.__memoize_cache__.empty?
       assert_equal 1, fb1.__send__(:footsie, 1, 2)
@@ -98,8 +98,8 @@ module Tins
     def test_function_cache_private
       fb1 = FooBar.new
       fb2 = FooBar.new
-      assert_raises(NoMethodError) { fb1.baz(1, 2) }
-      assert_raises(NoMethodError) { fb2.baz(1, 2) }
+      assert_raise(NoMethodError) { fb1.baz(1, 2) }
+      assert_raise(NoMethodError) { fb2.baz(1, 2) }
       assert_equal 1, fb1.__send__(:baz, 1, 2)
       assert_equal 1, fb2.__send__(:baz, 1, 2)
       assert_equal 2, fb1.__send__(:baz, 1, 2, 3)

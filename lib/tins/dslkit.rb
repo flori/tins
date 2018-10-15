@@ -570,7 +570,6 @@ module Tins
     def scope_block(scope_frame, name = :default)
       scope_push(scope_frame, name)
       yield
-      self
     ensure
       scope_pop(name)
     end

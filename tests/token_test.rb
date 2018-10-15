@@ -4,9 +4,9 @@ require 'tins'
 module Tins
   class TokenTest < Test::Unit::TestCase
     def test_token_failures
-      assert_raises(ArgumentError) { Tins::Token.new(bits: 0) }
-      assert_raises(ArgumentError) { Tins::Token.new(length: 0) }
-      assert_raises(ArgumentError) { Tins::Token.new(alphabet: %w[0]) }
+      assert_raise(ArgumentError) { Tins::Token.new(bits: 0) }
+      assert_raise(ArgumentError) { Tins::Token.new(length: 0) }
+      assert_raise(ArgumentError) { Tins::Token.new(alphabet: %w[0]) }
     end
 
     def test_token_for_length

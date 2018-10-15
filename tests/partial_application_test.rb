@@ -18,7 +18,7 @@ module Tins
       trip  = mul.partial(3)
       assert_equal [ 6, 9, 12 ], [ dup[3], trip[3], mul[4, 3] ]
       assert_equal [ 6, 9, 12 ], [ dup[3], trip[3], klon[4, 3] ]
-      assert_raises(ArgumentError) do
+      assert_raise(ArgumentError) do
         mul.partial(1, 2, 3)
       end
     end

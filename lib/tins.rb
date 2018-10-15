@@ -56,5 +56,6 @@ module Tins
   require 'tins/unit'
   require 'tins/expose'
   require 'tins/temp_io'
+  require 'tins/temp_io_enum'
 end
 require 'tins/alias'

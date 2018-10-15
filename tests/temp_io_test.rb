@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'test_helper'
 require 'tins/xt/temp_io'
 
@@ -33,6 +35,17 @@ module Tins
         :done
       }
       assert_equal returned, :done
+    end
+
+    def test_as_enum
+      enum = Tins::TempIO::Enum.new(chunk_size: 5, filename: 'foo') { |file|
+        assert_kind_of File, file
+        file << "hello" << "world"
+      }
+      assert_equal 'foo', enum.filename
+      assert_equal "hello", enum.next
+      assert_equal "world", enum.next
+      assert_raise(StopIteration) { enum.next }
     end
   end
 end

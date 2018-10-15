@@ -180,7 +180,7 @@ class PoliteTest < Test::Unit::TestCase
   def test_dsl_reader
     assert_equal true, @da.on
     assert_equal false, @da.off
-    assert_raises(ArgumentError) do
+    assert_raise(ArgumentError) do
       @da.on false
     end
     assert_equal [ @da.on, @da.off ], @da.states
@@ -221,7 +221,7 @@ class PoliteTest < Test::Unit::TestCase
   def test_symbol_maker
     s = S.new
     assert_equal(:foo, s.instance_exec { foo })
-    assert_raises(NoMethodError) { s.instance_exec { foo 1 }}
+    assert_raise(NoMethodError) { s.instance_exec { foo 1 }}
   end
 
   def test_constant_maker
@@ -229,46 +229,46 @@ class PoliteTest < Test::Unit::TestCase
   end
 
   def test_deflect_block
-    assert_raises(NoMethodError) { 1.foo }
+    assert_raise(NoMethodError) { 1.foo }
     assert !D.deflect?(Integer, :foo)
     D.deflect(Integer, :foo, Tins::Deflect::Deflector.new { :foo }) do
       assert_equal :foo, 1.foo
       assert D.deflect?(Integer, :foo)
     end
     assert !D.deflect?(Integer, :foo)
-    assert_raises(NoMethodError) { 1.foo }
+    assert_raise(NoMethodError) { 1.foo }
   end
 
   def test_deflect
-    assert_raises(NoMethodError) { 1.foo }
+    assert_raise(NoMethodError) { 1.foo }
     assert !D.deflect?(Integer, :foo)
     D.deflect_start(Integer, :foo, Tins::Deflect::Deflector.new { :foo })
     assert_equal :foo, 1.foo
     assert D.deflect?(Integer, :foo)
     t = Thread.new do
       assert !D.deflect?(Integer, :foo)
-      assert_raises(NoMethodError) { 1.foo }
+      assert_raise(NoMethodError) { 1.foo }
     end
     t.join
     D.deflect_stop(Integer, :foo)
     assert !D.deflect?(Integer, :foo)
-    assert_raises(NoMethodError) { 1.foo }
+    assert_raise(NoMethodError) { 1.foo }
   end
 
   def test_deflect_method_missing
-    assert_raises(NoMethodError) { 1.foo }
+    assert_raise(NoMethodError) { 1.foo }
     assert !D.deflect?(Integer, :method_missing)
     D.deflect_start(Integer, :method_missing, Tins::Deflect::Deflector.new { :foo })
     assert_equal :foo, 1.foo
     assert D.deflect?(Integer, :method_missing)
     t = Thread.new do
       assert !D.deflect?(Integer, :method_missing)
-      assert_raises(NoMethodError) { 1.foo }
+      assert_raise(NoMethodError) { 1.foo }
     end
     t.join
     D.deflect_stop(Integer, :method_missing)
     assert !D.deflect?(Integer, :method_missing)
-    assert_raises(NoMethodError) { 1.foo }
+    assert_raise(NoMethodError) { 1.foo }
   end
 
   def test_delegate_d3
