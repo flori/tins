@@ -110,7 +110,7 @@ module Tins
         Tins::Find::Finder.new(visit: :foo, suffix: 'bla')
       end
       finder = Tins::Find::Finder.new(visit: -> path { path.stat.file? })
-      f = File.open(fpath = File.join(@work_dir, 'foo.bar'), 'w')
+      File.new(fpath = File.join(@work_dir, 'foo.bar'), 'w').close
       mkdir_p(gpath = File.join(@work_dir, 'dir'))
       fpath = finder.prepare_path fpath
       gpath = finder.prepare_path gpath

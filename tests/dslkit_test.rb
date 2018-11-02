@@ -9,6 +9,9 @@ class TL
   extend Tins::ThreadLocal
   thread_local :foo
 
+  extend Tins::ThreadLocal
+  thread_local :foo2 do {} end
+
   include Tins::ThreadLocal
   def make_baz
     instance_thread_local :baz
@@ -16,6 +19,8 @@ class TL
 
   extend Tins::ThreadGlobal
   thread_global :bar
+
+  thread_global :bar2 do {} end
 end
 
 class IE
@@ -122,6 +127,19 @@ class PoliteTest < Test::Unit::TestCase
     assert_equal @tl.baz, @tl2.baz
   end
 
+  def test_thread_local_with_default
+    assert_kind_of Hash, @tl.foo2
+    @tl.foo2[:hi] = 1
+    assert_equal 1, @tl.foo2[:hi]
+    thread = Thread.new do
+      assert_kind_of Hash, @tl.foo2
+      assert_nil @tl.foo2[:hi]
+      @tl.foo2[:hi] = 2
+    end
+    thread.join
+    assert_equal 1, @tl.foo2[:hi]
+  end
+
   def test_instance_thread_local
     assert_nil @tl.baz
     @tl.baz = 1
@@ -149,6 +167,18 @@ class PoliteTest < Test::Unit::TestCase
     thread.join
     assert_equal 2, new_bar
     assert_equal 2, @tl.bar
+  end
+
+  def test_thread_global_with_default
+    assert_kind_of Hash, @tl.bar2
+    @tl.bar2[:hi] = 1
+    assert_equal 1, @tl.bar2[:hi]
+    thread = Thread.new do
+      assert_kind_of Hash, @tl.bar2
+      assert_equal 1, @tl.bar2[:hi]
+    end
+    thread.join
+    assert_equal 1, @tl.bar2[:hi]
   end
 
   def test_instance_exec

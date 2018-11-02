@@ -12,7 +12,9 @@ Non yet.
 
 ## Changes
 
-* 2018-10-15 RElease 1.17.0
+* 2018-11-02 Release 1.18.0
+ - `thread_local` and `thread_global` with default block
+* 2018-10-15 Release 1.17.0
  - Add Tins::TempIO::Enum class to wrap `temp_io` into Enumerator.
 * 2017-12-05 Release 1.16.3
  - Improve `temp_io` method by not changing working dir.

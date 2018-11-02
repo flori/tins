@@ -51,8 +51,15 @@ module Tins
   module ThreadGlobal
     # Define a thread global variable named _name_ in this module/class. If the
     # value _value_ is given, it is used to initialize the variable.
-    def thread_global(name, default_value = nil)
+    def thread_global(name, default_value = nil, &default)
       is_a?(Module) or raise TypeError, "receiver has to be a Module"
+
+      default_value && default and raise ArgumentError,
+        "require either default_falue or default block"
+
+      if default_value
+        default = -> * { default_value }
+      end
 
       name = name.to_s
       var_name = "@__#{name}_#{__id__.abs}__"
@@ -61,14 +68,18 @@ module Tins
       modul = self
 
       define_method(name) do
-        lock.synchronize { modul.instance_variable_get var_name }
+        lock.synchronize {
+          if default && !modul.instance_variable_defined?(var_name)
+            modul.instance_variable_set var_name, default.call
+          end
+          modul.instance_variable_get var_name
+        }
       end
 
       define_method(name + "=") do |value|
         lock.synchronize { modul.instance_variable_set var_name, value }
       end
 
-      modul.instance_variable_set var_name, default_value if default_value
       self
     end
 
