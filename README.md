@@ -12,6 +12,8 @@ Non yet.
 
 ## Changes
 
+* * 2018-11-07 Release 1.19.0
+ - Allow annotations without arguments
 * 2018-11-02 Release 1.18.0
  - `thread_local` and `thread_global` with default block
 * 2018-10-15 Release 1.17.0

@@ -23,6 +23,10 @@ module Tins
       bar 'test bar3'
       def third
       end
+
+      foo
+      def fourth
+      end
     end
 
     def test_annotations_via_class
@@ -42,6 +46,23 @@ module Tins
       assert_equal 'test bar2', a.bar_of(:second)
       assert_equal nil, a.foo_of(:third)
       assert_equal 'test bar3', a.bar_of(:third)
+    end
+
+    def test_annotations_without_args
+      assert_equal :annotated, A.foo_of(:fourth)
+      a = A.new
+      assert_equal :annotated, a.foo_of(:fourth)
+    end
+
+    def test_query_methods
+      assert_equal(
+        { :first=>"test foo1", :fourth=>:annotated, :second=>"test foo2" },
+        A.foo_annotations
+      )
+      assert_equal(
+        { :first=>"test foo1", :fourth=>:annotated, :second=>"test foo2" },
+        A.new.foo_annotations
+      )
     end
   end
 end
