@@ -20,7 +20,8 @@ module Tins
     # Parses the argument array _args_, according to the pattern _s_, to
     # retrieve the single character command line options from it. If _s_ is
     # 'xy:' an option '-x' without an option argument is searched, and an
-    # option '-y foo' with an option argument ('foo').
+    # option '-y foo' with an option argument ('foo'). To disable the '-x'
+    # option, pass '~x'.
     #
     # The _defaults_ argument specifies default values for the options.
     #
@@ -29,7 +30,7 @@ module Tins
     def go(s, args = ARGV, defaults: {})
       d = defaults || {}
       b, v = s.scan(/(.)(:?)/).inject([ {}, {} ]) { |t, (o, a)|
-        a = a == ':'
+        a = a == ?:
         t[a ? 1 : 0][o] = a ? nil : false
         t
       }
@@ -85,6 +86,7 @@ module Tins
           end
         end && break
       end
+      r.reject! { |a| /\A~(?<p>.)/ =~ a and (b[p] = false) or true }
       args.replace r
       b.merge(v)
     end

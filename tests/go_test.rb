@@ -63,6 +63,9 @@ module Tins
       r = go('bv:', args = %w[ -v bar ], defaults: { ?b => true, ?v => 'foo' })
       assert_equal({ ?b => 1, 'v' => 'bar' }, r)
       assert_equal [], args
+      r = go('bv:', args = %w[ ~b -v bar ], defaults: { ?b => true, ?v => 'foo' })
+      assert_equal({ ?b => false, 'v' => 'bar' }, r)
+      assert_equal [], args
       r = go('bv:', args = %w[ -b -v bar ], defaults: { ?b => 22, ?v => 'foo' })
       assert_equal({ ?b => 23, 'v' => 'bar' }, r)
       assert_equal [], args
