@@ -86,7 +86,7 @@ module Tins
           end
         end && break
       end
-      r.reject! { |a| /\A~(?<p>.)/ =~ a and (b[p] = false) or true }
+      r.reject! { |a| (b[p] = false) || true if /\A~(?<p>.)/ =~ a  }
       args.replace r
       b.merge(v)
     end

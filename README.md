@@ -13,6 +13,8 @@ Non yet.
 ## Changes
 
 
+* 2018-11-14 Release 1.20.2
+ - Fix ~x options
 * 2018-11-14 Release 1.20.1
  - Add disabling boolean options in Tins::GO#go method.
 * 2018-11-14 Release 1.20.0
