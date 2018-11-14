@@ -12,7 +12,10 @@ Non yet.
 
 ## Changes
 
-* * 2018-11-07 Release 1.19.0
+
+* 2018-11-14 Release 1.20.0
+ - Support default arguments in Tins::GO#go method.
+* 2018-11-07 Release 1.19.0
  - Allow annotations without arguments
 * 2018-11-02 Release 1.18.0
  - `thread_local` and `thread_global` with default block

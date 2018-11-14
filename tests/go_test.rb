@@ -58,5 +58,20 @@ module Tins
       assert_equal({ 'a' => 1, 'b' => 'hello', 'e' => nil }, r)
       assert_equal [], args
     end
+
+    def test_defaults
+      r = go('bv:', args = %w[ -v bar ], defaults: { ?b => true, ?v => 'foo' })
+      assert_equal({ ?b => 1, 'v' => 'bar' }, r)
+      assert_equal [], args
+      r = go('bv:', args = %w[ -b -v bar ], defaults: { ?b => 22, ?v => 'foo' })
+      assert_equal({ ?b => 23, 'v' => 'bar' }, r)
+      assert_equal [], args
+      r = go('bv:', args = %w[ -b ], defaults: { ?b => false, ?v => 'foo' })
+      assert_equal({ ?b => 1, 'v' => 'foo' }, r)
+      assert_equal [], args
+      r = go('bv:', args = %w[ ], defaults: { ?b => false, ?v => 'foo' })
+      assert_equal({ ?b => false, 'v' => 'foo' }, r)
+      assert_equal [], args
+    end
   end
 end
