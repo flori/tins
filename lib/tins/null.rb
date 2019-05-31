@@ -81,7 +81,9 @@ module Tins
     include Tins::Null
   end
 
-  NULL = NullClass.new.freeze
+  NULL = NullClass.new
+
+  NULL.freeze
 
   class NullPlus
     include Tins::Null
