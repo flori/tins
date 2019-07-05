@@ -68,6 +68,14 @@ module Tins
       t2 = Tins::Duration.new(666.12345)
       assert_operator t1, :>, t2
     end
+
+    def test_negative_durations
+      duration = Tins::Duration.new(-42)
+      assert_equal '-0+00:00:42.000000', duration.format
+      assert_equal '-00:00:42', duration.to_s
+      assert_true duration.negative?
+      assert_false Tins::Duration.new(42).negative?
+    end
   end
 end
 

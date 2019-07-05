@@ -3,6 +3,8 @@ module Tins
     include Comparable
 
     def initialize(seconds)
+      @negative = seconds < 0
+      seconds = seconds.abs
       @original_seconds = seconds
       @days, @hours, @minutes, @seconds, @fractional_seconds =
         [ 86_400, 3600, 60, 1, 0 ].inject([ [], seconds ]) {|(r, s), d|
@@ -22,6 +24,10 @@ module Tins
 
     def <=>(other)
       to_f <=> other.to_f
+    end
+
+    def negative?
+      @negative
     end
 
     def days?
@@ -44,9 +50,10 @@ module Tins
       @fractional_seconds > 0
     end
 
-    def format(template = '%d+%h:%m:%s.%f', precision: nil)
-      result = template.gsub(/%[Ddhms]/) { |directive|
+    def format(template = '%S%d+%h:%m:%s.%f', precision: nil)
+      result = template.gsub(/%[DdhmSs]/) { |directive|
         case directive
+        when '%S' then ?- if negative?
         when '%d' then @days
         when '%h' then '%02u' % @hours
         when '%m' then '%02u' % @minutes
@@ -81,6 +88,7 @@ module Tins
         template << '.%f'
         precision = 3
       end
+      template.prepend '%S'
       format template, precision: precision
     end
   end
