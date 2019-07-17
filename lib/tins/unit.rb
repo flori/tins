@@ -42,7 +42,7 @@ module Tins::Unit
       result %= value
     else
       prefix = prefixes[
-        (first_prefix.fraction ? -1 : 1) * Math.log(value) / Math.log(first_prefix.step)
+        (first_prefix.fraction ? -1 : 1) * Math.log(value.abs) / Math.log(first_prefix.step)
       ]
       result = format.sub('%U', "#{prefix.name}#{unit}")
       result %= (value / prefix.multiplier.to_f)

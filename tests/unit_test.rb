@@ -26,6 +26,8 @@ module Tins
     def test_format_multipliers
       assert_equal '23 Kb',
         format(23 * 1024, format: '%d %U')
+      assert_equal '-23 Kb',
+        format(-23 * 1024, format: '%d %U')
       assert_equal '23.1 Kb',
         format(23 * 1024 + 111, format: '%.1f %U')
       assert_equal 'Kbps: 23',
