@@ -1,5 +1,16 @@
 module Tins
   module Attempt
+    # Attempts code in block *attempts* times, sleeping according to *sleep*
+    # between attempts and catching the exception(s) in *exception_class*.
+    #
+    # *sleep* is either a Proc returning a floating point number for duration
+    # as seconds or a Numeric >= 0 or < 0. In the former case this is the
+    # duration directly, in the latter case -*sleep* is the total number of
+    # seconds that is slept before giving up, and every attempt is retried
+    # after a exponentially increasing duration of seconds.
+    #
+    # Iff *reraise* is true the caught exception is reraised after running out
+    # of attempts.
     def attempt(opts = {}, &block)
       sleep           = nil
       exception_class = StandardError
