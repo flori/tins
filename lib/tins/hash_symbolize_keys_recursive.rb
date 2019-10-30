@@ -1,25 +1,42 @@
+require 'tins/thread_local'
+
 module Tins
   module HashSymbolizeKeysRecursive
-    def symbolize_keys_recursive
-      inject(self.class.new) do |h,(k, v)|
-        k = k.to_s
-        case v
-        when Hash
-          h[k.to_sym] = v.symbolize_keys_recursive
-        when Array
-          h[k.to_sym] = a = v.dup
-          v.each_with_index do |x, i|
-            Hash === x and a[i] = x.symbolize_keys_recursive
-          end
-        else
-          h[k.to_sym] = v
-        end
-        h
-      end
+    extend Tins::ThreadLocal
+
+    thread_local :seen
+
+    def symbolize_keys_recursive(circular: nil)
+      self.seen = {}
+      _symbolize_keys_recursive(self, circular: circular)
+    ensure
+      self.seen = nil
     end
 
-    def symbolize_keys_recursive!
-      replace symbolize_keys_recursive
+    def symbolize_keys_recursive!(circular: nil)
+      replace symbolize_keys_recursive(circular: circular)
+    end
+
+    private
+
+    def _symbolize_keys_recursive(object, circular:)
+      case
+      when seen[object.__id__]
+        circular != nil and object = circular
+      when Hash === object
+        seen[object.__id__] = true
+        result = {}
+        object.each do |k, v|
+          result[k.to_s.to_sym] = _symbolize_keys_recursive(v, circular: circular)
+        end
+        object.replace result
+      when Array === object
+        seen[object.__id__] = true
+        object.map! do |v|
+          _symbolize_keys_recursive(v, circular: circular)
+        end
+      end
+      object
     end
   end
 end
