@@ -19,7 +19,7 @@ module Tins
 
     private
 
-    def _symbolize_keys_recursive(object, circular:)
+    def _symbolize_keys_recursive(object, circular: nil)
       case
       when seen[object.__id__]
         circular != nil and object = circular
