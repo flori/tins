@@ -43,7 +43,6 @@ module Tins
     def test_symbolize_with_circular_hash
       circular_hash = {}.tap { |h| h['foo'] = h }
       circular_hash_symbol = {}.tap { |h| h[:foo] = h }
-      p({ 'bar' => circular_hash }.symbolize_keys_recursive)
       assert_equal(
         { bar: circular_hash_symbol },
         { 'bar' => circular_hash }.symbolize_keys_recursive

@@ -29,11 +29,20 @@ module Tins
         object.each do |k, v|
           result[k.to_s.to_sym] = _symbolize_keys_recursive(v, circular: circular)
         end
-        object.replace result
+        if object.frozen?
+          object = result
+        else
+          object.replace result
+        end
       when Array === object
         seen[object.__id__] = true
-        object.map! do |v|
+        result = object.map do |v|
           _symbolize_keys_recursive(v, circular: circular)
+        end
+        if object.frozen?
+          object = result
+        else
+          object.replace result
         end
       end
       object
