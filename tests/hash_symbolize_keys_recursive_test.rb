@@ -31,7 +31,7 @@ module Tins
     def test_symbolize_with_circular_array
       circular_array = [].tap { |a| a << a }
       assert_equal(
-        { foo: circular_array },
+        { foo: [ nil ] },
         { 'foo' => circular_array }.symbolize_keys_recursive
       )
       assert_equal(
@@ -42,7 +42,7 @@ module Tins
 
     def test_symbolize_with_circular_hash
       circular_hash = {}.tap { |h| h['foo'] = h }
-      circular_hash_symbol = {}.tap { |h| h[:foo] = h }
+      circular_hash_symbol = {}.tap { |h| h[:foo] = nil }
       assert_equal(
         { bar: circular_hash_symbol },
         { 'bar' => circular_hash }.symbolize_keys_recursive

@@ -22,28 +22,23 @@ module Tins
     def _symbolize_keys_recursive(object, circular: nil)
       case
       when seen[object.__id__]
-        circular != nil and object = circular
+        object = circular
       when Hash === object
         seen[object.__id__] = true
-        result = {}
+        new_object = object.class.new
+        seen[new_object.__id__] = true
         object.each do |k, v|
-          result[k.to_s.to_sym] = _symbolize_keys_recursive(v, circular: circular)
+          new_object[k.to_s.to_sym] = _symbolize_keys_recursive(v, circular: circular)
         end
-        if object.frozen?
-          object = result
-        else
-          object.replace result
-        end
+        object = new_object
       when Array === object
         seen[object.__id__] = true
-        result = object.map do |v|
-          _symbolize_keys_recursive(v, circular: circular)
+        new_object = object.class.new(object.size)
+        seen[new_object.__id__] = true
+        object.each_with_index do |v, i|
+          new_object[i] = _symbolize_keys_recursive(v, circular: circular)
         end
-        if object.frozen?
-          object = result
-        else
-          object.replace result
-        end
+        object = new_object
       end
       object
     end
