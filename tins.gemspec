@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: tins 1.22.2 ruby lib
+# stub: tins 1.23.0 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "tins".freeze
-  s.version = "1.22.2"
+  s.version = "1.23.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
