@@ -99,7 +99,7 @@ module Tins
                 next if p == "." or p == ".."
                 next if !@show_hidden && p.start_with?('.')
                 p = File.join(path, p)
-                paths.unshift p.untaint
+                paths.unshift p
               end
             end
           end
@@ -107,7 +107,7 @@ module Tins
       end
 
       def prepare_path(path)
-        path = path.dup.taint
+        path = path.dup
         path.extend PathExtension
         path.finder = self
         path
