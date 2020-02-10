@@ -88,12 +88,24 @@ module Tins
     end
 
     def interpret_sleep(sleep, attempts)
-      if Numeric === sleep && sleep < 0 && attempts > 1
-        sleep = -sleep
-        duration_base = compute_duration_base sleep, attempts
-        sleep = lambda { |i| duration_base ** i }
+      case sleep
+      when nil
+      when Numeric
+        if sleep < 0
+          if attempts > 2
+            sleep = -sleep
+            duration_base = compute_duration_base sleep, attempts
+            sleep = lambda { |i| duration_base ** i }
+          else
+            raise ArgumentError, "require > 2 attempts for negative sleep value"
+          end
+        end
+        sleep
+      when Proc
+        sleep
+      else
+        raise TypeError, "require Proc or Numeric sleep argument"
       end
-      sleep
     end
   end
 end
