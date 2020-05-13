@@ -9,6 +9,7 @@ module Tins
       @maximum = Integer(maximum)
       raise ArgumentError, "maximum < 1" if @maximum < 1
       @count = 0
+      @tg = ThreadGroup.new
     end
 
     # The maximum number of worker threads.
@@ -21,6 +22,7 @@ module Tins
           if @count < @maximum
             @count += 1
             Thread.new do
+              @tg.add Thread.current
               yield
               @mutex.synchronize { @count -= 1 }
               @continue.signal
@@ -31,6 +33,10 @@ module Tins
           end
         end
       end
+    end
+
+    def wait
+      @tg.list.each(&:join)
     end
   end
 end
