@@ -38,6 +38,12 @@ module Tins
     def wait
       @tg.list.each(&:join)
     end
+
+    def process
+      yield self
+    ensure
+      wait
+    end
   end
 end
 
