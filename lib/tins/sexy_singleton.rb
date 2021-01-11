@@ -25,9 +25,9 @@ module Tins
           end
         end
 
-        def method_missing(name, *args, &block)
+        def method_missing(name, *args, **kwargs, &block)
           if instance.respond_to?(name)
-            instance.__send__(name, *args, &block)
+            instance.__send__(name, *args, **kwargs, &block)
           else
             super
           end
