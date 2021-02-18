@@ -12,7 +12,6 @@ Non yet.
 
 ## Changes
 
-
 * 2018-11-14 Release 1.20.2
  - Fix ~x options
 * 2018-11-14 Release 1.20.1
@@ -91,12 +90,6 @@ Non yet.
 * 2015-02-04 Release 1.3.4
   - Add some default alphabets to Tins::Token, e. g. Base64
   - Add changes to Readme
-
-## Download
-
-The homepage of this library is located at
-
-* http://flori.github.com/tins
 
 ## Author
 
