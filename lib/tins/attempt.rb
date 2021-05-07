@@ -45,7 +45,16 @@ module Tins
             sleep_duration(sleep, count)
             retry
           end
-          reraise ? raise : false
+          case reraise
+          when Proc
+            reraise.($!)
+          when Exception.class
+            raise reraise, "reraised: #{$!.message}"
+          when true
+            raise $!.class, "reraised: #{$!.message}"
+          else
+            false
+          end
         end
       end
     end

@@ -32,10 +32,32 @@ module Tins
         attempt(attempts: 3, exception_class: MyException) { |c| c == 1 and raise MyException }
     end
 
-    def test_reraise_exception
+    def test_reraise_exception_true
       tries = 0
       assert_raise(MyException) do
         attempt(attempts: 3, exception_class: MyException, reraise: true) do |c|
+          tries = c; raise MyException
+        end
+      end
+      assert_equal 3, tries
+    end
+
+    def test_reraise_exception_exception_class
+      other_exception = Exception
+      tries = 0
+      assert_raise(other_exception) do
+        attempt(attempts: 3, exception_class: MyException, reraise: other_exception) do |c|
+          tries = c; raise MyException
+        end
+      end
+      assert_equal 3, tries
+    end
+
+    def test_reraise_exception_proc
+      other_exception = Exception
+      tries = 0
+      assert_raise(other_exception, 'hi ho') do
+        attempt(attempts: 3, exception_class: MyException, reraise: -> e { raise  other_exception, 'hi ho' }) do |c|
           tries = c; raise MyException
         end
       end
