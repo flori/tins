@@ -51,7 +51,7 @@ module Tins
           when Exception.class
             raise reraise, "reraised: #{$!.message}"
           when true
-            raise $!.class, "reraised: #{$!.message}"
+            raise $!, "reraised: #{$!.message}"
           else
             false
           end
