@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'tins'
 require 'net/smtp'
 require 'time'
