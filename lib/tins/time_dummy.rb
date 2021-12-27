@@ -35,13 +35,25 @@ module Tins
           end
         end
 
-        def new(*a)
-          if dummy
-            dummy.dup
-          elsif caller.first =~ /`now`/
-            really_now
-          else
-            really_new(*a)
+        if RUBY_VERSION >= "3.0"
+          def new(*a, **kw)
+            if dummy
+              dummy.dup
+            elsif caller.first =~ /`now`/
+              really_now(**kw)
+            else
+              really_new(*a, **kw)
+            end
+          end
+        else
+          def new(*a)
+            if dummy
+              dummy.dup
+            elsif caller.first =~ /`now`/
+              really_now
+            else
+              really_new(*a)
+            end
           end
         end
 

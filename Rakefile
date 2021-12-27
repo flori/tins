@@ -18,6 +18,7 @@ GemHadar do
   licenses << 'MIT'
 
   required_ruby_version  '>= 2.0'
+  development_dependency 'utils'
   development_dependency 'test-unit', '~>3.1'
   development_dependency 'simplecov'
   dependency 'sync'
