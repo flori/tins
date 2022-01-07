@@ -57,5 +57,6 @@ module Tins
   require 'tins/expose'
   require 'tins/temp_io'
   require 'tins/temp_io_enum'
+  require 'tins/lru_cache'
 end
 require 'tins/alias'
