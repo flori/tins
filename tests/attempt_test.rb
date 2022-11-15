@@ -127,5 +127,17 @@ module Tins
         method_defined?(:sleep_duration) and remove_method :sleep_duration
       end
     end
+
+    def test_attempt_previous_exception_block_arg
+      last_e = nil
+      attempt(1) { |c, prev_e| last_e = prev_e }
+      assert_nil last_e
+      attempt(2) { |c, prev_e| last_e = prev_e; c == 1 and raise MyError }
+      assert_kind_of MyError, last_e
+      attempt(3) { |c, prev_e| last_e = prev_e; c == 1 and raise MyError }
+      assert_kind_of MyError, last_e
+      attempt(4) { |c, prev_e| last_e = prev_e; c == 1 and raise MyError; c == 2 and raise ArgumentError }
+      assert_kind_of ArgumentError, last_e
+    end
   end
 end

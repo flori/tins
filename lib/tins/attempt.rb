@@ -14,6 +14,7 @@ module Tins
     def attempt(opts = {}, &block)
       sleep           = nil
       exception_class = StandardError
+      prev_exception  = nil
       if Numeric === opts
         attempts = opts
       else
@@ -28,7 +29,7 @@ module Tins
       if exception_class.nil?
         begin
           count += 1
-          if block.call(count)
+          if block.call(count, prev_exception)
             return true
           elsif count < attempts
             sleep_duration(sleep, count)
@@ -38,10 +39,11 @@ module Tins
       else
         begin
           count += 1
-          block.call(count)
+          block.call(count, prev_exception)
           true
         rescue *exception_class
           if count < attempts
+            prev_exception = $!
             sleep_duration(sleep, count)
             retry
           end
