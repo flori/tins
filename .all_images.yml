@@ -7,8 +7,9 @@ script: &script |-
   echo -e "\e[1m"
   ruby -v
   echo -e "\e[0m"
+  bundle update
   bundle
-  rake test
+  bundle exec rake test
 
 images:
   ruby:3.1-alpine: *script

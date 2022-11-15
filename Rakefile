@@ -22,6 +22,9 @@ GemHadar do
 
   required_ruby_version  '>= 2.0'
   development_dependency 'utils'
+  development_dependency 'all_images'
+  development_dependency 'debug'
+  development_dependency 'term-ansicolor'
   development_dependency 'test-unit', '~>3.1'
   development_dependency 'simplecov'
   dependency 'sync'

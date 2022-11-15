@@ -28,12 +28,18 @@ Gem::Specification.new do |s|
   if s.respond_to? :add_runtime_dependency then
     s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 1.12.0"])
     s.add_development_dependency(%q<utils>.freeze, [">= 0"])
+    s.add_development_dependency(%q<all_images>.freeze, [">= 0"])
+    s.add_development_dependency(%q<debug>.freeze, [">= 0"])
+    s.add_development_dependency(%q<term-ansicolor>.freeze, [">= 0"])
     s.add_development_dependency(%q<test-unit>.freeze, ["~> 3.1"])
     s.add_development_dependency(%q<simplecov>.freeze, [">= 0"])
     s.add_runtime_dependency(%q<sync>.freeze, [">= 0"])
   else
     s.add_dependency(%q<gem_hadar>.freeze, ["~> 1.12.0"])
     s.add_dependency(%q<utils>.freeze, [">= 0"])
+    s.add_dependency(%q<all_images>.freeze, [">= 0"])
+    s.add_dependency(%q<debug>.freeze, [">= 0"])
+    s.add_dependency(%q<term-ansicolor>.freeze, [">= 0"])
     s.add_dependency(%q<test-unit>.freeze, ["~> 3.1"])
     s.add_dependency(%q<simplecov>.freeze, [">= 0"])
     s.add_dependency(%q<sync>.freeze, [">= 0"])
