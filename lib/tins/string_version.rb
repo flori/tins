@@ -99,6 +99,10 @@ module Tins
       Version.new(self)
     end
   end
+
+  def self.StringVersion(string)
+    StringVersion::Version.new(string.to_str)
+  end
 end
 
 require 'tins/alias'
