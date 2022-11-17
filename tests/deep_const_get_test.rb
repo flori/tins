@@ -30,7 +30,7 @@ module Tins
     end
 
     def test_deep_const_get_with_const_missing
-      assert_raise(ArgumentError) { deep_const_get '::Tins::DeepConstGetTest::A::D' }
+      assert_raise(ArgumentError) { deep_const_get '::Tins::DeepConstGetTest::A::NIXDA' }
       assert_equal Tins::DeepConstGetTest::C::NotB, deep_const_get('::Tins::DeepConstGetTest::C::B')
     end
   end

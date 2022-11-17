@@ -13,25 +13,33 @@ module Tins
       end
     end
 
-    def self.deep_const_get(path, start_module = Object)
-      path.to_s.split('::').inject(start_module) do |p, c|
-        case
-        when c.empty?
-          if start_module == Object
-            Object
+    if Tins::StringVersion(RUBY_VERSION) < Tins::StringVersion('2.0')
+      def self.deep_const_get(path, start_module = Object)
+        path.to_s.split('::').inject(start_module) do |p, c|
+          case
+          when c.empty?
+            if start_module == Object
+              Object
+            else
+              raise ArgumentError, "top level constants cannot be reached from"\
+                " start module #{start_module.inspect}"
+            end
+          when const_defined_in?(p, c)
+            p.const_get(c)
           else
-            raise ArgumentError, "top level constants cannot be reached from"\
-              " start module #{start_module.inspect}"
-          end
-        when const_defined_in?(p, c)
-          p.const_get(c)
-        else
-          begin
-            p.const_missing(c)
-          rescue NameError => e
-            raise ArgumentError, "can't get const #{path}: #{e}"
+            begin
+              p.const_missing(c)
+            rescue NameError => e
+              raise ArgumentError, "can't get const #{path}: #{e}"
+            end
           end
         end
+      end
+    else
+      def self.deep_const_get(path, start_module = Object)
+        start_module.const_get(path)
+      rescue NameError => e
+        raise ArgumentError, "can't get const #{path}: #{e}"
       end
     end
 
