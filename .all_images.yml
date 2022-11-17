@@ -11,6 +11,8 @@ script: &script |-
   bundle
   bundle exec rake test
 
+fail_fast: yes
+
 images:
   ruby:3.1-alpine: *script
   ruby:3.0-alpine: *script
