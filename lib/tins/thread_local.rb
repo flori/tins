@@ -1,13 +1,9 @@
 module Tins
   module ThreadLocal
-    @@mutex = Mutex.new
-
     @@cleanup = lambda do |my_object_id|
       my_id = "__thread_local_#{my_object_id}__"
-      @@mutex.synchronize do
-        for t in Thread.list
-          t[my_id] = nil if t[my_id]
-        end
+      for t in Thread.list
+        t[my_id] = nil if t[my_id]
       end
     end
 
