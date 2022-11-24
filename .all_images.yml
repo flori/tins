@@ -8,7 +8,6 @@ script: &script |-
   ruby -v
   echo -e "\e[0m"
   bundle update
-  bundle
   bundle exec rake test
 
 fail_fast: yes
