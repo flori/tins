@@ -22,4 +22,3 @@
 18. right goto: 19
 19. cond  if: '1', then: 18, else: 21
 20. halt
-21. halt
