@@ -10,9 +10,9 @@ module Tins
 
     def winsize
       if IO.respond_to?(:console)
-        console = IO.console
-        if console.respond_to?(:winsize)
-          console.winsize
+        c = IO.console
+        if c.respond_to?(:winsize)
+          c.winsize
         else
           []
         end

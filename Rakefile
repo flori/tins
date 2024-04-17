@@ -28,4 +28,5 @@ GemHadar do
   development_dependency 'test-unit', '~>3.1'
   development_dependency 'simplecov'
   dependency 'sync'
+  dependency 'bigdecimal'
 end
