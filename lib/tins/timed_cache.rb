@@ -15,7 +15,7 @@ class TimedCache
     @jitter = jitter
     block or raise ArgumentError, 'block is required'
     @block = block
-    @redis = Redis.new # RedisPool::Pool.connection(:timed_cache, configuration: :redis)
+    @redis = Redis.new
   end
 
   def namespaced(key)
