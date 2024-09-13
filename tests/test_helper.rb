@@ -5,7 +5,7 @@ if ENV['START_SIMPLECOV'].to_i == 1
   end
 end
 begin
-  require 'byebug'
+  require 'debug'
 rescue LoadError
 end
 require 'test/unit'
