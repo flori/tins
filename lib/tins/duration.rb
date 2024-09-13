@@ -2,6 +2,48 @@ module Tins
   class Duration
     include Comparable
 
+    # Returns the number of seconds represented by the given duration string
+    # according to the provided template format.
+    #
+    # @param [String] string The duration string to parse.
+    # @param [String] template for the duration format, see {#format}.
+    #
+    # @return [Integer, Float] The number of (fractional) seconds of the duration.
+    #
+    # @example
+    #   Tins::Duration.parse('6+05:04:03', template: '%S%d+%h:%m:%s') # => 536643
+    #   Tins::Duration.parse('6+05:04:03.21', template: '%S%d+%h:%m:%s.%f') # => 536643.21
+    def self.parse(string, template: '%S%d+%h:%m:%s.%f')
+      s, t = string.to_s.dup, template.dup
+      d, sd = 0, 1
+      loop do
+        t.sub!(/\A(%[Sdhmsf%]|.)/) { |directive|
+          case directive
+          when '%S' then s.sub!(/\A-?/)   { sd *= -1 if _1 == ?-; '' }
+          when '%d' then s.sub!(/\A\d+/)  { d += 86_400 * _1.to_i; '' }
+          when '%h' then s.sub!(/\A\d+/)  { d += 3_600 * _1.to_i; '' }
+          when '%m' then s.sub!(/\A\d+/)  { d += 60 * _1.to_i; '' }
+          when '%s' then s.sub!(/\A\d+/)  { d += _1.to_i; '' }
+          when '%f' then s.sub!(/\A\d+/)  { d += Float(?. + _1); '' }
+          when '%%' then
+            if s[0] == ?%
+              s[0] = ''
+            else
+              raise "expected %s, got #{s.inspect}"
+            end
+          else
+            if directive == s[0]
+              s[0] = ''
+            else
+              raise ArgumentError, "expected #{t.inspect}, got #{s.inspect}"
+            end
+          end
+          ''
+        } or break
+      end
+      sd * d
+    end
+
     def initialize(seconds)
       @negative = seconds < 0
       seconds = seconds.abs

@@ -76,6 +76,24 @@ module Tins
       assert_true duration.negative?
       assert_false Tins::Duration.new(42).negative?
     end
+
+    def test_parse_roundtrip
+      duration_string = '6+05:04:03.210'
+      seconds = Tins::Duration.parse(duration_string)
+      assert_equal duration_string, Tins::Duration.new(seconds).to_s
+    end
+
+    def test_parse_duration_instance
+      duration_string = '6+05:04:03.210'
+      duration = Tins::Duration.new(536643.21)
+      seconds = Tins::Duration.parse(duration)
+      assert_equal duration_string, Tins::Duration.new(seconds).to_s
+    end
+
+    def test_parse_percentage
+      duration_string = '1%2'
+      seconds = Tins::Duration.parse(duration_string, template: '%h%%%m')
+      assert_equal seconds, 3720
+    end
   end
 end
-
