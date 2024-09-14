@@ -1,8 +1,19 @@
 module Tins
   module UniqBy
-    def uniq_by(&b)
-      b ||= lambda { |x| x }
-      inject({}) { |h, e| h[b[e]] ||= e; h }.values
+    if RUBY_VERSION <= "1.8"
+      def uniq_by(&block)
+        block ||= lambda { |x| x }
+        inject({}) { |h, e| h[ block.call(e) ] ||= e; h }.values
+      end
+    else
+      require 'tins/deprecate'
+      extend Tins::Deprecate
+
+      deprecate method:
+        def uniq_by(&block)
+          uniq(&block)
+        end,
+        new_method: :uniq
     end
   end
 end
