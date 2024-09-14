@@ -58,5 +58,6 @@ module Tins
   require 'tins/temp_io'
   require 'tins/temp_io_enum'
   require 'tins/lru_cache'
+  require 'tins/deprecate'
 end
 require 'tins/alias'

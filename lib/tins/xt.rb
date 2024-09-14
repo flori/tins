@@ -42,4 +42,5 @@ module Tins
   require 'tins/xt/complete'
   require 'tins/xt/expose'
   require 'tins/xt/temp_io'
+  require 'tins/xt/deprecate'
 end
