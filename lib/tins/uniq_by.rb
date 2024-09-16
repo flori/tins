@@ -1,6 +1,8 @@
+require 'tins/string_version'
+
 module Tins
   module UniqBy
-    if RUBY_VERSION <= "1.8"
+    if Tins::StringVersion.compare(RUBY_VERSION, :<=, "1.8")
       def uniq_by(&block)
         block ||= lambda { |x| x }
         inject({}) { |h, e| h[ block.call(e) ] ||= e; h }.values

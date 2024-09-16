@@ -98,6 +98,10 @@ module Tins
     def version
       Version.new(self)
     end
+
+    def self.compare(version1, operator, version2)
+      Version.new(version1).send(operator, Version.new(version2))
+    end
   end
 
   def self.StringVersion(string)

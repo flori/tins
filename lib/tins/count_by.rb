@@ -1,6 +1,8 @@
+require 'tins/string_version'
+
 module Tins
   module CountBy
-    if RUBY_VERSION <= "1.8"
+    if Tins::StringVersion.compare(RUBY_VERSION, :<=, "1.8")
       def count_by(&block)
         block ||= lambda { |x| true }
         inject(0) { |s, e| s += 1 if block.call(e); s }

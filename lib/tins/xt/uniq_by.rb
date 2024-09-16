@@ -1,3 +1,4 @@
+require 'tins/string_version'
 require 'tins/uniq_by'
 
 module Tins
@@ -6,7 +7,7 @@ module Tins
   end
 
   class ::Array
-    if RUBY_VERSION <= "1.8"
+    if Tins::StringVersion.compare(RUBY_VERSION, :<=, "1.8")
       include UniqBy
 
       def uniq_by!(&b)

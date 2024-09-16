@@ -1,3 +1,5 @@
+require 'tins/string_version'
+
 module Tins
   module DeepConstGet
     class << self
@@ -19,7 +21,7 @@ module Tins
           new_method: :const_defined?
       end
 
-      if Tins::StringVersion(RUBY_VERSION) < Tins::StringVersion('2.0')
+      if Tins::StringVersion.compare(RUBY_VERSION, :<, '2.0')
         def deep_const_get(path, start_module = Object)
           path.to_s.split('::').inject(start_module) do |p, c|
             case

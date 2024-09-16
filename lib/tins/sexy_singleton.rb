@@ -1,3 +1,4 @@
+require 'tins/string_version'
 require 'singleton'
 
 module Tins
@@ -12,7 +13,7 @@ module Tins
   class << SexySingleton
     alias __old_singleton_included__ included
 
-    if RUBY_VERSION < "2.7"
+    if Tins::StringVersion.compare(RUBY_VERSION, :<, "2.7")
       def included(klass)
         __old_singleton_included__(klass)
         (class << klass; self; end).class_eval do

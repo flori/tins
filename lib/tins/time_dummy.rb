@@ -1,3 +1,4 @@
+require 'tins/string_version'
 require 'time'
 
 module Tins
@@ -35,7 +36,7 @@ module Tins
           end
         end
 
-        if RUBY_VERSION >= "3.0"
+        if Tins::StringVersion.compare(RUBY_VERSION, :>=, "3.0")
           def new(*a, **kw)
             if dummy
               dummy.dup
