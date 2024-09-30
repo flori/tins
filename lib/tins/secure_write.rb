@@ -2,7 +2,7 @@ module Tins
   module SecureWrite
     # Write to a file atomically
     def secure_write(filename, content = nil, mode = 'w')
-      temp = File.new(filename + ".tmp.#$$.#{Time.now.to_f}", mode)
+      temp = File.new(filename.to_s + ".tmp.#$$.#{Time.now.to_f}", mode)
       if content.nil? and block_given?
         yield temp
       elsif !content.nil?
