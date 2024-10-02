@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins/find'
 require 'fileutils'
 require 'tempfile'
 

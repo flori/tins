@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins'
 
 class ConcernTest < Test::Unit::TestCase
   module AC

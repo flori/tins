@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins'
 
 module Tins
   class GeneratorTest < Test::Unit::TestCase

@@ -1,7 +1,6 @@
 require 'test_helper'
 require 'tempfile'
 require 'pathname'
-require 'tins'
 
 module Tins
   class TinsSecureWriteTest < Test::Unit::TestCase

@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins/go'
 
 module Tins
   class GoTest < Test::Unit::TestCase

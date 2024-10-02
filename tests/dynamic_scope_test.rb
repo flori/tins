@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins'
 
 class DynamicScopeTest < Test::Unit::TestCase
   include Tins::DynamicScope

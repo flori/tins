@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins'
 
 class FromModuleTest < Test::Unit::TestCase
   module MyIncludedModule

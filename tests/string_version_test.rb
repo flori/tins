@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'tins'
+require 'tins/xt/string_version'
 
 module Tins
   class StringVersionTest < Test::Unit::TestCase

@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'tins'
+require 'tins/xt/time_freezer'
 
 module Tins
   class TimeFreezerTest < Test::Unit::TestCase

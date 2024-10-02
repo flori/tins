@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins'
 
 module Tins
   class ExtractLastArgumentOptionsTest < Test::Unit::TestCase

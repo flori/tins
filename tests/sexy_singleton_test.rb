@@ -1,4 +1,4 @@
-require 'tins'
+require 'test_helper'
 
 class SexySingletonTest < Test::Unit::TestCase
   class Single

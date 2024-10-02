@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins/named_set'
 
 module Tins
   class NamedSetTest < Test::Unit::TestCase

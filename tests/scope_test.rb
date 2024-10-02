@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'tins'
 
 class ScopeTest < Test::Unit::TestCase
   include Tins::Scope

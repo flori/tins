@@ -1,6 +1,5 @@
 require 'test_helper'
 require 'tempfile'
-require 'tins/lines_file'
 
 module Tins
   class TinsLinesFileTest < Test::Unit::TestCase
