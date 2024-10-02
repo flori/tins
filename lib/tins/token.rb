@@ -15,7 +15,11 @@ module Tins
 
     BASE32_EXTENDED_HEX_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUV".freeze
 
-    BASE16_ALPHABET = "0123456789ABCDEF".freeze
+    BASE16_UPPERCASE_ALPHABET = "0123456789ABCDEF".freeze
+
+    BASE16_LOWERCASE_ALPHABET = "0123456789abcdef".freeze
+
+    BASE16_ALPHABET = BASE16_UPPERCASE_ALPHABET
 
     def initialize(bits: 128, length: nil, alphabet: DEFAULT_ALPHABET, random: SecureRandom)
       alphabet.size > 1 or raise ArgumentError, 'need at least 2 symbols in alphabet'
