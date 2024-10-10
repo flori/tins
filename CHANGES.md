@@ -1,5 +1,26 @@
 # Changes
 
+## 2024-10-10 v1.35.0
+
+### New Features
+* Implemented breadth-first search in hashes using the `Tins::HashBFS` module.
+  + Added tests for the `Tins::HashBFS` module.
+
+### Refactoring and Cleanup
+* Reformatted code.
+* Removed TODO note from the `TODO` file.
+* Cleaned up test requirements:
+  - Added `require 'tins'` to `tests/test_helper.rb`.
+  - Removed unnecessary `require 'tins'` lines from test files.
+* Refactored BASE16 constants and alphabet:
+  + Added `BASE16_LOWERCASE_ALPHABET` constant.
+  + Added `BASE16_UPPERCASE_ALPHABET` constant.
+
+### Tool Updates
+* Updated bundler command to use full index:
+  - Added `--full-index` flag to `bundle install`.
+  - Replaced `bundle update` with `bundle install --full-index`.
+
 ## 2024-09-30 v1.34.0
 
 ### Changes in **1.34.0**
