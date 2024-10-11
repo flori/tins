@@ -5,7 +5,7 @@
 ### Significant Changes
 
 * Refactor bfs method in `hash_bfs.rb`:
-  + Rename `include_nodes` variable to `visit_interal`
+  + Rename `include_nodes` variable to `visit_internal`
   + Update test cases in `hash_bfs_test.rb` to use new method signature
   + Update method signature and docstring to reflect new behavior
 * Update hash conversion logic:
