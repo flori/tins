@@ -6,10 +6,21 @@ module Tins
 
     thread_local :seen
 
-    def bfs(include_nodes: false, &block)
+    # The bfs method performs a breadth-first search on the object's structure,
+    # visiting all elements and yielding their indices and values to the block.
+    #
+    # @param visit_interal [ true, false ] whether to visit internal hashes or arrays
+    # @yield [ index, value ] yields each element's index and value to the block
+    #
+    # @raise [ ArgumentError ] if no &block argument was provided
+    #
+    # @example bfs { |index, value| … } # performs a breadth-first search on the object's structure
+    #
+    # @return [ self ] returns the receiver
+    def bfs(visit_interal: false, &block)
       block or raise ArgumentError, 'require &block argument'
       self.seen = {}
-      queue = []
+      queue     = []
       queue.push([ nil, self ])
       while (index, object = queue.shift)
         case
@@ -20,13 +31,13 @@ module Tins
           object.each do |k, v|
             queue.push([ k, convert_to_hash_or_ary(v) ])
           end
-          include_nodes or next
+          visit_interal or next
         when Array === object
           seen[object.__id__] = true
           object.each_with_index do |v, i|
             queue.push([ i, convert_to_hash_or_ary(v) ])
           end
-          include_nodes or next
+          visit_interal or next
         end
         block.(index, object)
       end

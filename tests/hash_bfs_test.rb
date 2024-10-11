@@ -15,7 +15,7 @@ module Tins
 
     def test_with_nodes
       results = []
-      @hash.bfs(include_nodes: true) { |*a| results.push(a) }
+      @hash.bfs(visit_interal: true) { |*a| results.push(a) }
       assert_equal(
         [[nil, {a:"foo", b:[{c:"baz"}, {d:"quux"}, ["blub"]]}], [:a, "foo"],
          [:b, [{c:"baz"}, {d:"quux"}, ["blub"]]], [0, {c:"baz"}], [1, {d:"quux"}],
@@ -27,7 +27,7 @@ module Tins
     def test_with_nodes_with_circle
       results = []
       @hash[:b].last << @hash
-      @hash.bfs(include_nodes: true) { |*a| results.push(a) }
+      @hash.bfs(visit_interal: true) { |*a| results.push(a) }
       assert_equal 9, results.size
     end
   end
