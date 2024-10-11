@@ -35,14 +35,19 @@ module Tins
       self.seen = nil
     end
 
-    def convert_to_hash_or_ary(v)
+    # Converts the given object into a hash or array if possible
+    #
+    # @param object [Object] The object to convert
+    #
+    # @return [Hash, Array, Object] The converted object or itself if not convertible
+    def convert_to_hash_or_ary(object)
       case
-      when v.respond_to?(:to_hash)
-        v = v.to_hash
-      when v.respond_to?(:to_ary)
-        v = v.to_ary
+      when object.respond_to?(:to_hash)
+        object.to_hash
+      when object.respond_to?(:to_ary)
+        object.to_ary
       else
-        v
+        object
       end
     end
   end
