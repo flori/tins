@@ -1,5 +1,18 @@
 # Changes
 
+## 2024-10-11 v1.36.0
+
+### Significant Changes
+
+* Refactor bfs method in `hash_bfs.rb`:
+  + Rename `include_nodes` variable to `visit_interal`
+  + Update test cases in `hash_bfs_test.rb` to use new method signature
+  + Update method signature and docstring to reflect new behavior
+* Update hash conversion logic:
+  + Rename method parameter from `v` to `object`
+  + Use `object` instead of `v` consistently throughout the method
+  + Add documentation for new method name and behavior
+
 ## 2024-10-10 v1.35.0
 
 ### New Features
@@ -22,8 +35,6 @@
   - Replaced `bundle update` with `bundle install --full-index`.
 
 ## 2024-09-30 v1.34.0
-
-### Changes in **1.34.0**
 
 * **Secure write functionality updated**
   + Added support for `Pathname` objects in `secure_write`
