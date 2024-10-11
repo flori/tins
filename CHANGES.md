@@ -1,5 +1,9 @@
 # Changes
 
+## 2024-10-11 v1.36.1
+
+* Fixed a typo in the code
+
 ## 2024-10-11 v1.36.0
 
 ### Significant Changes
