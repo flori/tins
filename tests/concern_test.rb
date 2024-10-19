@@ -59,9 +59,9 @@ class ConcernTest < Test::Unit::TestCase
   end
 
   def test_concern_prepend
-    a = B.new
+    b = B.new
     assert_equal B, $prepended
-    assert_equal :foo, a.foo
+    assert_equal :foo, b.foo
     assert_equal :bar, B.bar
     assert_equal :baz1, B.baz1
     assert_equal :baz2, B.baz2
