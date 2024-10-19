@@ -38,12 +38,27 @@ class ConcernTest < Test::Unit::TestCase
   $included = nil
   $prepended = nil
 
+  module C2
+    extend Tins::Concern
+
+    def foo
+      :'prepended-foo'
+    end
+  end
+
+
   class A
     include C1
   end
 
   class B
     prepend C1
+  end
+
+  class C
+    def foo
+      :foo
+    end
   end
 
   def test_concern_include
@@ -68,5 +83,12 @@ class ConcernTest < Test::Unit::TestCase
     assert_raise(StandardError) do
       C1.module_eval { prepended {} }
     end
+  end
+
+  def test_prepended_method
+    c = C.new
+    assert_equal :foo, c.foo
+    C.class_eval { prepend C2 }
+    assert_equal :'prepended-foo', c.foo
   end
 end
