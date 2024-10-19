@@ -26,5 +26,14 @@ module Tins
         super
       end
     end
+
+    def class_methods(&block)
+      modul = const_get(:ClassMethods) if const_defined?(:ClassMethods, false)
+      unless modul
+        modul = Module.new
+        const_set(:ClassMethods, modul)
+      end
+      modul.module_eval(&block)
+    end
   end
 end

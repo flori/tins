@@ -12,9 +12,21 @@ class ConcernTest < Test::Unit::TestCase
       :foo
     end
 
+    class_methods do
+      def baz1
+        :baz1
+      end
+    end
+
     module ClassMethods
       def bar
         :bar
+      end
+    end
+
+    class_methods do
+      def baz2
+        :baz2
       end
     end
   end
@@ -30,5 +42,7 @@ class ConcernTest < Test::Unit::TestCase
     assert_equal A, $included
     assert_equal :foo, a.foo
     assert_equal :bar, A.bar
+    assert_equal :baz1, A.baz1
+    assert_equal :baz2, A.baz2
   end
 end
