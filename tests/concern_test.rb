@@ -8,6 +8,10 @@ class ConcernTest < Test::Unit::TestCase
       $included = self
     end
 
+    prepended do
+      $prepended = self
+    end
+
     def foo
       :foo
     end
@@ -32,17 +36,37 @@ class ConcernTest < Test::Unit::TestCase
   end
 
   $included = nil
+  $prepended = nil
 
   class A
     include AC
   end
 
-  def test_concern
+  class B
+    prepend AC
+  end
+
+  def test_concern_include
     a = A.new
     assert_equal A, $included
     assert_equal :foo, a.foo
     assert_equal :bar, A.bar
     assert_equal :baz1, A.baz1
     assert_equal :baz2, A.baz2
+    assert_raise(StandardError) do
+      AC.module_eval { included {} }
+    end
+  end
+
+  def test_concern_prepend
+    a = B.new
+    assert_equal B, $prepended
+    assert_equal :foo, a.foo
+    assert_equal :bar, B.bar
+    assert_equal :baz1, B.baz1
+    assert_equal :baz2, B.baz2
+    assert_raise(StandardError) do
+      AC.module_eval { prepended {} }
+    end
   end
 end
