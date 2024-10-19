@@ -1,5 +1,19 @@
 # Changes
 
+## 2024-10-19 v1.37.0
+
+* Add support for module prepended blocks in **Tins::Concern**:
+  * Added `prepend_features` method to Tins concern
+  * Updated ConcernTest to test prepend feature
+  * Raise StandardError for duplicate block definitions for included and 
+    prepended blocks
+* Added `class_methods` method to Tins concern:
+  * Added `class_methods` method to lib/tins/concern.rb
+    - Creates or retrieves ClassMethods module for defining class-level methods
+  * Updated tests in `tests/concern_test.rb`
+    - Added test for new `baz1` and `baz2` methods
+      + Tested availability of `bar`, `baz1`, and `baz2` methods on A
+
 ## 2024-10-11 v1.36.1
 
 * Fixed a typo in the code
