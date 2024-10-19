@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class ConcernTest < Test::Unit::TestCase
-  module AC
+  module C1
     extend Tins::Concern
 
     included do
@@ -39,11 +39,11 @@ class ConcernTest < Test::Unit::TestCase
   $prepended = nil
 
   class A
-    include AC
+    include C1
   end
 
   class B
-    prepend AC
+    prepend C1
   end
 
   def test_concern_include
@@ -54,7 +54,7 @@ class ConcernTest < Test::Unit::TestCase
     assert_equal :baz1, A.baz1
     assert_equal :baz2, A.baz2
     assert_raise(StandardError) do
-      AC.module_eval { included {} }
+      C1.module_eval { included {} }
     end
   end
 
@@ -66,7 +66,7 @@ class ConcernTest < Test::Unit::TestCase
     assert_equal :baz1, B.baz1
     assert_equal :baz2, B.baz2
     assert_raise(StandardError) do
-      AC.module_eval { prepended {} }
+      C1.module_eval { prepended {} }
     end
   end
 end
