@@ -1,5 +1,10 @@
 # Changes
 
+## 2024-12-13 v1.37.1
+
+* Renamed `ZERO` and `BINARY` constants to `ZERO_RE` and `BINARY_RE` to avoid
+  collisions with Logger/File constants.
+
 ## 2024-10-19 v1.37.0
 
 * Add support for module prepended blocks in **Tins::Concern**:
