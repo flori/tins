@@ -3,12 +3,12 @@ module Tins
     module Constants
       SEEK_SET = ::File::SEEK_SET
 
-      ZERO   = "\x00"
-      BINARY = "\x01-\x1f\x7f-\xff"
+      ZERO_RE   = "\x00"
+      BINARY_RE = "\x01-\x1f\x7f-\xff"
 
       if defined?(::Encoding)
-        ZERO.force_encoding(Encoding::ASCII_8BIT)
-        BINARY.force_encoding(Encoding::ASCII_8BIT)
+        ZERO_RE.force_encoding(Encoding::ASCII_8BIT)
+        BINARY_RE.force_encoding(Encoding::ASCII_8BIT)
       end
     end
 
@@ -39,9 +39,9 @@ module Tins
       data = read options[:buffer_size]
       !data or data.empty? and return nil
       data_size = data.size
-      data.count(Constants::ZERO).to_f / data_size >
+      data.count(Constants::ZERO_RE).to_f / data_size >
         options[:percentage_zeros] / 100.0 and return true
-      data.count(Constants::BINARY).to_f / data_size >
+      data.count(Constants::BINARY_RE).to_f / data_size >
         options[:percentage_binary] / 100.0
     ensure
       old_pos and seek old_pos, Constants::SEEK_SET
