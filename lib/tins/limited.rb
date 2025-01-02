@@ -24,6 +24,7 @@ module Tins
             Thread.new do
               @tg.add Thread.current
               yield
+            ensure
               @mutex.synchronize { @count -= 1 }
               @continue.signal
             end
