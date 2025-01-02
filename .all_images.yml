@@ -1,6 +1,5 @@
 dockerfile: |-
   RUN apk add --no-cache build-base git
-  RUN gem update --system
   RUN gem install gem_hadar bundler
 
 script: &script |-
@@ -13,6 +12,7 @@ script: &script |-
 fail_fast: yes
 
 images:
+  ruby:3.4-alpine: *script
   ruby:3.3-alpine: *script
   ruby:3.2-alpine: *script
   ruby:3.1-alpine: *script
