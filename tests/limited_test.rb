@@ -2,36 +2,21 @@ require 'test_helper'
 
 module Tins
   class LimitedTest < Test::Unit::TestCase
-    def test_limited
-      count = {}
-      limited = Tins::Limited.new(5)
-      5.times do
-        limited.execute do
-          count[Thread.current] = true
-          sleep 1
-        end
-      end
-      until count.size >= 5
-        sleep 0.1
-      end
-      assert_equal 5, count.keys.uniq.size
-      assert_equal 5, limited.wait.size
-    end
-
-    def test_process
+    def test_process_with
       count = {}
       Tins::Limited.new(5).process do |limited|
-        5.times do
+        10.times do
           limited.execute do
             count[Thread.current] = true
             sleep 1
           end
         end
-        until count.size >= 5
+        until count.size >= 10
           sleep 0.1
         end
-        assert_equal 5, count.keys.uniq.size
+        limited.stop
       end
+      assert_equal 10, count.keys.uniq.size
     end
   end
 end
