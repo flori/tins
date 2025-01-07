@@ -1,5 +1,19 @@
 # Changes
 
+## 2025-01-04 v1.38.0
+
+* Improved Tins::Limited concurrency handling:
+  * Added `execute` method for task submission with a block
+  * Changed `process` method to manage thread execution and queue management
+  * Introduced `stop` method to signal processing termination
+  * Modified test cases in `limited_test.rb` to accommodate new functionality
+  * Added `ensure` clause to decrement counter and signal continuation after
+    block execution
+* Added support for Ruby **3.4** Alpine image:
+  * Updated `.all_images.yml` to include Ruby **3.4**-alpine environment
+  * Added `ruby:3.4-alpine` to the list of supported images
+  * Now uses **3.4** instead of **3.3**, **3.2**, and **3.1** for ruby versions
+
 ## 2024-12-13 v1.37.1
 
 * Renamed `ZERO` and `BINARY` constants to `ZERO_RE` and `BINARY_RE` to avoid
