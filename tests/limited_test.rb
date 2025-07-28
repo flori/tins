@@ -4,7 +4,7 @@ module Tins
   class LimitedTest < Test::Unit::TestCase
     def test_process_with
       count = {}
-      Tins::Limited.new(5).process do |limited|
+      Tins::Limited.new(5, name: 'sleeper').process do |limited|
         10.times do
           limited.execute do
             count[Thread.current] = true

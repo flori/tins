@@ -3,13 +3,14 @@ require 'thread'
 module Tins
   class Limited
     # Create a Limited instance, that runs _maximum_ threads at most.
-    def initialize(maximum)
-      @mutex =  Mutex.new
-      @continue = ConditionVariable.new
-      @maximum = Integer(maximum)
+    def initialize(maximum, name: nil)
+      @maximum  = Integer(maximum)
       raise ArgumentError, "maximum < 1" if @maximum < 1
-      @count = 0
-      @tg = ThreadGroup.new
+      @mutex    = Mutex.new
+      @continue = ConditionVariable.new
+      @name     = name
+      @count    = 0
+      @tg       = ThreadGroup.new
     end
 
     # The maximum number of worker threads.
@@ -22,8 +23,9 @@ module Tins
     end
 
     def process
-      @tasks = Queue.new
+      @tasks    = Queue.new
       @executor = create_executor
+      @executor.name = @name if @name
       catch :stop do
         loop do
           yield self
