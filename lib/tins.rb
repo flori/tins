@@ -25,6 +25,7 @@ module Tins
   require 'tins/string_camelize'
   require 'tins/string_underscore'
   require 'tins/string_version'
+  require 'tins/string_named_placeholders'
   require 'tins/subhash'
   require 'tins/time_dummy'
   require 'tins/date_dummy'
