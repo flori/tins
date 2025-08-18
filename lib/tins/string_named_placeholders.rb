@@ -49,5 +49,22 @@ module Tins
           (default.is_a?(Proc) ? default.(placeholder) : default)
       end
     end
+
+    # Interpolate named placeholders in the string with values from a hash.
+    #
+    # This method takes a hash of placeholder values and substitutes the named
+    # placeholders found in the string with their corresponding values.
+    # Placeholders that are not present in the input hash will be replaced with
+    # the provided default value.
+    #
+    # @param hash [Hash] A hash mapping placeholder names to their corresponding values
+    # @param default [Object, Proc] The default value to use for placeholders not present in the hash
+    #                              If a proc is provided, it will be called with the placeholder symbol
+    #
+    # @return [String] A new string with named placeholders replaced by their values
+    def named_placeholders_interpolate(hash, default: nil)
+      values = named_placeholders_assign(hash, default:)
+      self % values
+    end
   end
 end

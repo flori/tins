@@ -65,5 +65,45 @@ module Tins
       result = template % values
       assert_equal "Hello Charlie, you are 30 years old and live in NYC", result
     end
+
+    def test_named_placeholders_interpolate
+      # Basic interpolation with defaults
+      result = "Hello %{name}, you are %{age} years old".named_placeholders_interpolate({name: 'Alice'}, default: '[n/a]')
+      assert_equal "Hello Alice, you are [n/a] years old", result
+
+      # All values provided - should work without defaults
+      result = "Hello %{name}, you are %{age} years old".named_placeholders_interpolate({name: 'Bob', age: 30})
+      assert_equal "Hello Bob, you are 30 years old", result
+
+      # Dynamic defaults via Proc
+      result = "Hello %{name}, you are %{age} years old".named_placeholders_interpolate(
+        {name: 'Charlie'},
+        default: ->(key) { "[missing_#{key}]" }
+      )
+      assert_equal "Hello Charlie, you are [missing_age] years old", result
+
+      # Key conversion from string keys
+      result = "Hello %{name}, you are %{age} years old".named_placeholders_interpolate(
+        {'name' => 'David'},
+        default: '[n/a]'
+      )
+      assert_equal "Hello David, you are [n/a] years old", result
+
+      # No placeholders in template
+      result = "Hello World".named_placeholders_interpolate({some_key: 'value'})
+      assert_equal "Hello World", result
+
+      # Empty string values
+      result = "Hello %{name}".named_placeholders_interpolate({name: ''}, default: '[n/a]')
+      assert_equal "Hello ", result
+
+      # Raise custom expcetion if missing
+      template = "Hello %{name}, you are %{age} years old and live in %{city}"
+      assert_raise(ArgumentError, "Required placeholder age not provided") do
+        template.named_placeholders_interpolate(
+          {name: 'Alice'},
+          default: ->(key) { raise ArgumentError, "Required placeholder #{key} not provided" })
+      end
+    end
   end
 end
