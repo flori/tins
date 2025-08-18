@@ -1,5 +1,13 @@
 # Changes
 
+## 2025-08-18 v1.41.0
+
+- Added new `named_placeholders_interpolate` method for template substitution
+- Method supports both static and dynamic default values via Proc
+- Maintains backward compatibility with existing `named_placeholders_assign` method
+- Includes comprehensive tests for all functionality and error handling
+- Uses `named_placeholders_assign` internally for consistent implementation
+
 ## 2025-08-18 v1.40.0
 
 - Added `Tins::StringNamedPlaceholders` module with `named_placeholders` and
