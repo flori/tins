@@ -1,5 +1,38 @@
 # Changes
 
+## 2025-08-18 v1.40.0
+
+- Added `Tins::StringNamedPlaceholders` module with `named_placeholders` and
+  `named_placeholders_assign` methods for string template substitution
+- Implemented support for both static and dynamic default values using Proc
+  objects
+- Extended `String` class with `tins/xt/string` to include the new named
+  placeholders functionality
+- Enhanced test coverage with comprehensive tests for all named placeholders
+  functionality including error handling and duplicate placeholder management
+- Replaced manual SimpleCov setup with `GemHadar::SimpleCov.start` in test
+  helper
+
+## 2025-07-30 v1.39.1
+
+- Updated `gem_hadar` development dependency to version **1.22**
+- Bumped version from '1.39.0' to '1.39.1' in lib/tins/version.rb
+- Updated `s.version` in tins.gemspec from "1.39.0" to "1.39.1"
+- Updated stub version in tins.gemspec from **1.39.0** to **1.39.1**
+
+## 2025-07-30 v1.39.0
+
+- Updated `VERSION` constant in `lib/tins/version.rb` from **1.38.0** to **1.39.0**
+- Updated gem stub and version in `tins.gemspec`
+- Updated `s.rubygems_version` from **3.6.2** to **3.6.9**
+- Updated `s.add_development_dependency :gem_hadar` from ~> **1.19** to ~> **1.21**
+- Added support for thread naming in `Limited` class
+  - Added `name` parameter to `Limited#initialize`
+  - Set `@name` attribute when provided
+  - Set executor name with `@name` if available
+  - Updated tests to use named threads
+- Removed `binary` option from discover block in `.utilsrc`
+
 ## 2025-01-04 v1.38.0
 
 * Improved Tins::Limited concurrency handling:
