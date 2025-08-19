@@ -1,6 +1,8 @@
 module Tins
   require 'tins/string_camelize'
-  class ::String
-    include StringCamelize
+  unless String.respond_to?(:camelize)
+    class ::String
+      include StringCamelize
+    end
   end
 end
