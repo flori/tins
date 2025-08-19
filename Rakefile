@@ -14,17 +14,19 @@ GemHadar do
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx',
     '.AppleDouble', '.DS_Store', 'tags', '.bundle', '.byebug_history'
   package_ignore '.all_images.yml', '.tool-versions', '.gitignore', 'VERSION',
-    '.utilsrc', 'TODO', '.github'
+    '.utilsrc', 'TODO', '.github', '.contexts'
 
   readme      'README.md'
   licenses << 'MIT'
 
   required_ruby_version  '>= 2.0'
-  development_dependency 'all_images'
-  development_dependency 'debug'
-  development_dependency 'term-ansicolor'
-  development_dependency 'test-unit', '~>3.1'
-  development_dependency 'simplecov'
+
   dependency 'sync'
   dependency 'bigdecimal'
+  development_dependency 'all_images'
+  development_dependency 'context_spook', '~> 0.2'
+  development_dependency 'debug'
+  development_dependency 'simplecov'
+  development_dependency 'term-ansicolor'
+  development_dependency 'test-unit', '~> 3.1'
 end
