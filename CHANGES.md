@@ -1,5 +1,16 @@
 # Changes
 
+## 2025-08-19 v1.42.0
+
+- Improved core class extension safety by using `respond_to?` checks to avoid
+  overriding existing methods such as `deep_dup`, `camelize`, and `underscore`
+- Simplified GitHub directory ignore patterns in `Rakefile` by removing
+  recursive glob pattern for `.github` directory and directly specifying it as
+  a single entry
+- Added documentation context files and YARD cheatsheet, including `.contexts/`
+  directory with code comment examples and updated `Rakefile` and
+  `tins.gemspec` to include context files and `context_spook` dependency
+
 ## 2025-08-18 v1.41.0
 
 - Added new `named_placeholders_interpolate` method for template substitution
