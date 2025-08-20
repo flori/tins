@@ -14,7 +14,9 @@ GemHadar do
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx',
     '.AppleDouble', '.DS_Store', 'tags', '.bundle', '.byebug_history'
   package_ignore '.all_images.yml', '.tool-versions', '.gitignore', 'VERSION',
-    '.utilsrc', 'TODO', '.github', '.contexts'
+    '.utilsrc', 'TODO',
+    *Dir.glob('.github/**/*', File::FNM_DOTMATCH),
+    *Dir.glob('.contexts/*', File::FNM_DOTMATCH)
 
   readme      'README.md'
   licenses << 'MIT'
