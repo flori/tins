@@ -67,7 +67,6 @@ want to document using YARD.
     #
     # @return [optional, types, ...] description
     # @return [true] always returns true
-    # @return [void]
     # @return [String, nil] the contents of our object or nil
     #   if the object has not been filled with data.
     #
