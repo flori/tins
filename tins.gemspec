@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.specification_version = 4
 
-  s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 2.0".freeze])
+  s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 2.2".freeze])
   s.add_development_dependency(%q<all_images>.freeze, [">= 0".freeze])
   s.add_development_dependency(%q<context_spook>.freeze, ["~> 0.2".freeze])
   s.add_development_dependency(%q<debug>.freeze, [">= 0".freeze])

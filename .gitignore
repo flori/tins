@@ -5,6 +5,7 @@
 .byebug_history
 .rbx
 .rvmrc
+.yardoc
 Gemfile.lock
 coverage
 pkg

@@ -12,7 +12,7 @@ GemHadar do
   test_dir    'tests'
   test_files.concat Dir["#{test_dir}/*_test.rb"]
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage', '.rbx',
-    '.AppleDouble', '.DS_Store', 'tags', '.bundle', '.byebug_history'
+    '.AppleDouble', '.DS_Store', 'tags', '.bundle', '.byebug_history', '.yardoc'
   package_ignore '.all_images.yml', '.tool-versions', '.gitignore', 'VERSION',
     '.utilsrc', 'TODO', '.github', '.contexts'
 
