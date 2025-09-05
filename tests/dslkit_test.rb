@@ -65,6 +65,12 @@ class DA
   end
 
   dsl_reader :abc, *%w[a b c]
+
+  dsl_lazy_accessor :lazy do
+    :foo
+  end
+
+  dsl_lazy_accessor :lazy_no_default
 end
 
 class I
@@ -218,6 +224,15 @@ class PoliteTest < Test::Unit::TestCase
     assert_equal %w[a b c d], @da.abc
     @da.instance_variable_set :@abc, %w[a b c]
     assert_equal %w[a b c], @da.abc
+  end
+
+  def test_lazy_accessor
+    assert_equal :foo, @da.lazy
+    @da.lazy { :bar }
+    assert_equal :bar, @da.lazy
+    assert_equal nil, @da.lazy_no_default
+    @da.lazy_no_default { :bar }
+    assert_equal :bar, @da.lazy_no_default
   end
 
   def test_dsl_accessor_multiple

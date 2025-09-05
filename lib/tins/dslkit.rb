@@ -12,8 +12,6 @@ module Tins
   # The module can be included into other modules/classes to make the methods available.
   module Eigenclass
     # Returns the eigenclass of this object.
-    def eigenclass
-    end
     alias eigenclass singleton_class
 
     # Evaluates the _block_ in context of the eigenclass of this object.
@@ -240,6 +238,36 @@ module Tins
         end
       end
     end
+
+      # The dsl_lazy_accessor method defines a lazy-loaded accessor method with
+      # a default block.
+      #
+      # This method creates a dynamic accessor that initializes its value
+      # lazily when first accessed. It stores the default value as a block in
+      # an instance variable and evaluates it on first access. If a block is
+      # passed to the accessor, it sets the instance variable to that block for
+      # future use.
+      #
+      # @param name [ Object ] the name of the accessor method to define
+      # @yield [ default ] optional block that provides the default value for initialization
+      #
+      # @return [ Symbol ] returns name of the defined method.
+      def dsl_lazy_accessor(name, &default)
+        variable = "@#{name}"
+        define_method(name) do |*args, &block|
+          if !block && args.empty?
+            if instance_variable_defined?(variable)
+              instance_eval(&instance_variable_get(variable))
+            elsif default
+              instance_eval(&default)
+            end
+          elsif block
+            instance_variable_set(variable, block)
+          else
+            raise ArgumentError, '&block argument is required'
+          end
+        end
+      end
 
     # This method creates a dsl reader accessor, that behaves exactly like a
     # #dsl_accessor but can only be read not set.
