@@ -1,5 +1,11 @@
 # Changes
 
+## 2025-09-05 v1.43.0
+
+- Added new `dsl_lazy_accessor` method that creates lazy-loaded accessors with
+  support for default blocks and dynamic block assignment
+- Removed support for Ruby versions **3.1** and **3.0** from image definitions
+
 ## 2025-08-19 v1.42.0
 
 - Improved core class extension safety by using `respond_to?` checks to avoid
