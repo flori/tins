@@ -13,9 +13,9 @@ GemHadar do
   test_files.concat Dir["#{test_dir}/*_test.rb"]
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage',
     '.rbx', '.AppleDouble', '.DS_Store', 'tags', '.bundle', '.byebug_history',
-    '.yardoc', 'doc'
+    '.yardoc', 'doc', 'TODO.md'
   package_ignore '.all_images.yml', '.tool-versions', '.gitignore', 'VERSION',
-    '.utilsrc', 'TODO', '.github', '.contexts'
+    '.utilsrc', '.github', '.contexts'
 
   readme      'README.md'
   licenses << 'MIT'
@@ -29,5 +29,5 @@ GemHadar do
   development_dependency 'debug'
   development_dependency 'simplecov'
   development_dependency 'term-ansicolor'
-  development_dependency 'test-unit', '~> 3.1'
+  development_dependency 'test-unit', '~> 3.7'
 end
