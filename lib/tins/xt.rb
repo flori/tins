@@ -44,4 +44,5 @@ module Tins
   require 'tins/xt/temp_io'
   require 'tins/xt/deprecate'
   require 'tins/xt/hash_bfs'
+  require 'tins/xt/minimize'
 end
