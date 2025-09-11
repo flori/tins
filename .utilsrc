@@ -27,13 +27,17 @@ code_indexer do
   verbose false
 
   gems = %w[
+    base64
     bigdecimal
+    date
+    json
     mize
-    test-unit
+    mize
+    ostruct
     stringio
     sync
     term-ansicolor
-    xdg
+    test-unit
   ]
 
   paths {
