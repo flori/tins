@@ -1,12 +1,12 @@
 dockerfile: |-
   RUN apk add --no-cache build-base yaml-dev git
-  RUN gem install gem_hadar bundler
 
 script: &script |-
+  gem install bundler -v $(ruby -e "print File.read('Gemfile.lock').scan(/^BUNDLED WITH\s+(\d+\.\d+\.\d+)/).flatten.first")
   echo -e "\e[1m"
   ruby -v
   echo -e "\e[0m"
-  bundle install --full-index
+  bundle install
   bundle exec rake test
 
 fail_fast: yes
@@ -15,3 +15,4 @@ images:
   ruby:3.4-alpine: *script
   ruby:3.3-alpine: *script
   ruby:3.2-alpine: *script
+  ruby:3.1-alpine: *script
