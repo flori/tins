@@ -35,6 +35,16 @@ module Tins
       self
     end
 
+    # Recurses through nested enumerators to yield all combinations
+    #
+    # This method performs a recursive traversal of nested enumerators,
+    # building tuples by iterating through each enumerator at its respective
+    # level and yielding complete combinations when the deepest level is
+    # reached
+    #
+    # @param tuple [ Array ] the current tuple being built during recursion
+    # @param i [ Integer ] the current index/level in the recursion
+    # @yield [ Array ] yields a duplicate of the completed tuple
     def recurse(tuple = [ nil ] * @n, i = 0, &block)
       if i < @n - 1 then
         @enums[i].__send__(@iterators[i]) do |x|
@@ -64,5 +74,3 @@ module Tins
     end
   end
 end
-
-require 'tins/alias'
