@@ -40,7 +40,9 @@ module Tins
           __send__(method, *(args + rest), &block)
         end
       }
-      m.set_temporary_name "#{m.class} for method #{name.inspect}"
+      if m.respond_to?(:set_temporary_name)
+        m.set_temporary_name "#{m.class} for method #{name.inspect}"
+      end
       extend m
     end
   end
@@ -67,7 +69,9 @@ module Tins
           __send__(method, *(args + rest), &block)
         end
       }
-      m.set_temporary_name "#{m.class} for method #{name.inspect}"
+      if m.respond_to?(:set_temporary_name)
+        m.set_temporary_name "#{m.class} for method #{name.inspect}"
+      end
       include m
     end
   end
