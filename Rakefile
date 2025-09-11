@@ -20,12 +20,12 @@ GemHadar do
   readme      'README.md'
   licenses << 'MIT'
 
-  required_ruby_version  '>= 2.0'
+  required_ruby_version  '>= 3.1'
 
   dependency 'sync'
   dependency 'bigdecimal'
+  dependency 'mize',      '~> 0.6'
   development_dependency 'all_images'
-  development_dependency 'context_spook', '~> 0.2'
   development_dependency 'debug'
   development_dependency 'simplecov'
   development_dependency 'term-ansicolor'
