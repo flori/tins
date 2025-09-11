@@ -9,6 +9,7 @@
 Gemfile.lock
 TODO.md
 coverage
+cscope.out
 doc
 pkg
 tags
