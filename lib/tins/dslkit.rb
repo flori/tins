@@ -536,45 +536,6 @@ module Tins
     end
   end
 
-  # class CoffeeMaker
-  #   include Tins::SymbolMaker
-  #
-  #   extend Tins::DSLAccessor
-  #
-  #   dsl_accessor(:state) { :off }
-  #
-  #   dsl_accessor :allowed_states, :on, :off
-  #
-  #   def process
-  #     allowed_states.include?(state) or fail "Explode!!!"
-  #     if state == on
-  #       puts "Make coffee."
-  #     else
-  #       puts "Idle..."
-  #     end
-  #   end
-  # end
-  # cm = CoffeeMaker.new
-  # cm.instance_eval do
-  #   state      # => :off
-  #   state on
-  #   state      # => :on
-  #   process    # => outputs "Make coffee."
-  # end
-  # This module can be included in another module/class. It generates a symbol
-  # for every missing method that was called in the context of this
-  # module/class.
-  module SymbolMaker
-    # Returns a symbol (_id_) for every missing method named _id_.
-    def method_missing(id, *args)
-      if args.empty?
-        id
-      else
-        super
-      end
-    end
-  end
-
   # This module enables dynamic constant resolution by converting missing
   # constant references into symbols. When a constant is not found, instead of
   # raising NameError, the constant name is returned as a symbol. This is
