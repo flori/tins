@@ -10,45 +10,174 @@ module Tins
   # names.
   #
   # The module can be included into other modules/classes to make the methods available.
+  #
+  # @example Using eigenclass alias
+  #   class MyClass
+  #     include Tins::Eigenclass
+  #   end
+  #
+  #   puts MyClass.eigenclass  # => MyClass singleton class
   module Eigenclass
     # Returns the eigenclass of this object.
+    #
+    # @return [Class] The eigenclass (singleton class) of the receiver
     alias eigenclass singleton_class
 
     # Evaluates the _block_ in context of the eigenclass of this object.
+    #
+    # This method allows you to define singleton methods or access singleton
+    # class methods directly on an object.
+    #
+    # @yield [] The block to evaluate in the eigenclass context
+    # @yieldparam obj [Object] The object whose eigenclass is being evaluated
+    # @return [Object] The result of the last expression in the block
+    # @example Defining class methods using attr_accessor on a class
+    #   class MyClass
+    #     include Tins::Eigenclass
+    #   end
+    #
+    #   MyClass.eigenclass_eval { attr_accessor :foo }
+    #   MyClass.foo = "bar"
+    #   MyClass.foo  # => "bar"
     def eigenclass_eval(&block)
       eigenclass.instance_eval(&block)
     end
+
+
+    # Evaluates the _block_ in context of the eigenclass's class context.
+    #
+    # This method allows you to define class methods on the eigenclass itself,
+    # which is different from +eigenclass_eval+ that defines singleton methods
+    # on the object instance.
+    #
+    # @yield [] The block to evaluate in the eigenclass's class context
+    # @return [Object] The result of the last expression in the block
+    #
+    # @example Defining class methods on eigenclass
+    #   class MyClass
+    #     include Tins::Eigenclass
+    #   end
+    #
+    #   obj = MyClass.new
+    #   obj.eigenclass_class_eval { def foo; "bar"; end }
+    #   obj.foo  # => "bar"
+    def eigenclass_class_eval(&block)
+      eigenclass.class_eval(&block)
+    end
   end
 
+  # This module provides convenient helpers for defining class methods and
+  # attributes on classes themselves.
+  #
+  # @example Using ClassMethod module to define class methods dynamically
+  #   class MyClass
+  #     include Tins::ClassMethod
+  #   end
+  #
+  #   # Define class methods using the ClassMethod helpers
+  #   MyClass.class_attr_accessor :foo
+  #   MyClass.foo = "bar"
+  #   MyClass.foo  # => "bar"
+  #
+  #   MyClass.class_define_method(:baz) { "qux" }
+  #   MyClass.baz  # => "qux"
   module ClassMethod
     include Eigenclass
 
     # Define a class method named _name_ using _block_.
+    #
+    # @param name [Symbol] The name of the method to define
+    # @yield [Object] The block that defines the method's behavior
+    # @return [void]
     def class_define_method(name, &block)
       eigenclass_eval { define_method(name, &block) }
     end
 
     # Define reader and writer attribute methods for all <i>*ids</i>.
+    #
+    # @param ids [Array<Symbol>] The names of the attributes to define
+    # @return [void]
     def class_attr_accessor(*ids)
       eigenclass_eval { attr_accessor(*ids) }
     end
 
+    # Alias for {class_attr_accessor}
+    #
+    # @see class_attr_accessor
+    alias class_attr class_attr_accessor
+
     # Define reader attribute methods for all <i>*ids</i>.
+    #
+    # @param ids [Array<Symbol>] The names of the attributes to define
+    # @return [void]
     def class_attr_reader(*ids)
       eigenclass_eval { attr_reader(*ids) }
     end
 
     # Define writer attribute methods for all <i>*ids</i>.
+    #
+    # @param ids [Array<Symbol>] The names of the attributes to define
+    # @return [void]
     def class_attr_writer(*ids)
       eigenclass_eval { attr_writer(*ids) }
     end
-
-    # I boycott attr!
   end
 
+  # Provides thread-safe global variable functionality for modules and classes.
+  #
+  # This module enables the definition of thread-global variables that maintain
+  # their state per thread within a given module or class scope. These variables
+  # are initialized lazily and provide thread safety through mutex synchronization.
+  #
+  # @example Basic usage with module-level thread globals
+  #   class MyClass
+  #     extend Tins::ThreadGlobal
+  #
+  #     thread_global :counter, 0
+  #   end
+  #
+  #   mc = MyClass.new
+  #   mc2 = MyClass.new
+  #   mc.counter = 5
+  #   puts mc.counter  # => 5
+  #   puts mc2.counter # => 5
+  #   mc2.counter = 6
+  #   puts mc.counter  # => 6
+  #
+  # @example Usage with instance-level thread globals
+  #   require 'securerandom'
+  #
+  #   class MyClass
+  #     include Tins::ThreadGlobal
+  #
+  #     def initialize
+  #       instance_thread_global :session_id, SecureRandom.uuid
+  #     end
+  #   end
+  #
+  #   obj = MyClass.new
+  #   puts obj.session_id # => unique UUID per instance
   module ThreadGlobal
     # Define a thread global variable named _name_ in this module/class. If the
     # value _value_ is given, it is used to initialize the variable.
+    #
+    # Thread global variables maintain their state per thread within the scope
+    # of the module or class where they are defined. The initialization is lazy,
+    # meaning the default value or block is only executed when first accessed.
+    #
+    # @param name [Symbol, String] The name of the thread global variable to define
+    # @param default_value [Object] The default value for the variable (optional)
+    # @yield [Object] A block that returns the default value for lazy initialization
+    # @yieldparam args [Array] Arguments passed to the default block
+    # @return [self] Returns self to allow method chaining
+    # @raise [TypeError] If the receiver is not a Module
+    # @raise [ArgumentError] If both default_value and default block are provided
+    # @example Define with default value
+    #   thread_global :counter, 0
+    # @example Define with lazy initialization block
+    #   thread_global :config do
+    #     { timeout: 30, retries: 3 }
+    #   end
     def thread_global(name, default_value = nil, &default)
       is_a?(Module) or raise TypeError, "receiver has to be a Module"
 
@@ -84,6 +213,22 @@ module Tins
     # Define a thread global variable for the current instance with name
     # _name_. If the value _value_ is given, it is used to initialize the
     # variable.
+    #
+    # This method creates thread-global variables at the instance level by
+    # extending the singleton class of the current object. It's useful when
+    # you need per-instance global state that's still thread-safe.
+    #
+    # @param name [Symbol, String] The name of the thread global variable to define
+    # @param value [Object] The initial value for the variable (optional)
+    # @return [self] Returns self to allow method chaining
+    # @example Create instance thread global
+    #   class MyClass
+    #     include Tins::ThreadGlobal
+    #
+    #     def initialize
+    #       instance_thread_global :session_id, SecureRandom.uuid
+    #     end
+    #   end
     def instance_thread_global(name, value = nil)
       sc = class << self
         extend Tins::ThreadGlobal
@@ -94,30 +239,46 @@ module Tins
     end
   end
 
-  module InstanceExec
-    def self.included(*)
-      super
-      warn "#{self} is deprecated, but included at #{caller.first[/(.*):/, 1]}"
-    end
-  end
-
+  # Provides dynamic code interpretation capabilities for evaluating string-based
+  # code within the context of an object instance.
+  #
+  # This module enables the execution of Ruby code snippets as if they were
+  # blocks, maintaining access to the current binding and instance variables.
+  #
+  # @example Basic usage with automatic binding
+  #   class A
+  #     include Tins::Interpreter
+  #     def c
+  #       3
+  #     end
+  #   end
+  #
+  #   A.new.interpret('|a,b| a + b + c', 1, 2) # => 6
+  #
+  # @example Usage with explicit binding
+  #   class A
+  #     include Tins::Interpreter
+  #     def c
+  #       3
+  #     end
+  #     def foo
+  #       b = 2
+  #       interpret_with_binding('|a| a + b + c', binding, 1) # => 6
+  #     end
+  #   end
+  #
+  #   A.new.foo # => 6
   module Interpreter
     # Interpret the string _source_ as a body of a block, while passing
     # <i>*args</i> into the block.
     #
-    # A small example explains how the method is supposed to be used and how
-    # the <i>*args</i> can be fetched:
+    # This method automatically creates a binding from the current context,
+    # making all instance variables and methods available to the interpreted code.
     #
-    #  class A
-    #    include Tins::Interpreter
-    #    def c
-    #      3
-    #    end
-    #  end
-    #
-    #  A.new.interpret('|a,b| a + b + c', 1, 2) # => 6
-    #
-    # To use a specified binding see #interpret_with_binding.
+    # @param source [String, IO] The Ruby code to evaluate as a block body
+    # @param args [Array] Arguments to pass to the interpreted block
+    # @return [Object] The result of evaluating the interpreted code
+    # @see #interpret_with_binding
     def interpret(source, *args)
       interpret_with_binding(source, binding, *args)
     end
@@ -125,21 +286,14 @@ module Tins
     # Interpret the string _source_ as a body of a block, while passing
     # <i>*args</i> into the block and using _my_binding_ for evaluation.
     #
-    # A small example:
+    # This method allows explicit control over the binding context, enabling
+    # access to specific local variables from a particular scope.
     #
-    #  class A
-    #    include Tins::Interpreter
-    #    def c
-    #      3
-    #    end
-    #    def foo
-    #      b = 2
-    #      interpret_with_binding('|a| a + b + c', binding, 1) # => 6
-    #    end
-    #  end
-    #  A.new.foo # => 6
-    #
-    # See also #interpret.
+    # @param source [String, IO] The Ruby code to evaluate as a block body
+    # @param my_binding [Binding] The binding object to use for evaluation
+    # @param args [Array] Arguments to pass to the interpreted block
+    # @return [Object] The result of evaluating the interpreted code
+    # @see #interpret
     def interpret_with_binding(source, my_binding, *args)
       path = '(interpret)'
       if source.respond_to? :to_io
@@ -151,12 +305,35 @@ module Tins
     end
   end
 
-  # This module contains the _constant_ method. For small example of its usage
-  # see the documentation of the DSLAccessor module.
+  # A module that provides method-based DSL constant creation functionality.
+  # These constants are particularly useful for creating DSLs and configuration
+  # systems where symbolic names improve readability and maintainability.
+  #
+  # @example Basic constant creation
+  #   class MyClass
+  #     extend Tins::Constant
+  #
+  #     constant :yes, true
+  #     constant :no, false
+  #   end
+  #
+  #   MyClass.instance_eval do
+  #     yes    # => true
+  #     no     # => false
+  #   end
+  #
+  # @see DSLAccessor#dsl_accessor For mutable accessor alternatives and a more
+  #   advanced example.
   module Constant
-    # Create a constant named _name_, that refers to value _value_. _value is
-    # frozen, if this is possible. If you want to modify/exchange a value use
-    # DSLAccessor#dsl_reader/DSLAccessor#dsl_accessor instead.
+    # Creates a method-based constant named _name_ that returns _value_.
+    #
+    # This method defines a method with the given name that always returns the
+    # specified value. The value is attempted to be frozen for immutability,
+    # though this will fail gracefully if freezing isn't possible for the value.
+    #
+    # @param name [Symbol] The name of the constant method to define
+    # @param value [Object] The value the constant should return (defaults to name)
+    # @return [void]
     def constant(name, value = name)
       value = value.freeze rescue value
       define_method(name) { value }
@@ -297,6 +474,93 @@ module Tins
     end
   end
 
+  # A module that provides method missing handler for symbolic method calls.
+  #
+  # This module enables dynamic method resolution by converting missing method
+  # calls into symbols. When a method is called that doesn't exist, instead of
+  # raising NoMethodError, the method name is returned as a symbol. This is
+  # particularly useful for creating DSLs, configuration systems, and symbolic
+  # interfaces.
+  #
+  # @example Combined with DSLAccessor for powerful configuration
+  #   class CoffeeMaker
+  #     include Tins::SymbolMaker
+  #     extend Tins::DSLAccessor
+  #
+  #     dsl_accessor(:state) { :off }
+  #     dsl_accessor :allowed_states, :on, :off
+  #
+  #     def process
+  #       allowed_states.include?(state) or fail "Explode!!!"
+  #       if state == on
+  #         puts "Make coffee."
+  #       else
+  #         puts "Idle..."
+  #       end
+  #     end
+  #   end
+  #
+  #   cm = CoffeeMaker.new
+  #   cm.instance_eval do
+  #     state      # => :off
+  #     state on   # Sets state to :on
+  #     # state tnt # should be avoided
+  #     state      # => :on
+  #     process    # => outputs "Make coffee."
+  #   end
+  #
+  # @note Tins::SymbolMaker is an alternative for Tins::Constant in this example.
+  #    While both approaches can be used to create symbolic references,
+  #    SymbolMaker makes method calls return symbols, whereas Constant creates
+  #    only the required constants. SymbolMaker can make debugging more
+  #    difficult because it's less clear when a method call is returning a
+  #    symbol versus being a real method call, typo, etc.
+  module SymbolMaker
+    # Handles missing method calls by returning the method name as a symbol.
+    #
+    # This method is called when Ruby cannot find a method in the current
+    # object. Instead of raising NoMethodError, it returns the method name as a
+    # symbol, enabling symbolic method handling throughout the application.
+    # Only methods with no arguments are converted to symbols; methods with
+    # arguments will raise the normal NoMethodError.
+    #
+    # @param id [Symbol] The missing method name
+    # @param args [Array] Arguments passed to the missing method
+    # @return [Symbol] The method name as a symbol (when no arguments)
+    def method_missing(id, *args)
+      if args.empty?
+        id
+      else
+        super
+      end
+    end
+  end
+
+  # class CoffeeMaker
+  #   include Tins::SymbolMaker
+  #
+  #   extend Tins::DSLAccessor
+  #
+  #   dsl_accessor(:state) { :off }
+  #
+  #   dsl_accessor :allowed_states, :on, :off
+  #
+  #   def process
+  #     allowed_states.include?(state) or fail "Explode!!!"
+  #     if state == on
+  #       puts "Make coffee."
+  #     else
+  #       puts "Idle..."
+  #     end
+  #   end
+  # end
+  # cm = CoffeeMaker.new
+  # cm.instance_eval do
+  #   state      # => :off
+  #   state on
+  #   state      # => :on
+  #   process    # => outputs "Make coffee."
+  # end
   # This module can be included in another module/class. It generates a symbol
   # for every missing method that was called in the context of this
   # module/class.
@@ -311,20 +575,60 @@ module Tins
     end
   end
 
-  # This module can be used to extend another module/class. It generates
-  # symbols for every missing constant under the namespace of this
-  # module/class.
+  # This module enables dynamic constant resolution by converting missing
+  # constant references into symbols. When a constant is not found, instead of
+  # raising NameError, the constant name is returned as a symbol. This is
+  # particularly useful for creating DSLs, configuration systems, and symbolic
+  # interfaces.
+  #
+  # @example Basic usage with missing constants
+  #   class MyClass
+  #     extend Tins::ConstantMaker
+  #   end
+  #
+  #   # Missing constants return their names as symbols
+  #   MyClass.const_get(:UNKNOWN_CONSTANT)  # => :UNKNOWN_CONSTANT
   module ConstantMaker
-    # Returns a symbol (_id_) for every missing constant named _id_.
+    # Handles missing constant references by returning the constant name as a
+    # symbol.
+    #
+    # This method is called when Ruby cannot find a constant in the current
+    # namespace. Instead of raising a NameError, it returns the constant name
+    # as a symbol, enabling symbolic constant handling throughout the
+    # application.
+    #
+    # @param id [Symbol] The missing constant name
+    # @return [Symbol] The constant name as a symbol
     def const_missing(id)
       id
     end
   end
 
+  # A module that provides blank slate class creation functionality.
+  #
+  # This module enables the creation of anonymous classes with restricted
+  # method sets, allowing for precise control over object interfaces. Blank
+  # slates are useful for security, DSL construction, testing, and creating
+  # clean API surfaces.
+  #
+  # @example Basic usage with method whitelisting
+  #   # Create a class that only responds to :length and :upcase methods
+  #   RestrictedClass = Tins::BlankSlate.with(:length, :upcase, superclass: String)
+  #
+  #   obj = RestrictedClass.new('foo')
+  #   obj.length         # => 3
+  #   obj.upcase         # => 'FOO'
+  #   obj.strip          # NoMethodError
   module BlankSlate
-    # Creates an anonymous blank slate class, that only responds to the methods
-    # <i>*ids</i>. ids can be Symbols, Strings, and Regexps that have to match
-    # the method name with #===.
+    # Creates an anonymous blank slate class with restricted method set.
+    #
+    # This method generates a new class that inherits from the specified superclass
+    # (or Object by default) and removes all methods except those explicitly allowed.
+    # The allowed methods can be specified as symbols, strings, or regular expressions.
+    #
+    # @param ids [Array<Symbol,String,Regexp>] Method names or patterns to allow
+    # @option opts [Class] :superclass (Object) The base class to inherit from
+    # @return [Class] A new anonymous class with only the specified methods available
     def self.with(*ids)
       opts = Hash === ids.last ? ids.pop : {}
       ids = ids.map { |id| Regexp === id ? id : id.to_s }
@@ -464,6 +768,8 @@ module Tins
   module Delegate
     UNSET = Object.new
 
+    private_constant :UNSET
+
     # A method to easily delegate methods to an object, stored in an
     # instance variable or returned by a method call.
     #
@@ -477,7 +783,6 @@ module Tins
     #   end
     #
     # _other_method_name_ defaults to method_name, if it wasn't given.
-    #def delegate(method_name, to: UNSET, as: method_name)
     def delegate(method_name, opts = {})
       to = opts[:to] || UNSET
       as = opts[:as] || method_name
@@ -498,7 +803,7 @@ module Tins
         end
       when (?A..?Z).include?(to[0])
         define_method(as) do |*args, &block|
-          Tins::DeepConstGet.deep_const_get(to).__send__(method_name, *args, &block)
+          Object.const_get(to).__send__(method_name, *args, &block)
         end
       else
         define_method(as) do |*args, &block|
@@ -530,6 +835,12 @@ module Tins
     module DelegatorModule
       include Tins::MethodMissingDelegator
 
+      # The initialize method sets up the delegator and forwards additional
+      # arguments to the superclass.
+      #
+      # @param delegator [ Object ] the object to delegate method calls to
+      # @param a [ Array ] additional arguments to pass to the superclass initializer
+      # @param b [ Proc ] optional block to be passed to the superclass initializer
       def initialize(delegator, *a, &b)
         self.method_missing_delegator = delegator
         super(*a, &b) if defined? super
@@ -557,20 +868,87 @@ module Tins
     end
   end
 
+  # A module that provides parameterization capabilities for other modules.
+  #
+  # This module enables dynamic configuration of modules through a common
+  # interface, allowing for flexible composition and customization of module
+  # behavior at runtime.
+  #
+  # @example Basic usage with a custom parameterizable module
+  #   module MyModule
+  #     include Tins::ParameterizedModule
+  #
+  #     def self.parameterize(options = {})
+  #       # Custom parameterization logic
+  #       @options = options
+  #       self
+  #     end
+  #   end
+  #
+  #   # Usage
+  #   configured_module = MyModule.parameterize_for(some_option: 'value')
+  #   MyModule.instance_variable_get(:@options) # => {some_option: "value"}
   module ParameterizedModule
-    # Pass _args_ and _block_ to configure the module and then return it after
-    # calling the parameterize method has been called with these arguments. The
-    # _parameterize_ method should return a configured module.
+    # Configures the module using the provided arguments and optional block.
+    #
+    # This method checks if the including module responds to `parameterize` and calls
+    # it with the given arguments. If no `parameterize` method exists, it returns
+    # the module itself unchanged.
+    #
+    # @param args [Array] Arguments to pass to the parameterize method
+    # @yield [block] Optional block to be passed to the parameterize method
+    # @return [Module] The configured module or self if no parameterization occurs
     def parameterize_for(*args, &block)
       respond_to?(:parameterize) ? parameterize(*args, &block) : self
     end
   end
 
+  # A module that provides parameterized module creation capabilities.
+  #
+  # This module enables the creation of new modules by filtering methods from
+  # existing modules, allowing for flexible composition and interface
+  # segregation at runtime.
+  #
+  # @example
+  #   class MixedClass
+  #     extend Tins::FromModule
+  #
+  #     include MyModule     # has foo, bar and baz methods
+  #     include from module: MyIncludedModule, methods: :foo
+  #     include from module: MyIncludedModule2, methods: :bar
+  #   end
+  #
+  #   c = MixedClass.new
+  #   assert_equal :foo,  c.foo # from MyIncludedModule
+  #   assert_equal :bar2, c.bar # from MyIncludedModule2
+  #   assert_equal :baz,  c.baz # from MyModule
+  #
+  # @example Create a stack-like class using Array methods
+  #   class Stack < Class.from(module: Array, methods: %i[ push pop last ])
+  #   end
+  #
+  #   s = Stack.new
+  #   s.push(1)
+  #   s.push(2)
+  #   s.last  # => 2
+  #   s.pop   # => 2
+  #   s.last  # => 1
   module FromModule
     include ParameterizedModule
 
     alias from parameterize_for
 
+    # Creates a new module by filtering methods from an existing module.
+    #
+    # This method duplicates the specified module and removes all methods
+    # except those explicitly listed in the :methods option. This enables
+    # creating specialized interfaces
+    # from existing modules.
+    #
+    # @param opts [Hash] Configuration options
+    # @option opts [Module] :module (required) The source module (or class) to filter methods from
+    # @option opts [Array<Symbol>] :methods (required) Array of method names to preserve
+    # @return [Module] A new module with only the specified methods available
     def parameterize(opts = {})
       modul = opts[:module] or raise ArgumentError, 'option :module is required'
       import_methods = Array(opts[:methods])
@@ -580,32 +958,95 @@ module Tins
         begin
           result.__send__ :remove_method, m
         rescue NameError
+          # Method might already be removed or not exist
         end
       end
       result
     end
   end
 
+  # A module that provides thread-local stack-based scoping functionality.
+  #
+  # This module implements a context management system where each thread
+  # maintains its own isolated scope stacks. It's particularly useful for
+  # tracking nested contexts in multi-threaded applications.
+  #
+  # @example Basic stack operations
+  #   Scope.scope_push("context1")
+  #   Scope.scope_push("context2")
+  #   Scope.scope_top  # => "context2"
+  #   Scope.scope_pop  # => "context2"
+  #   Scope.scope_top  # => "context1"
+  #
+  # @example Block-based context management
+  #   Scope.scope_block("request_context") do
+  #     # Within this block, "request_context" is active
+  #   end
+  #   # Automatically cleaned up when block exits
+  #
+  # @example Nested scope blocks
+  #   Scope.scope_block("outer_context") do
+  #     Scope.scope_block("inner_context") do
+  #       Scope.scope_top  # => "inner_context"
+  #     end
+  #     Scope.scope_top  # => "outer_context"
+  #   end
+  #   Scope.scope_top  # => nil (empty stack)
+  #
+  # @example Multiple named scopes
+  #   Scope.scope_push("frame1", :database)
+  #   Scope.scope_push("frame2", :database)
+  #   Scope.scope_get(:database)  # => ["frame1", "frame2"]
   module Scope
+    # Pushes a scope frame onto the top of the specified scope stack.
+    #
+    # @param scope_frame [Object] The object to push onto the stack
+    # @param name [Symbol] The name of the scope to use (defaults to :default)
+    # @return [self] Returns self to enable method chaining
     def scope_push(scope_frame, name = :default)
       scope_get(name).push scope_frame
       self
     end
 
+    # Pops a scope frame from the top of the specified scope stack.
+    #
+    # If the scope becomes empty after popping, it is automatically removed
+    # from Thread.current to prevent memory leaks.
+    #
+    # @param name [Symbol] The name of the scope to use (defaults to :default)
+    # @return [self] Returns self to enable method chaining
     def scope_pop(name = :default)
       scope_get(name).pop
       scope_get(name).empty? and Thread.current[name] = nil
       self
     end
 
+    # Returns the top element of the specified scope stack without removing it.
+    #
+    # @param name [Symbol] The name of the scope to use (defaults to :default)
+    # @return [Object, nil] The top element of the stack or nil if empty
     def scope_top(name = :default)
       scope_get(name).last
     end
 
+    # Iterates through the specified scope stack in reverse order.
+    #
+    # @param name [Symbol] The name of the scope to use (defaults to :default)
+    # @yield [frame] Yields each frame from top to bottom
+    # @return [Enumerator] If no block is given, returns an enumerator
     def scope_reverse(name = :default, &block)
       scope_get(name).reverse_each(&block)
     end
 
+    # Executes a block within the context of a scope frame.
+    #
+    # Automatically pushes the scope frame before yielding and pops it after
+    # the block completes, even if an exception occurs.
+    #
+    # @param scope_frame [Object] The scope frame to push
+    # @param name [Symbol] The name of the scope to use (defaults to :default)
+    # @yield [void] The block to execute within the scope
+    # @return [Object] The result of the block execution
     def scope_block(scope_frame, name = :default)
       scope_push(scope_frame, name)
       yield
@@ -613,21 +1054,71 @@ module Tins
       scope_pop(name)
     end
 
+    # Retrieves or initializes the specified scope stack.
+    #
+    # @param name [Symbol] The name of the scope to retrieve (defaults to :default)
+    # @return [Array] The scope stack for the given name
     def scope_get(name = :default)
       Thread.current[name] ||= []
     end
 
+    # Returns a copy of the specified scope stack.
+    #
+    # @param name [Symbol] The name of the scope to retrieve (defaults to :default)
+    # @return [Array] A duplicate of the scope stack
     def scope(name = :default)
       scope_get(name).dup
     end
   end
 
+  # A module that provides dynamic scope-based variable binding with hash
+  # contexts.
+  #
+  # This module extends the basic Scope functionality to enable dynamic
+  # variable binding where variables can be set and accessed like methods, but
+  # stored in hash-based contexts. It's particularly useful for building DSLs,
+  # template engines, and context-sensitive applications.
+  #
+  # @example Basic dynamic scoping
+  #   include Tins::DynamicScope
+  #
+  #   dynamic_scope do
+  #     self.foo = "value"  # Sets variable in current scope
+  #     puts foo           # => "value" (reads from current scope)
+  #   end
+  #
+  # @example Nested scopes with variable shadowing
+  #   include Tins::DynamicScope
+  #
+  #   dynamic_scope do
+  #     self.foo = "outer"
+  #     dynamic_scope do
+  #       self.foo = "inner"  # Shadows outer foo only in inner scope
+  #       puts foo           # => "inner"
+  #     end
+  #     puts foo             # => "outer" (restored from outer scope)
+  #   end
+  #
+  # @example Variable existence checking
+  #   include Tins::DynamicScope
+  #
+  #   dynamic_scope do
+  #     assert_equal false, dynamic_defined?(:foo)
+  #     self.foo = "value"
+  #     assert_equal true, dynamic_defined?(:foo)
+  #   end
   module DynamicScope
+    # A specialized Hash subclass for dynamic scope contexts.
+    #
+    # This class automatically converts string keys to symbols for more
+    # convenient variable access.
     class Context < Hash
+      # Retrieves a value by symbolized key.
       def [](name)
         super name.to_sym
       end
 
+      # Sets a value with a symbolized key.
       def []=(name, value)
         super name.to_sym, value
       end
@@ -635,19 +1126,43 @@ module Tins
 
     include Scope
 
+    # The name of the dynamic scope to use (defaults to :variables).
     attr_accessor :dynamic_scope_name
 
+    # Checks if a variable is defined in any active dynamic scope.
+    #
+    # @param id [Symbol] The variable name to check
+    # @return [Boolean] true if the variable is defined in any active scope, false otherwise
     def dynamic_defined?(id)
       self.dynamic_scope_name ||= :variables
       scope_reverse(dynamic_scope_name) { |c| c.key?(id) and return true }
       false
     end
 
+    # Creates a new dynamic scope context.
+    #
+    # This method pushes a new Context object onto the scope stack and yields
+    # to the provided block. When the block completes, the context is automatically
+    # popped from the stack.
+    #
+    # @yield [void] The block to execute within the dynamic scope
+    # @return [Object] The result of the block execution
     def dynamic_scope(&block)
       self.dynamic_scope_name ||= :variables
       scope_block(Context.new, dynamic_scope_name, &block)
     end
 
+    # Handles method calls that don't match existing methods.
+    #
+    # This implements the core dynamic variable binding behavior:
+    # - For read operations (no arguments): Looks up the method name in active scopes
+    #   and returns the value if found, otherwise delegates to super for normal method resolution
+    # - For write operations (one argument + = suffix): Sets the value in current scope
+    # - For all other cases: Delegates to super for normal method resolution
+    #
+    # @param id [Symbol] The method name being called
+    # @param args [Array] Arguments passed to the method
+    # @return [Object] The result of the dynamic variable access or delegation
     def method_missing(id, *args)
       self.dynamic_scope_name ||= :variables
       if args.empty? and scope_reverse(dynamic_scope_name) { |c| c.key?(id) and return c[id] }
