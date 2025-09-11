@@ -22,6 +22,10 @@ module Tins
       assert_equal '0+00:11:06.123456', Tins::Duration.new(666.123456).format
     end
 
+    def test_format_percentage
+      assert_equal '11%06', Tins::Duration.new(666.123456).format('%m%%%s')
+    end
+
     def test_smart_format
       assert_equal '00:11:06.123', Tins::Duration.new(666.123456).format('%D')
       assert_equal '7+17:11:06.123', Tins::Duration.new(666666.123456).format('%D')
