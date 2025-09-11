@@ -53,14 +53,12 @@ module Tins
       assert_equal('blab', error_message { A.new.quux })
     end
 
-    if RUBY_VERSION >= "2.1"
-      def test_implement_def_subclass
-        assert_equal(
-          'method foobar(arg1,arg2:?) has to be '\
-          'implemented in subclasses of Tins::ImplementTest::A',
-          error_message { A.new.foobar }
-        )
-      end
+    def test_implement_def_subclass
+      assert_equal(
+        'method foobar(arg1,arg2:…) has to be '\
+        'implemented in subclasses of Tins::ImplementTest::A',
+        error_message { A.new.foobar }
+      )
     end
 
     private

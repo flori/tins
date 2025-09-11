@@ -21,7 +21,7 @@ module Tins
 
       i = 0
       assert_equal %w[ anne1 bernd2 christian3 ],
-        ps.inject([], &Proc.map_apply(:name) { |s, n| s << "#{n}#{i += 1}" })
+        ps.reduce([], &Proc.map_apply(:name) { |s, n| s << "#{n}#{i += 1}" })
     end
 
     def test_call

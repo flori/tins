@@ -6,6 +6,18 @@ module Tins
       @cache = LRUCache.new(3)
     end
 
+    def test_too_low_capacity
+      assert_raise ArgumentError do
+        LRUCache.new(0)
+      end
+    end
+
+    def test_wrong_capacity_type
+      assert_raise TypeError do
+        LRUCache.new(:foo)
+      end
+    end
+
     def test_can_be_filled_to_capacity
       assert_equal 0, @cache.size
       @cache[1] = 1

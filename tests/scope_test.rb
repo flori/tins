@@ -20,7 +20,7 @@ class ScopeTest < Test::Unit::TestCase
       scope_block(:baz) do
         scope_block(:bar, :my_scope) do
           assert_equal [ :foo, :bar ], scope(:my_scope)
-          scope.push(:baz, :my_scope)
+          scope.push(:baz)
           assert_equal [ :foo, :bar ], scope(:my_scope)
           assert_equal [ :baz ], scope
         end

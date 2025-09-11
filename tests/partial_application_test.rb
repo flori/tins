@@ -13,9 +13,13 @@ module Tins
 
     def test_proc
       mul   = lambda { |x, y| x * y }
+      assert_equal 2, mul.arity
       klon  = mul.partial
+      assert_equal 2, klon.arity
       dup   = mul.partial(2)
+      assert_equal 1, dup.arity
       trip  = mul.partial(3)
+      assert_equal 1, trip.arity
       assert_equal [ 6, 9, 12 ], [ dup[3], trip[3], mul[4, 3] ]
       assert_equal [ 6, 9, 12 ], [ dup[3], trip[3], klon[4, 3] ]
       assert_raise(ArgumentError) do
