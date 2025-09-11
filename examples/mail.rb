@@ -6,7 +6,6 @@ require 'time'
 
 class Mail
   extend Tins::DSLAccessor
-  include Tins::InstanceExec
   include Tins::MethodMissingDelegator::DelegatorModule
   include Tins::BlockSelf
 
