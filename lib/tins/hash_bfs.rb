@@ -1,6 +1,10 @@
 require 'tins/thread_local'
 
 module Tins
+  # HashBFS module for breadth-first traversal of hash structures
+  #
+  # Provides methods to traverse hash structures in a breadth-first manner,
+  # visiting all keys and values while maintaining the order of traversal.
   module HashBFS
     extend Tins::ThreadLocal
 
@@ -63,5 +67,3 @@ module Tins
     end
   end
 end
-
-require 'tins/alias'
