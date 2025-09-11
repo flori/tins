@@ -1,7 +1,22 @@
+# Tins is a collection of useful Ruby utilities and tools that provide
+# common functionality without requiring external dependencies. It's designed
+# to be a lightweight, drop-in library that enhances Ruby's standard library
+# with practical conveniences.
+#
+# @example Basic usage
+#   require 'tins'
+#
+#   Tins::Once.only_once { puts "Only one instance" }
+#
+# @example Automatic class extensions
+#   require 'tins/xt'
+#
+#   # Automatically extends core classes with useful methods
+#   "foo".full? # => "foo"
+#   "   ".full? # => nil
 module Tins
   require 'tins/attempt'
   require 'tins/bijection'
-  require 'tins/count_by'
   require 'tins/deep_dup'
   require 'tins/file_binary'
   require 'tins/find'
@@ -31,11 +46,9 @@ module Tins
   require 'tins/date_dummy'
   require 'tins/date_time_dummy'
   require 'tins/to_proc'
-  require 'tins/uniq_by'
   require 'tins/version'
   require 'tins/write'
   require 'tins/extract_last_argument_options'
-  require 'tins/deep_const_get'
   require 'tins/responding'
   require 'tins/proc_compose'
   require 'tins/proc_prelude'
