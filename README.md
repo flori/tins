@@ -2,12 +2,142 @@
 
 ## Description
 
-Non yet.
+A collection of useful Ruby utilities that extend the standard library with
+practical conveniences. Tins provides lightweight, dependency-free tools for
+common programming tasks.
+
+## Features
+
+- **Duration Handling**: Parse and format time durations with human-readable
+  formats
+- **Unit Conversion**: Convert between different unit specifications (bytes,
+  etc.)
+- **Secure File Operations**: Safe file writing with atomic operations
+- **Time Freezing**: Temporarily freeze time for testing scenarios
+- **Core Class Extensions**: Enhanced methods for String, Array, Hash, and Time
+  classes
+- **Naming Convention Utilities**: Convert between camelCase, snake\_case, and
+  other formats
+- **Hash Manipulation**: Symbolize keys recursively and extract sub-hashes
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'tins'
+```
+
+Or:
+
+```ruby
+gem 'tins', require 'tins/xt'
+```
+
+to automatically extend some core classes with useful methods.
+
+And then execute:
+
+ $ bundle install
+
+Or install it yourself as:
+
+ $ gem install tins
+
+## Usage
+
+### Basic Usage
+
+```ruby
+# Load all utilities
+
+require 'tins'
+
+# Load all utilities and extends core classes with useful methods
+require 'tins/xt'
+```
+
+### Duration Handling
+
+```ruby
+require 'tins/duration'
+
+duration = Tins::Duration.new(9000)
+puts duration.to_s # "02:30:00"
+puts duration.to_i # 9000 (seconds)
+
+# Parse durations from strings
+Tins::Duration.parse('2h 30m', template: '%hh %mm') # 9000 (seconds)
+```
+
+### Unit Conversion
+
+```ruby
+require 'tins/unit'
+
+bytes = Tins::Unit.parse('1.5 GB', unit: ?B).to_i # => 1610612736
+puts Tins::Unit.format(bytes, unit: 'B') # "1.500000 GB"
+```
+
+### Secure File Writing
+
+```ruby
+require 'tins/xt/secure_write'
+
+# Write files safely (atomic operation)
+File.secure_write('config.json', '{"key": "value"}')
+```
+
+### Time Freezing for Testing
+
+```ruby
+require 'tins/xt/time_freezer'
+
+# Freeze time during testing
+Tins::TimeFreezer.freeze(Time.new('2011-12-13 14:15:16')) do
+  puts Time.now # Always returns the frozen time
+end
+```
+
+### Core Class Extensions (xt)
+
+When you require `tins/xt`, these methods are added to core classes:
+
+```ruby
+require 'tins/xt'
+
+# String extensions
+"hello".full?           # => "hello"
+"   ".full?             # => nil
+"foo".blank?            # => false
+"   ".blank?            # => true
+
+# Array extensions
+[1,2,3].all_full?       # => [1,2,3]
+[1,nil,3].all_full?     # => nil
+
+# Hash extensions
+hash = { 'a' => 1, 'b' => 2 }
+hash.subhash('a')       # => { 'a' => 1 }
+
+# String naming convention utilities
+"snake_case_string".camelize    # => "SnakeCaseString"
+"camelCaseString".underscore    # => "camel_case_string"
+```
+
+### Hash Symbolization
+
+```ruby
+require 'tins/hash_symbolize_keys_recursive'
+
+hash = { 'name' => 'John', 'age' => 30, 'address' => { 'street' => '123 Main St' } }
+hash.symbolize_keys_recursive! # Converts all keys to symbols recursively
+```
 
 ## Author
 
-Florian Frank mailto:flori@ping.de
+[Florian Frank](mailto:flori@ping.de)
 
 ## License
 
-This software is licensed under the MIT (Expat) license.
+[MIT License](./LICENSE)
