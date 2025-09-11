@@ -1,4 +1,12 @@
+# A module for adding annotations to classes and methods
+#
+# This module provides functionality to add metadata annotations to classes and
+# methods, allowing for enhanced documentation and introspection capabilities
 module Tins::Annotate
+  # The annotate method sets up annotation functionality for a given name
+  # by defining methods to set and retrieve annotations on class methods
+  #
+  # @param name [ Symbol ] the name of the annotation to define
   def annotate(name)
     singleton_class.class_eval do
       define_method(name) do |annotation = :annotated|
