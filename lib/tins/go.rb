@@ -1,17 +1,62 @@
 module Tins
+  # A command-line option parsing library that provides a flexible way to
+  # parse single-character options with optional arguments. It supports
+  # multiple values for the same flag and provides a clean API for handling
+  # command-line interfaces.
+  #
+  # @example Basic usage
+  #   # Parse options with pattern 'xy:z'
+  #   options = Tins::GO.go('xy:z', ARGV, defaults: { x: true, y: 'default' })
+  #   # Handles: -x -y value -z
+  #
+  # @example Multiple values for same option
+  #   # Handle: -f foo -f bar -f baz
+  #   options = Tins::GO.go('f:', ARGV)
+  #   # options['f'] will contain an EnumerableExtension collection with all
+  #   values, see `option['f'].to_a`
   module GO
+    # An extension module that provides Enumerable behavior for collecting
+    # multiple values associated with the same command-line option.
+    #
+    # This extension enables command-line flags like `-f foo -f bar` to be
+    # collected into a single collection that can be queried via #to_a or #each.
     module EnumerableExtension
+      # Adds an element to the collection.
+      #
+      # This method allows for chaining operations and collects multiple
+      # values for the same command-line option.
+      #
+      # @param argument [Object] The element to add to the collection
+      # @return [self] Returns self to enable method chaining
       def push(argument)
         @arguments ||= []
         @arguments.push argument
         self
       end
+
+      # Alias for {#push}
+      #
+      # Enables intuitive syntax for adding elements: `collection << item`
+      #
+      # @see #push
       alias << push
 
+      # Iterates over each element in the collection.
+      #
+      # Implements the Enumerable interface, allowing the use of all Enumerable
+      # methods like map, select, find, etc.
+      #
+      # @yield [element] Yields each element in the collection
+      # @yieldparam element [Object] Each element in the collection
+      # @return [self] Returns self to enable method chaining
       def each(&block)
         @arguments.each(&block)
         self
       end
+
+      # Includes the Enumerable module to provide rich iteration capabilities.
+      #
+      # This enables the use of methods like map, select, find, etc.
       include Enumerable
     end
 
@@ -25,8 +70,42 @@ module Tins
     #
     # The _defaults_ argument specifies default values for the options.
     #
-    # An option hash is returned with all found options set to true or the
-    # found option argument.
+    # An option hash is returned with all found options set to a truthy value
+    # representing the number of times they were encountered, or `false` if not
+    # present. When a default value is specified and the flag is not present,
+    # the default value is used instead.
+    #
+    # @param s [String] Option pattern string where each character represents
+    #   an option, and ':' indicates the option requires an argument
+    # @param args [Array<String>] Array of arguments to parse (defaults to ARGV)
+    # @param defaults [Hash{String => Object}] Default values for options
+    # @return [Hash{String => Object}] Hash mapping option names to their values
+    #
+    # @example Basic usage
+    #   # Parse options with pattern 'xy:z'
+    #   options = Tins::GO.go('xy:z', ARGV, defaults: { x: true, y: 'default' })
+    #   # Handles: -x -y value -z
+    #
+    # @example Multiple values for same option
+    #   # Handle: -f foo -f bar -f baz
+    #   options = Tins::GO.go('f:', ARGV)
+    #   # options['f'] will contain an EnumerableExtension collection with
+    #   # all values, see options['f'].to_a
+    #
+    # @example Boolean flag counting
+    #   # Handle: -x -x -x
+    #   options = Tins::GO.go('x', ARGV)
+    #   # options['x'] will be 3 (truthy numeric value)
+    #
+    # @example Boolean flag not present
+    #   # Handle: no -x flag
+    #   options = Tins::GO.go('x', ARGV)
+    #   # options['x'] will be false
+    #
+    # @example Disabling options with default values
+    #   # Handle: ~x (disables -x option) when x has a default value
+    #   options = Tins::GO.go('x', ARGV, defaults: { x: true })
+    #   # options['x'] will be false if no ~x flag is present
     def go(s, args = ARGV, defaults: {})
       d = defaults || {}
       b, v = s.scan(/(.)(:?)/).inject([ {}, {} ]) { |t, (o, a)|
@@ -92,5 +171,3 @@ module Tins
     end
   end
 end
-
-require 'tins/alias'
