@@ -307,6 +307,8 @@ if $0 == __FILE__ and ARGV.any?
     else
       raise "unknown turing machine suffix: #{ext}, use .stm or .mtm"
     end
-  tm = machine_type.new(File.read(filename))
+  tm = File.open(filename) do |file|
+    machine_type.new(file)
+  end
   $DEBUG ? tm.step(*tapes) : tm.run(*tapes)
 end
