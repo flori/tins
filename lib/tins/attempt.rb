@@ -1,4 +1,6 @@
 module Tins
+  # A module that provides functionality for attempting operations with error
+  # handling and retry logic.
   module Attempt
     # Attempts code in block *attempts* times, sleeping according to *sleep*
     # between attempts and catching the exception(s) in *exception_class*.
@@ -63,6 +65,11 @@ module Tins
 
     private
 
+    # The sleep_duration method handles sleeping for a specified duration or
+    # based on a proc call.
+    #
+    # @param duration [ Numeric, Proc ] the duration to sleep or a proc that
+    # returns the duration
     def sleep_duration(duration, count)
       case duration
       when Numeric
@@ -72,6 +79,26 @@ module Tins
       end
     end
 
+    # Computes the base for exponential backoff that results in a specific
+    # total sleep duration.
+    #
+    # This method solves for the base `x` in the geometric series:
+    #   x^0 + x^1 + x^2 + ... + x^(attempts-1) = sleep
+    #
+    # The solution ensures that when using exponential delays with base `x`,
+    # the total time spent across all attempts equals approximately the
+    # specified sleep duration. This method of computation is used if a
+    # negative number of secondes was requested in the attempt method.
+    #
+    # @param sleep [Numeric] The total number of seconds to distribute across
+    # all attempts
+    # @param attempts [Integer] The number of attempts (must be > 2)
+    #
+    # @return [Float] The base for exponential backoff delays
+    # @raise [ArgumentError] If attempts <= 2, or if the sleep parameters are
+    # invalid
+    # @raise [ArgumentError] If the algorithm fails to converge after maximum
+    # iterations
     def compute_duration_base(sleep, attempts)
       x1, x2  = 1, sleep
       attempts <= sleep or raise ArgumentError,
@@ -98,6 +125,18 @@ module Tins
       result
     end
 
+    # The interpret_sleep method determines the sleep behavior for retry attempts.
+    #
+    # @param sleep [Numeric, Proc, nil] the sleep duration or proc to use
+    # between retries, nil if no sleep was requested
+    # @param attempts [Integer] the number of retry attempts
+    #
+    # @return [Proc, nil] a proc that calculates the sleep duration or nil if
+    # no sleep is needed
+    #
+    # @raise [ArgumentError] if a negative sleep value is provided with less
+    # than 3 attempts
+    # @raise [TypeError] if the sleep argument is not Numeric, Proc, or nil
     def interpret_sleep(sleep, attempts)
       case sleep
       when nil
