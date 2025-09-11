@@ -99,30 +99,63 @@ Tins::TimeFreezer.freeze(Time.new('2011-12-13 14:15:16')) do
 end
 ```
 
+### Building blocks for DSLs
+
+```
+class Foo
+  include Tins::DynamicScope
+
+  def let(bindings = {})
+    dynamic_scope do
+      bindings.each { |name, value| send("#{name}=", value) }
+      yield
+    end
+  end
+
+  def twice(x)
+    2 * x
+  end
+
+  def test
+    let x: 1, y: twice(1) do
+      let z: twice(x) do
+        "#{x} * #{y} == #{z} # => #{x * y == twice(x)}"
+      end
+    end
+  end
+end
+
+Foo.new.test # "1 * 2 == 2 # => true"
+```
+
 ### Core Class Extensions (xt)
 
-When you require `tins/xt`, these methods are added to core classes:
+When you require `tins/xt`, some useful methods are added to core classes:
 
 ```ruby
-require 'tins/xt'
+default_options = {
+  format: :json,
+  timeout: 30,
+  retries: 3
+}
 
-# String extensions
-"hello".full?           # => "hello"
-"   ".full?             # => nil
-"foo".blank?            # => false
-"   ".blank?            # => true
+user_options = { timeout: 60 }
+options = user_options | default_options
+# => { format: :json, timeout: 60, retries: 3 }
 
-# Array extensions
-[1,2,3].all_full?       # => [1,2,3]
-[1,nil,3].all_full?     # => nil
+'1.10.3'.version < '1.9.2'.version # => false
 
-# Hash extensions
-hash = { 'a' => 1, 'b' => 2 }
-hash.subhash('a')       # => { 'a' => 1 }
+add_one         = -> x { x + 1 }
+multiply_by_two = -> x { x * 2 }
+composed        = multiply_by_two * add_one
+composed.(5) # => 12
 
-# String naming convention utilities
-"snake_case_string".camelize    # => "SnakeCaseString"
-"camelCaseString".underscore    # => "camel_case_string"
+# For Testing
+>> o = Object.new
+>> o.puts # => private method, NoMethodError
+>> o = o.expose
+>> o.puts "hello"
+hello
 ```
 
 ### Hash Symbolization

@@ -8,9 +8,7 @@ if $0 == __FILE__
 
     def let(bindings = {})
       dynamic_scope do
-        bindings.each { |name, value|
-          send("#{name}=", value)
-        }
+        bindings.each { |name, value| send("#{name}=", value) }
         yield
       end
     end
