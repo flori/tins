@@ -19,6 +19,7 @@ GemHadar do
 
   readme      'README.md'
   licenses << 'MIT'
+  clean << 'coverage'
 
   required_ruby_version  '>= 3.1'
 
