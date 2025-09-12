@@ -1,5 +1,14 @@
 # Changes
 
+## 2025-09-13 v1.44.1
+
+- Updated documentation link in README.md to point to GitHub.io instead of
+  RubyDoc.info
+- Added graceful handling for missing `gem_hadar/simplecov` gem by wrapping
+  require and start in begin/rescue block to catch `LoadError`
+- Modified gem packaging to include all files in `.github` and `.contexts` directories using `FileList` for dynamic inclusion
+- Created `static.yml` file
+
 ## 2025-09-12 v1.44.0
 
 ### Major Changes
