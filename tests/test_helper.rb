@@ -1,5 +1,8 @@
-require 'gem_hadar/simplecov'
-GemHadar::SimpleCov.start
+begin
+  require 'gem_hadar/simplecov'
+  GemHadar::SimpleCov.start
+rescue LoadError
+end
 begin
   require 'debug'
 rescue LoadError
