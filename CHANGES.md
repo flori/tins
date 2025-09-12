@@ -1,5 +1,17 @@
 # Changes
 
+## 2025-09-12 v1.44.0
+
+### Major Changes
+
+- **Ruby Version Requirement**: Updated minimum Ruby version requirement to 3.1
+- **Dependency Modernization**: Replaced deprecated `Tins::Memoize` module
+  implementation with `mize` gem for memoization functionality
+- **Documentation Overhaul**: Comprehensive YARD documentation added across all
+  modules with examples and parameter descriptions
+- **README Enhancement**: Improved README.md with better documentation,
+  examples, and usage instructions
+
 ## 2025-09-05 v1.43.0
 
 - Added new `dsl_lazy_accessor` method that creates lazy-loaded accessors with
