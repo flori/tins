@@ -8,7 +8,7 @@ common programming tasks.
 
 ## Documentation
 
-Complete API documentation is available at: [RubyDoc.info](https://rubydoc.info/gems/tins)
+Complete API documentation is available at: [RubyDoc.info](https://rubydoc.info/github/flori/tins/v1.44.0)
 
 ## Installation
 
