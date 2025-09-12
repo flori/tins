@@ -16,7 +16,7 @@ GemHadar do
     '.rbx', '.AppleDouble', '.DS_Store', 'tags', 'cscope.out', '.bundle',
     '.byebug_history', '.yardoc', 'doc', 'TODO.md'
   package_ignore    '.all_images.yml', '.tool-versions', '.gitignore',
-    'VERSION', '.utilsrc', '.github', '.contexts'
+    'VERSION', '.utilsrc', *FileList['.github/**/*'], *FileList['.contexts/*']
 
   readme            'README.md'
   licenses <<       'MIT'
