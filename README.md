@@ -6,19 +6,9 @@ A collection of useful Ruby utilities that extend the standard library with
 practical conveniences. Tins provides lightweight, dependency-free tools for
 common programming tasks.
 
-## Features
+## Documentation
 
-- **Duration Handling**: Parse and format time durations with human-readable
-  formats
-- **Unit Conversion**: Convert between different unit specifications (bytes,
-  etc.)
-- **Secure File Operations**: Safe file writing with atomic operations
-- **Time Freezing**: Temporarily freeze time for testing scenarios
-- **Core Class Extensions**: Enhanced methods for String, Array, Hash, and Time
-  classes
-- **Naming Convention Utilities**: Convert between camelCase, snake\_case, and
-  other formats
-- **Hash Manipulation**: Symbolize keys recursively and extract sub-hashes
+Complete API documentation is available at: [RubyDoc.info](https://rubydoc.info/gems/tins)
 
 ## Installation
 
@@ -46,8 +36,6 @@ Or install it yourself as:
 
 ## Usage
 
-### Basic Usage
-
 ```ruby
 # Load all utilities
 
@@ -56,6 +44,7 @@ require 'tins'
 # Load all utilities and extends core classes with useful methods
 require 'tins/xt'
 ```
+## Some Usage Examples
 
 ### Duration Handling
 
@@ -101,7 +90,7 @@ end
 
 ### Building blocks for DSLs
 
-```
+```ruby
 class Foo
   include Tins::DynamicScope
 
@@ -163,7 +152,13 @@ hello
 ```ruby
 require 'tins/hash_symbolize_keys_recursive'
 
-hash = { 'name' => 'John', 'age' => 30, 'address' => { 'street' => '123 Main St' } }
+hash = {
+  'name' => 'John',
+  'age' => 30,
+  'address' => {
+    'street' => '123 Main St'
+  }
+}
 hash.symbolize_keys_recursive! # Converts all keys to symbols recursively
 ```
 
