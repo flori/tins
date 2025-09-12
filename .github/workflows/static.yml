@@ -39,6 +39,7 @@ jobs:
           ruby-version: '3.4'
       - name: Generate Documentation
         run: |
+          gem install gem_hadar
           bundle install
           rake doc
       - name: Upload artifact
