@@ -32,7 +32,6 @@ code_indexer do
     date
     json
     mize
-    mize
     ostruct
     stringio
     sync
