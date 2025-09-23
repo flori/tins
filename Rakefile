@@ -14,9 +14,9 @@ GemHadar do
   doc_code_files    files.grep(%r(\Alib/))
   ignore            '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage',
     '.rbx', '.AppleDouble', '.DS_Store', 'tags', 'cscope.out', '.bundle',
-    '.byebug_history', '.yardoc', 'doc', 'TODO.md'
+    '.yardoc', 'doc', 'TODO.md'
   package_ignore    '.all_images.yml', '.tool-versions', '.gitignore',
-    'VERSION', '.utilsrc', *FileList['.github/**/*'], *FileList['.contexts/*']
+    'VERSION', '.utilsrc', '.github', '.contexts'
 
   readme            'README.md'
   licenses <<       'MIT'
