@@ -22,6 +22,10 @@ GemHadar do
   licenses <<       'MIT'
   clean <<          'coverage'
 
+  github_workflows(
+    'static.yml' => {}
+  )
+
   required_ruby_version  '>= 3.1'
 
   dependency 'sync'
