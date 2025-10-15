@@ -58,5 +58,18 @@ module Tins
       assert_equal '1.2.4', v.to_s
       assert_equal '1.2.3', w.to_s
     end
+
+    def test_patch_getter
+      s = '1.2.3'
+      assert_equal 3, s.version.patch
+      assert_equal s.version.patch, s.version.build
+    end
+
+    def test_patch_setter
+      s = '1.2.3'
+      s.version.patch = 5
+      assert_equal 5, s.version.patch
+      assert_equal s.version.patch, s.version.build
+    end
   end
 end

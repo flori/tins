@@ -23,10 +23,13 @@ module Tins
   module StringVersion
     # Map of version level symbols to their numeric indices
     LEVELS = [ :major, :minor, :build, :revision ].each_with_index.
-      each_with_object({}) { |(k, v), h| h[k] = v }.freeze
+      each_with_object({}) { |(k, v), h| h[k] = v }
+    symbols = LEVELS.invert.freeze
+    LEVELS[:patch] = LEVELS[:build]
+    LEVELS.freeze
 
     # Inverted map of LEVELS for symbol lookup
-    SYMBOLS = LEVELS.invert.freeze
+    SYMBOLS = symbols.freeze
 
     # Represents a version string with semantic comparison capabilities
     #
@@ -103,6 +106,9 @@ module Tins
         self[2]
       end
 
+      # Alias for {#build} according to SemVer nomenclature
+      alias patch build
+
       # Sets the build version component
       #
       # @param new_level [Integer] The new build version number
@@ -113,6 +119,9 @@ module Tins
       def build=(new_level)
         self[2] = new_level
       end
+
+      # Alias for {#build=} according to SemVer nomenclature
+      alias patch= build=
 
       # Returns the revision version component
       #
