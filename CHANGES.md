@@ -1,5 +1,18 @@
 # Changes
 
+## 2025-10-16 v1.45.0
+
+- Added `patch` alias for `build` and `build=` methods to align with SemVer terminology
+- Updated `LEVELS` mapping to support `:patch` as alias for `:build` index
+- Added `patch` and `patch=` aliases using the `alias` method
+- Added tests for `patch` getter and setter functionality
+- Updated `gem_hadar` development dependency from version **2.5** to **2.8**
+- Added `openssl-dev` to Docker build dependencies
+- Added `github_workflows` configuration to `Rakefile` for `static.yml` workflow
+- Removed `.byebug_history` from `.gitignore` file
+- Removed `.byebug_history` from ignore list in `Rakefile`
+- Removed duplicate `mize` entry from code indexer configuration
+
 ## 2025-09-13 v1.44.1
 
 - Updated documentation link in README.md to point to GitHub.io instead of
