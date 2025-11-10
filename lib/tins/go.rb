@@ -166,6 +166,15 @@ module Tins
         end && break
       end
       r.reject! { |a| (b[p] = false) || true if /\A~(?<p>.)/ =~ a  }
+      v.transform_values! do |w|
+        if w.is_a?(String) && !w.is_a?(EnumerableExtension)
+          w = w.dup
+          w.extend EnumerableExtension
+          w << w
+        else
+          w
+        end
+      end
       args.replace r
       b.merge(v)
     end

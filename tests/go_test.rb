@@ -59,8 +59,10 @@ module Tins
     end
 
     def test_defaults
-      r = go('bv:', args = %w[ -v bar ], defaults: { ?b => true, ?v => 'foo' })
-      assert_equal({ ?b => 1, 'v' => 'bar' }, r)
+      r = go('bv:w:', args = %w[ -v bar ], defaults: { ?b => true, ?v => 'foo', ?w => 'baz' })
+      assert_equal({ ?b => 1, 'v' => 'bar', 'w' => 'baz' }, r)
+      assert_kind_of(Tins::GO::EnumerableExtension, r[?v])
+      assert_kind_of(Tins::GO::EnumerableExtension, r[?w])
       assert_equal [], args
       r = go('bv:', args = %w[ -v bar ~b baz ], defaults: { ?b => true, ?v => 'foo' })
       assert_equal({ ?b => false, 'v' => 'bar' }, r)
