@@ -1,5 +1,17 @@
 # Changes
 
+## 2025-11-10 v1.46.0
+
+- Updated `s.rubygems_version` from **3.6.9** to **3.7.2** in gemspec
+- In Tins::GO
+    - Extended string defaults with `EnumerableExtension` transformation
+    - Modified `v.transform_values!` to check and extend strings that aren't already `EnumerableExtension`
+    - Applied `w << w` to properly initialize the extension on default strings
+    - Updated tests to verify `EnumerableExtension` instances for both `v` and `w` options
+    - Set default value for `?w` option to **'baz'** in test cases
+    - Maintained backward compatibility while normalizing string handling
+    - Ensured consistent behavior between ARGV strings and default strings
+
 ## 2025-10-16 v1.45.0
 
 - Added `patch` alias for `build` and `build=` methods to align with SemVer terminology
