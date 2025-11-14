@@ -12,15 +12,12 @@ module Tins
   # @example Multiple values for same option
   #   # Handle: -f foo -f bar -f baz
   #   options = Tins::GO.go('f:', ARGV)
-  #   # options['f'] will contain an EnumerableExtension collection with all
+  #   # options['f'] will contain an ArrayExtension collection with all
   #   values, see `option['f'].to_a`
   module GO
-    # An extension module that provides Enumerable behavior for collecting
-    # multiple values associated with the same command-line option.
-    #
-    # This extension enables command-line flags like `-f foo -f bar` to be
-    # collected into a single collection that can be queried via #to_a or #each.
-    module EnumerableExtension
+    # A module that provides extension methods for Strings let them double as
+    # arrays.
+    module ArrayExtension
       # Adds an element to the collection.
       #
       # This method allows for chaining operations and collects multiple
@@ -34,30 +31,11 @@ module Tins
         self
       end
 
-      # Alias for {#push}
-      #
-      # Enables intuitive syntax for adding elements: `collection << item`
-      #
-      # @see #push
-      alias << push
-
-      # Iterates over each element in the collection.
-      #
-      # Implements the Enumerable interface, allowing the use of all Enumerable
-      # methods like map, select, find, etc.
-      #
-      # @yield [element] Yields each element in the collection
-      # @yieldparam element [Object] Each element in the collection
-      # @return [self] Returns self to enable method chaining
-      def each(&block)
-        @arguments.each(&block)
-        self
+      # The to_a method converts the object to an array.
+      # @return [Array] a new array containing the object's elements
+      def to_a
+        @arguments
       end
-
-      # Includes the Enumerable module to provide rich iteration capabilities.
-      #
-      # This enables the use of methods like map, select, find, etc.
-      include Enumerable
     end
 
     module_function
@@ -89,7 +67,7 @@ module Tins
     # @example Multiple values for same option
     #   # Handle: -f foo -f bar -f baz
     #   options = Tins::GO.go('f:', ARGV)
-    #   # options['f'] will contain an EnumerableExtension collection with
+    #   # options['f'] will contain an ArrayExtension collection with
     #   # all values, see options['f'].to_a
     #
     # @example Boolean flag counting
@@ -145,13 +123,13 @@ module Tins
             else
               a = p
             end
-            if v[o].nil? || !(EnumerableExtension === v[o])
+            if v[o].nil? || !(ArrayExtension === v[o])
               a = a.dup
-              a.extend EnumerableExtension
-              a << a
+              a.extend ArrayExtension
+              a.push a
               v[o] = a
             else
-              v[o] << a
+              v[o].push a
             end
             break
           elsif b.key?(o)
@@ -167,10 +145,10 @@ module Tins
       end
       r.reject! { |a| (b[p] = false) || true if /\A~(?<p>.)/ =~ a  }
       v.transform_values! do |w|
-        if w.is_a?(String) && !w.is_a?(EnumerableExtension)
+        if w.is_a?(String) && !w.is_a?(ArrayExtension)
           w = w.dup
-          w.extend EnumerableExtension
-          w << w
+          w.extend ArrayExtension
+          w.push w
         else
           w
         end
