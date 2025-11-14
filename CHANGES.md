@@ -1,5 +1,19 @@
 # Changes
 
+## 2025-11-14 v1.47.0
+
+- Tins::GO
+    - Renamed `EnumerableExtension` module to `ArrayExtension` throughout the
+      codebase
+    - Updated method calls from `<<` to `push` for consistency with
+      `ArrayExtension`
+    - Modified `to_a` method implementation to return `@arguments` directly
+    - Updated test assertions to expect `ArrayExtension` instead of
+      `EnumerableExtension`
+    - Changed documentation comments to reflect the new `ArrayExtension` name
+    - Updated type checking from `EnumerableExtension` to `ArrayExtension` in
+      conditional logic
+
 ## 2025-11-10 v1.46.0
 
 - Updated `s.rubygems_version` from **3.6.9** to **3.7.2** in gemspec
