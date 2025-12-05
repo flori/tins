@@ -1,5 +1,19 @@
 # Changes
 
+## 2025-12-05 v1.48.0
+
+- Added `Tins::Token.analyze` class method to calculate bit strength
+- Moved bit calculation logic from `initialize` to `analyze` method for reuse
+- Implemented bit strength calculation using formula: `length ×
+  log₂(alphabet_size)`
+- Added comprehensive tests for the `analyze` method with various alphabets
+- Support both token string and length-based analysis
+- Implemented proper error handling for required parameters
+- Updated `initialize` method to use the new `analyze` method
+- Test cases verify bit strength for **BASE16**, **BASE64**, and **BASE32**
+  alphabets
+- Method returns integer bit strength for cryptographic token analysis
+
 ## 2025-11-14 v1.47.0
 
 - Tins::GO
