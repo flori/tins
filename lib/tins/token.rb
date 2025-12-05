@@ -81,7 +81,7 @@ module Tins
         bits > 0 or raise ArgumentError, 'bits has to be positive'
         length = (Math.log(1 << bits) / Math.log(alphabet.size)).ceil
       end
-      self.bits = (Math.log(alphabet.size ** length) / Math.log(2)).floor
+      self.bits = self.class.analyze(alphabet:, length:)
       token = +''
       length.times { token << alphabet[random.random_number(alphabet.size)] }
       super token
@@ -91,5 +91,22 @@ module Tins
     #
     # @return [Integer] the number of bits of entropy in the token
     attr_accessor :bits
+
+    # The analyze method calculates the bit length of a token based on its
+    # alphabet and length.
+    #
+    # @param alphabet [String] the alphabet used for token generation, defaults
+    #   to Tins::Token::DEFAULT_ALPHABET
+    # @param token [String, nil] the token string to analyze, optional
+    # @param length [Integer, nil] the length of the token, optional
+    #
+    # @return [Integer] the calculated bit length of the token
+    #
+    # @raise [ArgumentError] if neither token nor length is provided, or if both are provided
+    def self.analyze(alphabet: Tins::Token::DEFAULT_ALPHABET, token: nil, length: nil)
+      token.nil? ^ length.nil? or raise ArgumentError, 'either token or length is required'
+      length ||= token.length
+      (Math.log(alphabet.size ** length) / Math.log(2)).floor
+    end
   end
 end
