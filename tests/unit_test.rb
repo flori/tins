@@ -15,6 +15,9 @@ module Tins
       assert_equal Tins::Unit::PREFIX_F, prefixes(0.001)
       assert_equal Tins::Unit::PREFIX_F, prefixes(:f)
       assert_equal Tins::Unit::PREFIX_F, prefixes(:fraction)
+      assert_equal Tins::Unit::PREFIX_F, prefixes(:si_greek)
+      assert_equal Tins::Unit::PREFIX_SI_UC, prefixes(:si_uc)
+      assert_equal Tins::Unit::PREFIX_SI_UC, prefixes(:si_uppercase)
       assert_equal nil, prefixes(:nix)
     end
 
@@ -40,6 +43,19 @@ module Tins
         format(0.000_123, format: '%.3f %U', prefix: 0.001, unit: ?S)
       assert_equal '0.123 µF',
         format(0.000_000_123, format: '%.3f %U', prefix: :f, unit: ?F)
+    end
+
+    def test_format_si_multipliers
+      assert_equal '23 KHz',
+        format(23 * 1000, format: '%d %U', prefix: :si_uc, unit: 'Hz')
+      assert_equal '-23 KHz',
+        format(-23 * 1000, format: '%d %U', prefix: :si_uc, unit: 'Hz')
+      assert_equal '23.1 KHz',
+        format(23 * 1000 + 111, format: '%.1f %U', prefix: :si_uc, unit: 'Hz')
+      assert_equal 'KHz: 23',
+        format(23 * 1000, format: '%U: %d', prefix: :si_uc, unit: 'Hz')
+      assert_equal 'KHz: 23.12',
+        format(23 * 1000 + 120, prefix: :si_uc, format: '%U: %.2f', unit: 'Hz')
     end
 
     def test_parse

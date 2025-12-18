@@ -26,6 +26,12 @@ module Tins
       '', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y',
     ].each_with_index.map { |n, i| Prefix.new(n.freeze, 1024, 1024 ** i, false) }.freeze
 
+    # An array of prefix objects for uppercase SI unit prefixes (K, M, G...) based
+    # on 1000-step increments.
+    PREFIX_SI_UC = [
+      '', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y',
+    ].each_with_index.map { |n, i| Prefix.new(n.freeze, 1000, 1000 ** i, false) }.freeze
+
     # An array of prefix objects for fractional prefixes (m, µ, n...) based on
     # 1000-step decrements.
     PREFIX_F = [
@@ -53,8 +59,10 @@ module Tins
         PREFIX_UC
       when :lowercase, :lc, 1000
         PREFIX_LC
-      when :fraction, :f, 0.001
+      when :fraction, :f, :si_greek, 0.001
         PREFIX_F
+      when :si_uc, :si_uppercase
+        PREFIX_SI_UC
       when Array
         identifier
       end
