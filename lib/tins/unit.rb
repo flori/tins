@@ -26,6 +26,12 @@ module Tins
       '', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y',
     ].each_with_index.map { |n, i| Prefix.new(n.freeze, 1024, 1024 ** i, false) }.freeze
 
+    # An array of prefix objects for uppercase binary prefixes (Ki, Mi, Gi...) based
+    # on 1024-step increments.
+    PREFIX_IEC_UC = [
+      '', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi', 'Yi',
+    ].each_with_index.map { |n, i| Prefix.new(n.freeze, 1024, 1024 ** i, false) }.freeze
+
     # An array of prefix objects for uppercase SI unit prefixes (K, M, G...) based
     # on 1000-step increments.
     PREFIX_SI_UC = [
@@ -57,6 +63,8 @@ module Tins
       case identifier
       when :uppercase, :uc, 1024
         PREFIX_UC
+      when :iec_uppercase, :iec_uc
+        PREFIX_IEC_UC
       when :lowercase, :lc, 1000
         PREFIX_LC
       when :fraction, :f, :si_greek, 0.001

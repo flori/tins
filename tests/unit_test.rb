@@ -18,6 +18,8 @@ module Tins
       assert_equal Tins::Unit::PREFIX_F, prefixes(:si_greek)
       assert_equal Tins::Unit::PREFIX_SI_UC, prefixes(:si_uc)
       assert_equal Tins::Unit::PREFIX_SI_UC, prefixes(:si_uppercase)
+      assert_equal Tins::Unit::PREFIX_IEC_UC, prefixes(:iec_uc)
+      assert_equal Tins::Unit::PREFIX_IEC_UC, prefixes(:iec_uppercase)
       assert_equal nil, prefixes(:nix)
     end
 
