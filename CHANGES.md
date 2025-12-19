@@ -1,5 +1,25 @@
 # Changes
 
+## 2025-12-19 v1.50.0
+
+- Updated `gem_hadar` development dependency version to **2.10**
+- Added `ruby:4.0-rc-alpine` image to the `images` section in `.all_images.yml`
+
+## 2025-12-18 v1.49.0
+
+- Updated `bundle update` command to `bundle update --all` in `.all_images.yml`
+  to ensure all dependencies are updated recursively
+- Added support for IEC binary prefixes with new `PREFIX_IEC_UC` constant and
+  updated `prefixes` method to handle `:iec_uc` and `:iec_uppercase`
+  identifiers
+- Added corresponding test cases for IEC prefix mapping
+- Added `:si_greek` alias for fractional prefixes (`m`, `µ`, `n`, etc.) in `PREFIX_F`
+- Added `:si_uppercase` alias for SI uppercase prefixes (`K`, `M`, `G`, etc.) in `PREFIX_SI_UC`
+- Updated `PREFIX_SI_UC` comment to clarify these are based on **1000**-step increments, not 1024
+- Enhanced `prefixes` method to support new aliases while maintaining backward compatibility
+- Added comprehensive tests for new aliases in `Tins::UnitTest`
+- Updated `s.rubygems_version` from **3.7.2** to **4.0.2** in gemspec
+
 ## 2025-12-05 v1.48.0
 
 - Added `Tins::Token.analyze` class method to calculate bit strength
