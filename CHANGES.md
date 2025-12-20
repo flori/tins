@@ -1,5 +1,12 @@
 # Changes
 
+## 2025-12-20 v1.51.0
+
+- Added `readline` as a runtime dependency in both `Rakefile` and
+  `tins.gemspec`
+- The `readline` dependency version is set to `>= 0` in `tins.gemspec`
+- The `readline` dependency is added to the `GemHadar` block in `Rakefile`
+
 ## 2025-12-19 v1.50.0
 
 - Updated `gem_hadar` development dependency version to **2.10**
