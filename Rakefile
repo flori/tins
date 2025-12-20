@@ -30,6 +30,7 @@ GemHadar do
 
   dependency 'sync'
   dependency 'bigdecimal'
+  dependency 'readline'
   dependency 'mize',     '~> 0.6'
   development_dependency 'all_images'
   development_dependency 'debug'
