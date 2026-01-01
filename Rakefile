@@ -22,6 +22,10 @@ GemHadar do
   licenses <<       'MIT'
   clean <<          'coverage'
 
+  changelog do
+    filename 'CHANGES.md'
+  end
+
   github_workflows(
     'static.yml' => {}
   )
