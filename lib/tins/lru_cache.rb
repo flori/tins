@@ -13,7 +13,7 @@ module Tins
     def initialize(capacity)
       @capacity = Integer(capacity)
       @capacity >= 1 or
-        raise ArgumentError, "capacity should be >= 1, was #@capacity"
+        raise ArgumentError, "capacity should be >= 1, was #{@capacity}"
       @data     = {} # Least-recently used will always be the first element
     end
 
