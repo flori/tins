@@ -3,14 +3,9 @@ module Tins
   #
   # This cache maintains a fixed-size collection of key-value pairs,
   # automatically removing the least recently accessed item when the capacity
-  # is exceeded.
+  # is exceeded. Both read and write are considered access.
   class LRUCache
     include Enumerable
-
-    # Our "nil" value if it wasn' set by clients
-    NOT_EXIST = Object.new.freeze
-
-    private_constant :NOT_EXIST
 
     # Initializes a new LRU cache with the specified capacity.
     #
@@ -18,8 +13,8 @@ module Tins
     def initialize(capacity)
       @capacity = Integer(capacity)
       @capacity >= 1 or
-        raise ArgumentError, "capacity should be >= 1, was #@capacity"
-      @data     = {}
+        raise ArgumentError, "capacity should be >= 1, was #{@capacity}"
+      @data     = {} # Least-recently used will always be the first element
     end
 
     # Returns the maximum capacity of the cache.
@@ -35,11 +30,8 @@ module Tins
     # @param key [Object] the key to look up
     # @return [Object, nil] the value for the key or nil if not found
     def [](key)
-      case value = @data.delete(key) { NOT_EXIST }
-      when NOT_EXIST
-        nil
-      else
-        @data[key] = value
+      if @data.has_key?(key)
+        @data[key] = @data.delete(key)
       end
     end
 
@@ -56,7 +48,7 @@ module Tins
       @data.delete(key)
       @data[key] = value
       if @data.size > @capacity
-        @data.delete(@data.keys.first)
+        @data.shift
       end
       value
     end

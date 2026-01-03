@@ -1,5 +1,8 @@
 # Changes
 
+## UNRELEASED
+- Simplified implementation of LRUCache.
+
 ## 2025-12-20 v1.51.0
 
 - Added `readline` as a runtime dependency in both `Rakefile` and
