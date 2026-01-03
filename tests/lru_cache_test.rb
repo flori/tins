@@ -7,9 +7,10 @@ module Tins
     end
 
     def test_too_low_capacity
-      assert_raise ArgumentError do
+      ex = assert_raise ArgumentError do
         LRUCache.new(0)
       end
+      assert_equal 'capacity should be >= 1, was 0', ex.message
     end
 
     def test_wrong_capacity_type
