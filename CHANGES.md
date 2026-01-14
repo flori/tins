@@ -1,5 +1,15 @@
 # Changes
 
+## 2026-01-14 v1.51.1
+
+- Simplified `lru_cache` implementation to not need `NOT_EXIST`
+- Updated `rubygems_version` from **4.0.2** to **4.0.3**
+- Changed `gem_hadar` development dependency from "~> 2.10" to ">= 2.16.3"
+- Updated Ruby image version from 4.0-rc-alpine to 4.0-alpine in CI pipeline
+- Added comprehensive module documentation for `DSLKit` explaining its purpose
+  and features
+- Added `CHANGES.md` file to gem release process using `GemHadar`
+
 ## 2025-12-20 v1.51.0
 
 - Added `readline` as a runtime dependency in both `Rakefile` and
