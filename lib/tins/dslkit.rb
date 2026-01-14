@@ -1137,4 +1137,69 @@ module Tins
     end
   end
 end
+# DSLKit provides a comprehensive framework for building Domain Specific Languages
+# and configuration systems in Ruby.
+#
+# DSLKit is designed to make it easy to create clean, expressive APIs that feel
+# natural to Ruby developers. It provides a collection of utilities for:
+#
+# - Creating method-based accessors and constants
+# - Working with singleton classes and eigenclasses
+# - Building thread-safe global variables
+# - Implementing dynamic code evaluation
+# - Creating symbolic method handling
+# - Deflecting method calls for interception
+# - Providing delegate patterns for method forwarding
+# - Building blank slates for clean API surfaces
+#
+# The framework is organized around several key modules:
+#
+# - Tins::DSLAccessor: For creating configurable accessors with default values
+# - Tins::Constant: For creating method-based constants
+# - Tins::Eigenclass: For working with singleton classes
+# - Tins::ClassMethod: For defining class methods dynamically
+# - Tins::ThreadGlobal: For thread-safe global variables
+# - Tins::Interpreter: For dynamic code evaluation
+# - Tins::SymbolMaker: For symbolic method handling
+# - Tins::ConstantMaker: For symbolic constant handling
+# - Tins::Deflect: For method call interception
+# - Tins::Delegate: For method delegation patterns
+# - Tins::BlankSlate: For creating clean API surfaces
+#
+# @example Basic DSL usage
+#   class Config
+#     extend Tins::DSLAccessor
+#     dsl_accessor :port, 8080
+#     dsl_accessor :host, 'localhost'
+#   end
+#
+#   config = Config.new
+#   config.port    # => 8080
+#   config.port 8081  # Sets port to 8081
+#
+# @example Method deflection
+#   class Calculator
+#     def add(a, b)
+#       a + b
+#     end
+#   end
+#
+#   calc = Calculator.new
+#   Tins::Deflect.deflect(Calculator, :add) do |obj, method, *args|
+#     # Custom behavior for add method
+#     args.sum
+#   end
+#
+#   calc.add(1, 2, 3)  # => 6 (sum instead of addition)
+#
+# @see Tins::DSLAccessor
+# @see Tins::Constant
+# @see Tins::Eigenclass
+# @see Tins::ClassMethod
+# @see Tins::ThreadGlobal
+# @see Tins::Interpreter
+# @see Tins::SymbolMaker
+# @see Tins::Deflect
+# @see Tins::Delegate
+# @see Tins::BlankSlate
 DSLKit = Tins
