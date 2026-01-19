@@ -106,7 +106,7 @@ module Tins
     def self.analyze(alphabet: Tins::Token::DEFAULT_ALPHABET, token: nil, length: nil)
       token.nil? ^ length.nil? or raise ArgumentError, 'either token or length is required'
       length ||= token.length
-      (Math.log(alphabet.size ** length) / Math.log(2)).floor
+      (length * Math.log2(alphabet.size)).floor
     end
   end
 end
