@@ -74,5 +74,6 @@ module Tins
   require 'tins/lru_cache'
   require 'tins/deprecate'
   require 'tins/hash_bfs'
+  require 'tins/hash_dfs'
 end
 require 'tins/alias'

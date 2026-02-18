@@ -8,38 +8,36 @@ module Tins
   module HashBFS
     extend Tins::ThreadLocal
 
-    thread_local :seen
+    thread_local :bfs_seen
 
     # The bfs method performs a breadth-first search on the object's structure,
     # visiting all elements and yielding their indices and values to the block.
     #
-    # @param visit_internal [ true, false ] whether to visit internal hashes or arrays
-    # @yield [ index, value ] yields each element's index and value to the block
-    #
-    # @raise [ ArgumentError ] if no &block argument was provided
-    #
-    # @example bfs { |index, value| … } # performs a breadth-first search on the object's structure
-    #
-    # @return [ self ] returns the receiver
+    # @param visit_internal [true, false] whether to visit internal hashes or arrays
+    # @yield [index, value] yields each element's index and value to the block
+    # @raise [ArgumentError] if no &block argument was provided
+    # @example
+    #   hash.bfs { |index, value| puts "#{index.inspect} => #{value.inspect}" }
+    # @return [self] returns the receiver
     def bfs(visit_internal: false, &block)
       block or raise ArgumentError, 'require &block argument'
-      self.seen = {}
+      self.bfs_seen = {}
       queue     = []
       queue.push([ nil, self ])
       while (index, object = queue.shift)
         case
-        when seen[object.__id__]
+        when bfs_seen[object.__id__]
           next
         when Hash === object
-          seen[object.__id__] = true
+          bfs_seen[object.__id__] = true
           object.each do |k, v|
-            queue.push([ k, convert_to_hash_or_ary(v) ])
+            queue.push([ k, bfs_convert_to_hash_or_ary(v) ])
           end
           visit_internal or next
         when Array === object
-          seen[object.__id__] = true
+          bfs_seen[object.__id__] = true
           object.each_with_index do |v, i|
-            queue.push([ i, convert_to_hash_or_ary(v) ])
+            queue.push([ i, bfs_convert_to_hash_or_ary(v) ])
           end
           visit_internal or next
         end
@@ -47,15 +45,14 @@ module Tins
       end
       self
     ensure
-      self.seen = nil
+      self.bfs_seen = nil
     end
 
     # Converts the given object into a hash or array if possible
     #
     # @param object [Object] The object to convert
-    #
     # @return [Hash, Array, Object] The converted object or itself if not convertible
-    def convert_to_hash_or_ary(object)
+    def bfs_convert_to_hash_or_ary(object)
       case
       when object.respond_to?(:to_hash)
         object.to_hash
