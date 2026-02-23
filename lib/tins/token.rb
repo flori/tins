@@ -35,11 +35,17 @@ module Tins
     BASE64_URL_FILENAME_SAFE_ALPHABET =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_".freeze
 
-    # Base32 alphabet
+    # Base32 alphabet (RFC 4648)
     BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".freeze
 
-    # Extended hex base32 alphabet
-    BASE32_EXTENDED_HEX_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUV".freeze
+    # Extended uppercase hex base32 alphabet
+    BASE32_EXTENDED_UPPERCASE_HEX_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUV".freeze
+
+    # Extended lowercase hex base32 alphabet
+    BASE32_EXTENDED_LOWERCASE_HEX_ALPHABET = "0123456789abcdefghijklmnopqrstuv".freeze
+
+    # Extended hex base32 default alphabet (uppercase)
+    BASE32_EXTENDED_HEX_ALPHABET = BASE32_EXTENDED_UPPERCASE_HEX_ALPHABET
 
     # Base16 uppercase alphabet
     BASE16_UPPERCASE_ALPHABET = "0123456789ABCDEF".freeze
