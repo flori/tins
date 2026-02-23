@@ -1,5 +1,32 @@
 # Changes
 
+## 2026-02-23 v1.52.0
+
+- Renamed `BASE32_EXTENDED_HEX_ALPHABET` to
+  `BASE32_EXTENDED_UPPERCASE_HEX_ALPHABET` for clarity.  
+- Added new constant `BASE32_EXTENDED_LOWERCASE_HEX_ALPHABET` for lowercase hex
+  alphabet.  
+- Updated `BASE32_EXTENDED_HEX_ALPHABET` to reference the uppercase variant as
+  default.  
+- Updated comment for `BASE32_ALPHABET` to specify RFC 4648 compliance.  
+- Improved maintainability by clearly separating uppercase and lowercase hex
+  alphabet variants.  
+- Added `require 'tins/hash_dfs'` to `lib/tins.rb` and `lib/tins/xt.rb`.  
+- Renamed thread‑local flag in `HashBFS` from `:seen` to `:bfs_seen` and
+  updated all references.  
+- Replaced calls to `convert_to_hash_or_ary` with `bfs_convert_to_hash_or_ary`
+  in `HashBFS`.  
+- Added `bfs_convert_to_hash_or_ary` method to `HashBFS`.  
+- Added new module `Tins::HashDFS` with DFS traversal, thread‑local `dfs_seen`,
+  and `dfs_convert_to_hash_or_ary`.  
+- Added `lib/tins/xt/hash_dfs.rb` to mix `HashDFS` into `::Hash`.  
+- Added `tests/hash_dfs_test.rb` with DFS tests mirroring BFS tests.  
+- Updated YARD documentation for `HashBFS#bfs` with an example.  
+- Optimized token analysis bit calculation by avoiding large exponent
+  calculations and enhancing numerical stability for large token lengths.  
+- Maintained mathematical equivalence with **Ruby 2.0+** `Math.log2` method.  
+- Used more direct computation of bits needed for token entropy calculation.
+
 ## 2026-01-14 v1.51.1
 
 - Simplified `lru_cache` implementation to not need `NOT_EXIST`
