@@ -87,7 +87,7 @@ module Tins
         bits > 0 or raise ArgumentError, 'bits has to be positive'
         length = (Math.log(1 << bits) / Math.log(alphabet.size)).ceil
       end
-      self.bits = self.class.analyze(alphabet:, length:)
+      @bits = self.class.analyze(alphabet:, length:)
       token = +''
       length.times { token << alphabet[random.random_number(alphabet.size)] }
       super token
@@ -96,7 +96,7 @@ module Tins
     # The bit length of the token.
     #
     # @return [Integer] the number of bits of entropy in the token
-    attr_accessor :bits
+    attr_reader :bits
 
     # The analyze method calculates the bit length of a token based on its
     # alphabet and length.
