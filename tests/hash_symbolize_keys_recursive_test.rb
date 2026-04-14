@@ -59,5 +59,61 @@ module Tins
         hash.symbolize_keys_recursive(circular: :circular)
       )
     end
+
+    def test_stringify
+      hash = {
+        :key => [
+          {
+            :key => {
+              :key => true
+            },
+            :o => Object.new,
+          }
+        ],
+      }
+      hash2 = hash.stringify_keys_recursive
+      assert hash2["key"][0]["key"]["key"]
+      hash.stringify_keys_recursive!
+      assert hash["key"][0]["key"]["key"]
+    end
+
+    def test_stringify_bang
+      hash = { :foo => 'bar' }
+      hash.stringify_keys_recursive!
+      assert_equal({ "foo" => 'bar' }, hash)
+    end
+
+    def test_stringify_with_circular_array
+      circular_array = [].tap { |a| a << a }
+      assert_equal(
+        { "foo" => [ nil ] },
+        { :foo => circular_array }.stringify_keys_recursive
+      )
+      assert_equal(
+        { "foo" => [ :circular ] },
+        { :foo => circular_array }.stringify_keys_recursive(circular: :circular)
+      )
+    end
+
+    def test_stringify_with_circular_hash
+      circular_hash = {}.tap { |h| h[:foo] = h }
+      circular_hash_string = {}.tap { |h| h['foo'] = nil }
+      assert_equal(
+        { "bar" => circular_hash_string },
+        { :bar => circular_hash }.stringify_keys_recursive
+      )
+      assert_equal(
+        { "bar" => { "foo" => :circular } },
+        { :bar => circular_hash }.stringify_keys_recursive(circular: :circular)
+      )
+    end
+
+    def test_stringify_deeper_nesting
+      hash = { :foo => [ true, [ { :bar => {}.tap { |h| h[:foo] = h } }, 3.141, [].tap { |arr| arr << arr } ] ] }
+      assert_equal(
+        {"foo"=> [true, [{"bar"=> {"foo"=> :circular}}, 3.141, [:circular]]]},
+        hash.stringify_keys_recursive(circular: :circular)
+      )
+    end
   end
 end

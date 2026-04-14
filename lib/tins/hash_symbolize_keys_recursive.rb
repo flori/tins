@@ -49,7 +49,23 @@ module Tins
     #   # => { name: "John", self: "[Circular]" }
     def symbolize_keys_recursive(circular: nil)
       self.seen = {}
-      _symbolize_keys_recursive(self, circular: circular)
+      _transform_keys_recursive(self, circular: circular, transform: :to_sym)
+    ensure
+      self.seen = nil
+    end
+
+    # Converts all keys in the hash (and nested hashes) to strings.
+    #
+    # @param circular [Object] The value to return for circular references.
+    # @return [Hash] A new hash with all keys converted to strings.
+    #
+    # @example
+    #   hash = { name: "John", address: { city: "NYC" } }
+    #   hash.stringify_keys_recursive
+    #   # => { "name" => "John", "address" => { "city" => "NYC" } }
+    def stringify_keys_recursive(circular: nil)
+      self.seen = {}
+      _transform_keys_recursive(self, circular: circular, transform: :to_s)
     ensure
       self.seen = nil
     end
@@ -70,14 +86,28 @@ module Tins
       replace symbolize_keys_recursive(circular: circular)
     end
 
+    # Converts all keys in the hash (and nested hashes) to strings in place.
+    #
+    # @param circular [Object] The value to return for circular references.
+    # @return [Hash] The same hash with all keys converted to strings.
+    #
+    # @example
+    #   hash = { name: "John", address: { city: "NYC" } }
+    #   hash.stringify_keys_recursive!
+    #   # => { "name" => "John", "address" => { "city" => "NYC" } }
+    def stringify_keys_recursive!(circular: nil)
+      replace stringify_keys_recursive(circular: circular)
+    end
+
     private
 
-    # Performs the actual recursive symbolization work
+    # Performs the actual recursive transformation work
     #
     # @param object [Object] The object to process
     # @param circular [Object] The value to return for circular references
-    # @return [Object] The processed object with symbolized keys
-    def _symbolize_keys_recursive(object, circular: nil)
+    # @param transform [Symbol] The transformation to apply to keys (`:to_sym` or `:to_s`).
+    # @return [Object] The processed object with transformed keys
+    def _transform_keys_recursive(object, circular: nil, transform:)
       case
       when seen[object.__id__]
         object = circular
@@ -87,7 +117,8 @@ module Tins
         new_object = object.class.new
         seen[new_object.__id__] = true
         object.each do |k, v|
-          new_object[k.to_s.to_sym] = _symbolize_keys_recursive(v, circular: circular)
+          new_object[k.to_s.__send__(transform)] =
+            _transform_keys_recursive(v, circular: circular, transform:)
         end
         object = new_object
       when object.respond_to?(:to_ary)
@@ -96,7 +127,7 @@ module Tins
         new_object = object.class.new(object.size)
         seen[new_object.__id__] = true
         object.each_with_index do |v, i|
-          new_object[i] = _symbolize_keys_recursive(v, circular: circular)
+          new_object[i] = _transform_keys_recursive(v, circular: circular, transform:)
         end
         object = new_object
       end
