@@ -1,5 +1,20 @@
 # Changes
 
+## 2026-04-14 v1.53.0
+
+- Added `stringify_keys_recursive` and `stringify_keys_recursive!` methods to convert hash keys from symbols to strings
+    - Renamed `_symbolize_keys_recursive` to `_transform_keys_recursive` to
+      support both `:to_sym` and `:to_s` transformations
+    - Updated `symbolize_keys_recursive` to use the new
+      `_transform_keys_recursive` with `transform: :to_sym`
+    - Added comprehensive tests for the new `stringify_keys_recursive` methods
+      including circular reference handling
+    - Updated YARD documentation for all new and modified methods
+- Made `Token#bits` immutable from outside by changing `attr_accessor
+  :bits` to `attr_reader :bits` and using direct instance variable
+  assignment
+- Bump `s.rubygems_version` from **4.0.3** to **4.0.10** in `tins.gemspec`
+
 ## 2026-02-23 v1.52.0
 
 - Renamed `BASE32_EXTENDED_HEX_ALPHABET` to
