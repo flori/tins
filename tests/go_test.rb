@@ -77,5 +77,23 @@ module Tins
       assert_equal({ ?b => false, 'v' => 'foo' }, r)
       assert_equal [], args
     end
+
+    def test_missing_argument
+      r = go 'x:', args = %w[-x]
+      assert_equal({ 'x' => nil }, r)
+      assert_equal %w[-x], args
+
+      r = go 'x:', args = %w[-x -y]
+      assert_equal({ 'x' => nil }, r)
+      assert_equal %w[-x -y], args
+
+      r = go 'x:', args = %w[-x pos]
+      assert_equal({ 'x' => 'pos' }, r)
+      assert_equal [], args
+
+      r = go 'x', args = %w[-x pos]
+      assert_equal({ 'x' => 1 }, r)
+      assert_equal %w[pos], args
+    end
   end
 end

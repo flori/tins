@@ -116,9 +116,16 @@ module Tins
           o = p.slice!(0, 1)
           if v.key?(o)
             if p.empty? && args.empty?
+              warn "Warning: Option -#{o} requires an argument, but none was provided."
               r << a
               break 1
             elsif p == ''
+              an = args.first
+              if an =~ /\A-/
+                warn "Warning: Option -#{o} requires an argument, but #{an.inspect} is not a valid value."
+                r << a
+                break
+              end
               a = args.shift
             else
               a = p
