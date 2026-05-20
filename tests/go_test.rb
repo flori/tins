@@ -95,5 +95,14 @@ module Tins
       assert_equal({ 'x' => 1 }, r)
       assert_equal %w[pos], args
     end
+
+    def test_invalid_pattern
+      r = go 'xx:', args = %w[-x pos]
+      assert_equal({}, r)
+      assert_equal %w[-x pos], args
+      r = go 'xx:', args = %w[-x]
+      assert_equal({}, r)
+      assert_equal %w[-x], args
+    end
   end
 end

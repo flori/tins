@@ -91,6 +91,11 @@ module Tins
         t[a ? 1 : 0][o] = a ? nil : false
         t
       }
+      (b.keys & v.keys).each do |o|
+        warn "Warning: Option #{o} passed as boolean and value flag! => Ignoring #{o.inspect}."
+        b.delete(o)
+        v.delete(o)
+      end
       b.each_key do |k|
         d.key?(k) or next
         if [ 0, false, nil ].include?(d[k])
