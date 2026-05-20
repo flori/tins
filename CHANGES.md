@@ -1,5 +1,26 @@
 # Changes
 
+## 2026-05-20 v1.54.0
+
+### Changed
+
+- **Tins::GO.go**
+  - Improved handling of missing arguments: the system now issues a warning
+    when an option requiring an argument is missing its value and prevents
+    subsequent flags from being consumed as arguments.
+  - Added protection against overlapping flag definitions; flags defined as
+    both boolean and value-requiring are now disabled, and a warning is issued.
+  - Expanded documentation for the `go` method to include pattern syntax,
+    ambiguity handling, side effects, and the in-place modification of the
+    `_args_` array.
+
+- **Dependencies & Configuration**
+  - Updated `gem_hadar` dependency from **2.17.0** to **2.17.1**.
+  - Added `.envrc` to `s.files` in `tins.gemspec`.
+  - Configured the test runner for `ollama-chat` by setting the
+    `OLLAMA_CHAT_TOOLS_TEST_RUNNER` environment variable to `bundle exec
+    test-unit` via `.envrc`.
+
 ## 2026-04-14 v1.53.0
 
 - Added `stringify_keys_recursive` and `stringify_keys_recursive!` methods to convert hash keys from symbols to strings
