@@ -41,10 +41,22 @@ module Tins
     module_function
 
     # Parses the argument array _args_, according to the pattern _s_, to
-    # retrieve the single character command line options from it. If _s_ is
-    # 'xy:' an option '-x' without an option argument is searched, and an
-    # option '-y foo' with an option argument ('foo'). To disable the '-x'
-    # option, pass '~x'.
+    # retrieve the single character command line options from it.
+    #
+    # Pattern syntax:
+    # - 'x': Boolean flag.
+    # - 'x:': Option requiring an argument.
+    # - '~x': Explicitly disables the -x option.
+    #
+    # Note: If a character is defined as both a boolean and a value flag
+    # (e.g., 'xx:'), it is considered ambiguous and will be disabled.
+    #
+    # Behavior:
+    # - If a value flag is missing its argument, or the next argument
+    #   starts with '-', a warning is issued to STDERR and the flag
+    #   is not set.
+    # - This method modifies the _args_ array in-place, removing all
+    #   parsed options and leaving only the remaining positional arguments.
     #
     # The _defaults_ argument specifies default values for the options.
     #
