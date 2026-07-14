@@ -150,7 +150,7 @@ hello
 ### Hash Symbolization
 
 ```ruby
-require 'tins/hash_symbolize_keys_recursive'
+require 'tins/xt/hash_symbolize_keys_recursive'
 
 hash = {
   'name' => 'John',
@@ -159,7 +159,73 @@ hash = {
     'street' => '123 Main St'
   }
 }
-hash.symbolize_keys_recursive! # Converts all keys to symbols recursively
+hash.symbolize_keys_recursive! # Converts all keys to symbols using a stack-safe deep transformation
+```
+
+### Deep Hash and Array Transformation
+
+```ruby
+require 'tins/xt/deep_transform'
+
+h = { "name" => "john", "details" => { "city" => "berlin", "tags" => ["ruby", "dev"] } }
+
+# Transform keys to symbols and values (if strings) to uppercase
+result = h.deep_transform(
+  key:   -> k { k.to_sym },
+  value: -> v { v.is_a?(String) ? v.upcase : v }
+)
+# => { name: "JOHN", details: { city: "BERLIN", tags: ["RUBY", "DEV"] } }
+```
+
+#### Advanced Usage (Contextual Transformations)
+
+The `value` lambda can accept 1, 2, or 3 arguments depending on the level of context required for each node's transformation:
+- `-> v { ... }`: Global transform (node only).
+- `-> k, v { ... }`: Contextual transform (key/index and node).
+- `-> k, v, c { ... }`: Full structural transform (key/index, node, and parent container).
+
+#### 🧮 Example: Calculating a moving average on a nested array structure
+
+```ruby
+require 'tins/xt/deep_transform'
+
+# Root can be an Array as well
+a = (1..10).each_slice(5).map(&:to_a) 
+# => [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]]
+
+result = a.deep_transform(value: -> i, x, c { 
+  Array === c && Numeric === x && i > 0 ? (c[i-1] + x) / 2.0 : x 
+})
+# => [[1, 1.5, 2.5, 3.5, 4.5], [6, 6.5, 7.5, 8.5, 9.5]]
+```
+
+#### 🛡️ Example: Structural Pruning & Sanitization
+
+Because `deep_transform` processes nodes bottom-up, you can effectively prune
+entire branches of a tree by returning an empty container when a specific
+condition (like a "private" flag) is met.
+
+```ruby
+require 'tins/xt/deep_transform'
+
+# A nested data structure with some sections marked for pruning
+api_response = {
+  user: { 
+    name: "Florian", 
+    profile: { bio: "Ruby Expert", internal_id: "SECRET_123", noindex: true } 
+  },
+  settings: { 
+    theme: "dark", 
+    debug_info: { logs: ["Error 404"], noindex: true } 
+  }
+}
+
+# Prune any Hash that is marked with `noindex: true`
+sanitized = api_response.deep_transform(value: -> v { 
+  (v.is_a?(Hash) && v[:noindex]) ? {} : v 
+})
+
+# => { user: { name: "Florian", profile: {} }, settings: { theme: "dark", debug_info: {} } }
 ```
 
 ## Author

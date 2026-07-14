@@ -42,5 +42,6 @@ module Tins
   require 'tins/xt/deprecate'
   require 'tins/xt/hash_bfs'
   require 'tins/xt/hash_dfs'
+  require 'tins/xt/deep_transform'
   require 'tins/xt/minimize'
 end

@@ -75,5 +75,6 @@ module Tins
   require 'tins/deprecate'
   require 'tins/hash_bfs'
   require 'tins/hash_dfs'
+  require 'tins/deep_transform'
 end
 require 'tins/alias'
