@@ -1,5 +1,28 @@
 # Changes
 
+## 2026-07-17 v1.55.0
+
+### Added
+
+- Introduced the `Tins::DeepTransform` module, providing a stack-safe,
+  iterative engine for deep transformations via the `deep_transform` method.
+- Added support for flexible lambda arity (1, 2, or 3) within `deep_transform`
+  to allow access to the node, key/index, and parent container context.
+- Implemented a core extension in `tins/xt/deep_transform` that integrates
+  `DeepTransform` into the `Hash` and `Array` classes.
+- Added comprehensive test coverage for deep nesting, circularity, and arity
+  variations in `tests/deep_transform_test.rb`.
+- Updated `README.md` with usage examples for structural pruning, moving
+  averages, and basic transformations.
+
+### Changed
+
+- Refactored `Tins::HashSymbolizeKeysRecursive` to utilize the new iterative
+  engine instead of recursive logic.
+- Registered new modules within `lib/tins.rb` and `lib/tins/xt.rb`.
+- Updated CI configuration in `.all_images.yml` to use `bundle exec rake test`
+  and added `before`/`after` hooks.
+
 ## 2026-05-20 v1.54.0
 
 ### Changed
