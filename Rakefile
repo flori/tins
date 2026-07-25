@@ -34,6 +34,7 @@ GemHadar do
 
   dependency 'sync'
   dependency 'bigdecimal'
+  dependency 'irb'
   dependency 'readline'
   dependency 'mize',     '~> 0.6'
   development_dependency 'all_images'

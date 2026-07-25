@@ -39,12 +39,10 @@ module Tins
     #   examine some_binding
     def self.examine(binding = TOPLEVEL_BINDING)
       setup nil
-      workspace = WorkSpace.new binding
-      irb = Irb.new workspace
+      workspace            = WorkSpace.new binding
+      irb                  = Irb.new workspace
       @CONF[:MAIN_CONTEXT] = irb.context
       catch(:IRB_EXIT) { irb.eval_input }
-    rescue Interrupt
-      exit
     end
 
     # Starts an interactive IRB session examining the current object and its context.

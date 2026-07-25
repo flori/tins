@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<test-unit>.freeze, ["~> 3.7".freeze])
   s.add_runtime_dependency(%q<sync>.freeze, [">= 0".freeze])
   s.add_runtime_dependency(%q<bigdecimal>.freeze, [">= 0".freeze])
+  s.add_runtime_dependency(%q<irb>.freeze, [">= 0".freeze])
   s.add_runtime_dependency(%q<readline>.freeze, [">= 0".freeze])
   s.add_runtime_dependency(%q<mize>.freeze, ["~> 0.6".freeze])
 end
