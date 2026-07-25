@@ -1,5 +1,12 @@
 # Changes
 
+## 2026-07-25 v1.56.0
+
+### Changes
+
+- Refactored `xt/irb.rb` and added `irb` as a dependency in the `Rakefile`.
+- Removed redundant `rescue Interrupt` block from `lib/tins/xt/irb.rb`.
+
 ## 2026-07-17 v1.55.0
 
 ### Added
