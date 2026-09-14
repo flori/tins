@@ -26,6 +26,7 @@ module Tins
     #
     # @param dispatch [Symbol, nil] The method to call on the object (optional)
     # @param args [Array] Arguments to pass to the dispatched method (optional)
+    # @param kwargs [Hash] Keyword arguments to pass to the dispatched method (optional)
     # @yield [Object] Optional block to execute with the result if result or
     # dispatched result not nil
     # @return [Object, nil] The object itself if not blank, or the result of
@@ -43,11 +44,11 @@ module Tins
     #
     # @example With block execution
     #   user.full?(:name) { |name| "Hello #{name}" }
-    def full?(dispatch = nil, *args)
+    def full?(dispatch = nil, *args, **kwargs)
       if blank?
         obj = nil
       elsif dispatch
-        obj = __send__(dispatch, *args)
+        obj = __send__(dispatch, *args, **kwargs)
         obj = nil if obj.blank?
       else
         obj = self

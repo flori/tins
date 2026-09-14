@@ -58,6 +58,15 @@ module Tins
       assert_equal 3, "foo".full?(:size)
     end
 
+    def test_full_with_kwargs
+      obj = Object.new
+      def obj.greet(name:)
+        "hello #{name}"
+      end
+      assert_equal 'hello world', obj.full?(:greet, name: 'world')
+      assert_nil ''.full?(:greet, name: 'world')
+    end
+
     def test_all_full
       assert_equal [1, 2], [1, 2].all_full?
       assert_nil [nil, 2].all_full?
