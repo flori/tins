@@ -7,12 +7,13 @@ module Tins
     #
     # @param method_name [ Symbol ] the name of the method to invoke
     # @param args [ Array ] arguments to pass to the method
+    # @param kwargs [ Hash ] keyword arguments to pass to the method
     # @yield [ block ] optional block to pass to the method
     # @return [ Object, nil ] the result of the method call or nil if the
     # method doesn't exist
-    def ask_and_send(method_name, *args, &block)
+    def ask_and_send(method_name, *args, **kwargs, &block)
       if respond_to?(method_name)
-        __send__(method_name, *args, &block)
+        __send__(method_name, *args, **kwargs, &block)
       end
     end
 
@@ -21,13 +22,14 @@ module Tins
     #
     # @param method_name [ Symbol ] the name of the method to call
     # @param args [ Array ] arguments to pass to the method
+    # @param kwargs [ Hash ] keyword arguments to pass to the method
     # @param block [ Proc ] optional block to pass to the method
     #
     # @return [ Object, nil ] the result of the method call or nil if the
     # method doesn't exist
-    def ask_and_send!(method_name, *args, &block)
+    def ask_and_send!(method_name, *args, **kwargs, &block)
       if respond_to?(method_name, true)
-        __send__(method_name, *args, &block)
+        __send__(method_name, *args, **kwargs, &block)
       end
     end
 
@@ -38,13 +40,14 @@ module Tins
     #
     # @param method_name [ Symbol ] the name of the method to call
     # @param args [ Array ] the arguments to pass to the method
+    # @param kwargs [ Hash ] the keyword arguments to pass to the method
     # @param block [ Proc ] the block to pass to the method
     #
     # @return [ Object ] the result of the method call or self if the method
     # doesn't exist
-    def ask_and_send_or_self(method_name, *args, &block)
+    def ask_and_send_or_self(method_name, *args, **kwargs, &block)
       if respond_to?(method_name)
-        __send__(method_name, *args, &block)
+        __send__(method_name, *args, **kwargs, &block)
       else
         self
       end
@@ -57,13 +60,14 @@ module Tins
     #
     # @param method_name [ Symbol ] the name of the method to send
     # @param args [ Array ] the arguments to pass to the method
+    # @param kwargs [ Hash ] the keyword arguments to pass to the method
     # @param block [ Proc ] the block to pass to the method
     #
     # @return [ Object ] the result of the method call or the object itself if
     # the method is not found
-    def ask_and_send_or_self!(method_name, *args, &block)
+    def ask_and_send_or_self!(method_name, *args, **kwargs, &block)
       if respond_to?(method_name, true)
-        __send__(method_name, *args, &block)
+        __send__(method_name, *args, **kwargs, &block)
       else
         self
       end
