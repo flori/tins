@@ -1,5 +1,32 @@
 # Changes
 
+## 2026-09-15 v1.57.0
+
+*   Add keyword and block forwarding to `Expose#expose`
+    *   Add `**kwargs` and `&block` forwarding to `__send__` in
+        `lib/tins/expose.rb`
+    *   Restructure guards so `method_name.nil?` is checked first, preventing
+        kwargs from shadowing the method name
+    *   Update YARD docs to reflect new dispatch order and remove stale `@raise
+        [ArgumentError]`
+    *   Add `with_kw` and `with_block` fixture methods and three new tests in
+        `tests/expose_test.rb` covering kwargs, block, and combined forwarding
+*   Add keyword argument support to `Full#full?`
+    *   Add `**kwargs` to `full?` method signature in `lib/tins/xt/full.rb` and
+        forward via `__send__`
+    *   Update YARD documentation with `@param kwargs`
+    *   Add `test_full_with_kwargs` in `tests/blank_full_test.rb` verifying
+        `**kwargs` forwarding and blank result handling
+*   Add keyword argument support to `AskAndSend`
+    *   Add `**kwargs` to all four methods in `lib/tins/ask_and_send.rb`
+        (`ask_and_send`, `ask_and_send!`, `ask_and_send_or_self`,
+        `ask_and_send_or_self!`) and forward them via `__send__`
+    *   Update YARD documentation with `@param kwargs` for each method
+    *   Add test fixtures `foo_kw`, `foo_args`, `bar_kw`, `bar_args` in
+        `tests/ask_and_send_test.rb`
+    *   Add 8 new test cases covering `**kwargs`, `*args`, and `&block`
+        forwarding across all four `AskAndSend` variants
+
 ## 2026-07-25 v1.56.0
 
 ### Changes
