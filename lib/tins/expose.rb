@@ -40,36 +40,42 @@ module Tins
     # This method provides three distinct usage patterns:
     #
     # 1. **Method Call**: When given a method name, directly calls that method
-    #    and returns its result.
+    #    and returns its result. Positional arguments, keyword arguments, and
+    #    a block can be forwarded to the called method.
     #
-    # 2. **Block Execution**: When given a block, evaluates the block in the
-    #    context of the object, allowing access to private/protected methods.
+    # 2. **Block Execution**: When called without a method name but with a
+    #    block, evaluates the block in the context of the object, allowing
+    #    access to private/protected methods.
     #
-    # 3. **Full Exposure**: When called without arguments, returns a duplicate
-    #    of the object with all private and protected methods exposed as public.
+    # 3. **Full Exposure**: When called without a method name and without a
+    #    block, returns a duplicate of the object with all private and
+    #    protected methods exposed as public.
     #
     # @param method_name [Symbol, String, nil] name of the method to call,
     #                                          or nil for full exposure
     # @param args [Array] arguments to pass to the method when calling it
-    # @param block [Proc] block to execute in the context of the object
+    # @param kwargs [Hash] keyword arguments to pass to the method when calling it
+    # @param block [Proc] block to execute in the context of the object or
+    #                     to forward to the called method
     #
     # @return [Object] result of the method call, block execution, or a new
     #                  object with exposed methods (when called without args)
     #
     # @raise [NoMethodError] if method_name is given but doesn't exist
-    # @raise [ArgumentError] if both method_name and block are provided
-    def expose(method_name = nil, *args, &block)
-      if block
-        instance_eval(&block)
-      elsif method_name.nil?
-        methods = private_methods(true) + protected_methods(true)
-        o = dup
-        o.singleton_class.class_eval do
-          public(*methods)
+    def expose(method_name = nil, *args, **kwargs, &block)
+      if method_name.nil?
+        if block
+          instance_eval(&block)
+        else
+          methods = private_methods(true) + protected_methods(true)
+          o = dup
+          o.singleton_class.class_eval do
+            public(*methods)
+          end
+          o
         end
-        o
       elsif method_name
-        __send__(method_name, *args)
+        __send__(method_name, *args, **kwargs, &block)
       end
     end
   end
