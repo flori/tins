@@ -1,5 +1,25 @@
 # Changes
 
+## 2026-09-24 v1.58.0
+
+*   Freeze the `UNSET` sentinel constant in `Tins::Delegate` to prevent
+    accidental mutation of the shared `Object.new` instance.
+*   Add `Tins::EnumSqueeze` module providing `squeeze` and `squeeze!` methods
+    that collapse consecutive duplicate elements, mirroring `String#squeeze`
+    semantics.
+    *   `squeeze` uses a frozen sentinel constant
+        (`A_THING_THAT_IS_NOT_A_THING`) and `==` comparison for element
+        equality.
+    *   `squeeze!` is a destructive counterpart that requires the receiver to
+        respond to `replace`; returns `self` if modified, `nil` otherwise.
+*   Add `lib/tins/xt/enum_squeeze.rb` to mix `EnumSqueeze` into `::Enumerable`.
+*   Add `tests/enum_squeeze_test.rb` with 15 test cases covering basic
+    squeezing, edge cases, `==` equality semantics, lazy enumerables, and the
+    `squeeze!` bang-method contract.
+*   Update `tins.gemspec` file lists and bump `rubygems_version` to **4.0.20**.
+*   Change test runner in `.envrc` from `bundle exec test-unit` to `bundle exec
+    rake test`.
+
 ## 2026-09-15 v1.57.0
 
 *   Add keyword and block forwarding to `Expose#expose`
