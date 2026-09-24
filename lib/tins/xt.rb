@@ -44,4 +44,5 @@ module Tins
   require 'tins/xt/hash_dfs'
   require 'tins/xt/deep_transform'
   require 'tins/xt/minimize'
+  require 'tins/xt/enum_squeeze'
 end

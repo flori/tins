@@ -76,5 +76,6 @@ module Tins
   require 'tins/hash_bfs'
   require 'tins/hash_dfs'
   require 'tins/deep_transform'
+  require 'tins/enum_squeeze'
 end
 require 'tins/alias'
