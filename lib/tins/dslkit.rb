@@ -727,7 +727,7 @@ module Tins
   # This module can be included into modules/classes to make the delegate
   # method available.
   module Delegate
-    UNSET = Object.new
+    UNSET = Object.new.freeze
 
     private_constant :UNSET
 
