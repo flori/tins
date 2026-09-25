@@ -50,6 +50,71 @@ module Tins
       assert_equal [1, 2, 3], result
     end
 
+    # --- squeeze with selectors ---
+
+    def test_squeeze_single_value_selector
+      assert_equal(
+        [1, 3, 2, 2, 4, 6, 3, 7],
+        [1, 3, 2, 2, 4, 6, 3, 3, 7].squeeze(3)
+      )
+    end
+
+    def test_squeeze_multiple_value_selectors
+      assert_equal(
+        [1, 3, 2, 4, 6, 3, 7],
+        [1, 3, 2, 2, 4, 6, 3, 3, 7].squeeze(3, 2)
+      )
+    end
+
+    def test_squeeze_type_selector
+      assert_equal(
+        [[1], "1", [1], [1], "1", [1]],
+        [[1], '1', [1], [1], '1', '1', [1]].squeeze(String)
+      )
+    end
+
+    def test_squeeze_multiple_type_selectors
+      assert_equal(
+        [[1], "1", [1], "1", [1]],
+        [[1], '1', [1], [1], '1', '1', [1]].squeeze(String, Array)
+      )
+    end
+
+    def test_squeeze_range_selector
+      # Only 2 and 3 are in range; 5,5 survives (out of scope)
+      assert_equal(
+        [1, 3, 2, 4, 6, 3, 7, 5, 5, 7],
+        [1, 3, 2, 2, 4, 6, 3, 3, 7, 5, 5, 7].squeeze(2..3)
+      )
+    end
+
+    def test_squeeze_even_block
+      assert_equal(
+        [1, 3, 2, 4, 6, 3, 3, 7],
+        [1, 3, 2, 2, 4, 6, 3, 3, 7].squeeze(&:even?)
+      )
+    end
+
+    def test_squeeze_odd_block
+      assert_equal(
+        [1, 3, 2, 2, 4, 6, 3, 7],
+        [1, 3, 2, 2, 4, 6, 3, 3, 7].squeeze(&:odd?)
+      )
+    end
+
+    def test_squeeze_raises_when_both_sels_and_block
+      assert_raise(ArgumentError) do
+        [1, 1, 2].squeeze(Integer) { |x| true }
+      end
+    end
+
+    def test_string_array_invariance
+      str  = 'fooaabaaz'
+      sels = [?a]
+      assert_equal str.squeeze(*sels),
+                   str.split('').squeeze(*sels).join
+    end
+
     # --- squeeze! (bang) ---
 
     def test_squeeze_bang_modifies_in_place
@@ -79,6 +144,28 @@ module Tins
     def test_squeeze_bang_raises_without_replace
       enum = [1, 1, 2].each # Enumerator has no #replace
       assert_raise(RuntimeError) { enum.squeeze! }
+    end
+
+    # --- squeeze! with selectors ---
+
+    def test_squeeze_bang_with_selector
+      a = [1, 3, 2, 2, 4, 6, 3, 3, 7]
+      result = a.squeeze!(3)
+      assert_equal [1, 3, 2, 2, 4, 6, 3, 7], a
+      assert_same a, result
+    end
+
+    def test_squeeze_bang_with_selector_no_change
+      a = [1, 2, 4, 6, 7]
+      assert_nil a.squeeze!(3)
+      assert_equal [1, 2, 4, 6, 7], a
+    end
+
+    def test_squeeze_bang_with_block
+      a = [1, 3, 2, 2, 4, 6, 3, 3, 7]
+      result = a.squeeze!(&:even?)
+      assert_equal [1, 3, 2, 4, 6, 3, 3, 7], a
+      assert_same a, result
     end
   end
 end
