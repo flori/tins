@@ -1,5 +1,21 @@
 # Changes
 
+## 2026-09-25 v1.59.0
+
+* Add `*sels` and `&block` parameters to `squeeze` and `squeeze!`, allowing
+  squeezing to be restricted to elements matching case-equality (`===`)
+  selectors or a predicate block
+* Raise `ArgumentError` when both `*sels` and `&block` are provided
+* Change hot-loop comparison to `item != prev || !block.(item)` so non-matching
+  elements are never collapsed
+* Forward `(*sels, &block)` from `squeeze!` to `squeeze`
+* Extend YARD documentation with `@param` tags and `@example` blocks covering
+  range, type, predicate, and `String`/`Enumerable` invariance
+* Add 12 new test cases in `tests/enum_squeeze_test.rb` covering single/multi
+  value selectors, type selectors, range selectors, predicate blocks, the
+  mutual-exclusion guard, the `String#squeeze`/`Enumerable#squeeze` invariance
+  property, and `squeeze!` forwarding with selectors and blocks
+
 ## 2026-09-24 v1.58.0
 
 *   Freeze the `UNSET` sentinel constant in `Tins::Delegate` to prevent
