@@ -96,7 +96,18 @@ module Tins
     def test_parse_percentage
       duration_string = '1%2'
       seconds = Tins::Duration.parse(duration_string, template: '%h%%%m')
-      assert_equal seconds, 3720
+      assert_equal 3720, seconds
+    end
+
+    def test_format_unpadded_directives
+      d = Tins::Duration.new(93_784) # 1d 2h 3m 4s
+      assert_equal(
+        '1 day(s), 2 hours, 3 minutes, and 4 seconds',
+        d.format('%d day(s), %H hours, %M minutes, and %u seconds')
+      )
+      assert_equal '2', d.format('%H')
+      assert_equal '3', d.format('%M')
+      assert_equal '4', d.format('%u')
     end
   end
 end

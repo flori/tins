@@ -161,8 +161,11 @@ module Tins
     # The template string supports the following directives:
     # - `%S` - Sign indicator (negative sign if duration is negative)
     # - `%d` - Days component
+    # - `%H` - Hours component (unpadded)
     # - `%h` - Hours component (zero-padded to 2 digits)
+    # - `%M` - Minutes component (unpadded)
     # - `%m` - Minutes component (zero-padded to 2 digits)
+    # - `%u` - Seconds component (unpadded)
     # - `%s` - Seconds component (zero-padded to 2 digits)
     # - `%f` - Fractional seconds component (without the leading decimal point)
     # - `%D` - Smart format (automatically includes days, fractional seconds, and sign)
@@ -186,13 +189,21 @@ module Tins
     #
     # @example Custom precision
     #   duration.format('%s.%f', precision: 2) # => "04.12"
+    #
+    # @example Unpadded components
+    #   duration = Tins::Duration.new(93_784)
+    #   duration.format('%d day(s), %H hours, %M minutes, and %u seconds')
+    #   # => "1 day(s), 2 hours, 3 minutes, and 4 seconds"
     def format(template = '%S%d+%h:%m:%s.%f', precision: nil)
-      result = template.gsub(/%[DdhmSs%]/) { |directive|
+      result = template.gsub(/%[DdHhMmuSs%]/) { |directive|
         case directive
         when '%S' then ?- if negative?
         when '%d' then @days
+        when '%H' then '%u' % @hours
         when '%h' then '%02u' % @hours
+        when '%M' then '%u' % @minutes
         when '%m' then '%02u' % @minutes
+        when '%u' then '%u' % @seconds
         when '%s' then '%02u' % @seconds
         when '%D' then format_smart
         when '%%' then '%'
