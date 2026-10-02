@@ -1,5 +1,18 @@
 # Changes
 
+## 2026-10-02 v1.60.0
+
+* Add unpadded `%H`, `%M`, and `%u` format directives to `Duration#format` for
+  unpadded hours, minutes, and seconds, complementing the existing zero-padded
+  `%h`, `%m`, and `%s`
+* Update the directive regex in `format` from `/%[DdhmSs%]/` to
+  `/%[DdHhMmuSs%]/` to match the new directives
+* Extend YARD documentation with an `@example` block demonstrating unpadded
+  components in a natural-language template
+* Add `test_format_unpadded_directives` covering all three new directives in
+  both template and standalone usage
+* Fix `assert_equal` argument order in `test_parse_percentage`
+
 ## 2026-09-25 v1.59.0
 
 * Add `*sels` and `&block` parameters to `squeeze` and `squeeze!`, allowing
