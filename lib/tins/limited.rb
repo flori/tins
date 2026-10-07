@@ -70,8 +70,9 @@ module Tins
           yield self
         end
       ensure
-        wait until done?
-        @executor.kill
+        @tasks << nil
+        @executor.join
+        wait
       end
     end
 
@@ -83,13 +84,6 @@ module Tins
     end
 
     private
-
-    # Check if all tasks and threads have completed.
-    #
-    # @return [Boolean] true if no tasks remain and no threads are running
-    def done?
-      @tasks.empty? && @tg.list.empty?
-    end
 
     # Wait for all threads in the thread group to complete.
     #
@@ -106,15 +100,15 @@ module Tins
         @mutex.synchronize do
           loop do
             if @count < @maximum
-              task = @tasks.pop
+              task = @tasks.pop or break
               @count += 1
-              Thread.new do
-                @tg.add Thread.current
+              thread = Thread.new do
                 task.(Thread.current)
               ensure
                 @count -= 1
                 @continue.signal
               end
+              @tg.add thread
             else
               @continue.wait(@mutex)
             end
