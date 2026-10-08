@@ -1,5 +1,12 @@
 # Changes
 
+## 2026-10-08 v1.60.1
+
+*   Fix `Limited` shutdown race and busy-spin
+    *   Move `@tg.add` to the executor thread to close a `@count`/`@tg` race
+    *   Replace `wait until done?` + `@executor.kill` with sentinel, `join`, `wait`
+    *   Remove unused `done?`
+
 ## 2026-10-02 v1.60.0
 
 * Add unpadded `%H`, `%M`, and `%u` format directives to `Duration#format` for
