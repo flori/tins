@@ -8,4 +8,5 @@ begin
 rescue LoadError
 end
 require 'test/unit'
+require 'securerandom'
 require 'tins'

@@ -75,7 +75,7 @@ EOT
     private
 
     def write_file
-      File.open(File.join(Dir.tmpdir, "temp.#$$"), 'wb+') do |file|
+      File.open(File.join(Dir.tmpdir, "temp.#{SecureRandom.hex(4)}"), 'wb+') do |file|
         yield file
       end
     end

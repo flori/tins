@@ -8,7 +8,7 @@ module Tins
     include FileUtils
 
     def setup
-      mkdir_p @work_dir = File.join(Dir.tmpdir, "test.#$$")
+      mkdir_p @work_dir = File.join(Dir.tmpdir, "test.#{SecureRandom.hex(4)}")
     end
 
     def teardown
