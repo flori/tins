@@ -1,5 +1,19 @@
 # Changes
 
+## 2026-10-11 v1.61.0
+
+*   `only_once`/`try_only_once` now accept a `touch:` option to automatically
+    create the lock file via `FileUtils.touch`, preventing `Errno::ENOENT`
+    errors on first boot.
+*   Removed stale `@raise [Errno::EAGAIN]` and `@raise [SystemCallError]`
+    documentation, as `flock` returns `false` rather than raising an exception.
+*   Updated module examples to use the `or` idiom instead of `rescue`.
+*   Added `once_test.rb` to cover `touch` creation, `ENOENT` handling, lock
+    release, and cross-process non-blocking contention.
+*   Replaced `#$$` with `SecureRandom.hex(4)` in all test temporary paths,
+    memoizing the value where called multiple times per test.
+*   Added `require 'securerandom'` to `test_helper`.
+
 ## 2026-10-08 v1.60.1
 
 *   Fix `Limited` shutdown race and busy-spin
