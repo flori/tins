@@ -2,17 +2,55 @@ module Tins
   # A module that provides functionality for attempting operations with error
   # handling and retry logic.
   module Attempt
-    # Attempts code in block *attempts* times, sleeping according to *sleep*
-    # between attempts and catching the exception(s) in *exception_class*.
+    # Executes the block up to a configured number of attempts, with
+    # optional sleeping between retries and exception-based success
+    # detection.
     #
-    # *sleep* is either a Proc returning a floating point number for duration
-    # as seconds or a Numeric >= 0 or < 0. In the former case this is the
-    # duration directly, in the latter case -*sleep* is the total number of
-    # seconds that is slept before giving up, and every attempt is retried
-    # after a exponentially increasing duration of seconds.
+    # When +:exception_class+ is set (default +StandardError+), the block
+    # succeeds if it returns without raising. When it is +nil+, the block's
+    # truthy return value determines success instead.
     #
-    # Iff *reraise* is true the caught exception is reraised after running out
-    # of attempts.
+    # @param opts [Hash, Numeric] Configuration hash, or a legacy
+    #   attempt count.
+    # @option opts [Integer] :attempts (1) Number of tries.
+    # @option opts [Class, Array<Class>, nil] :exception_class
+    #   (StandardError) Exception(s) to rescue. Pass +nil+ to use
+    #   return-value mode instead.
+    # @option opts [Numeric, Proc, nil] :sleep (nil) Sleep between
+    #   attempts. A non-negative Numeric is a fixed duration in seconds.
+    #   A negative Numeric is a total budget — each retry sleeps an
+    #   exponentially increasing fraction of that budget. Think of
+    #   `sleep: -10` as "retry for at most 10 seconds total".
+    #   A Proc receives the 1-based attempt count and returns the
+    #   duration in seconds.
+    # @option opts [true, Proc, Class] :reraise (nil) Behaviour when all
+    #   attempts are exhausted. +true+ re-raises the last exception.
+    #   A +Proc+ is called with the exception (does not re-raise).
+    #   A +Class+ raises that class with the original message.
+    #
+    # @yield [count, prev_exception]
+    # @yieldparam count [Integer] 1-based attempt number
+    # @yieldparam prev_exception [Exception, nil] Exception from the
+    #   previous attempt, or +nil+ on the first try
+    # @return [Boolean, nil] +true+ on success, +false+ on exhaustion,
+    #   +nil+ when attempts <= 0
+    # @raise [ArgumentError] If +:attempts+ is less than 1
+    # @raise [TypeError] If +:sleep+ is not Numeric, Proc, or nil
+    #
+    # @example Fixed sleep, re-raise on failure
+    #   attempt(attempts: 3, sleep: 0.5, reraise: true) do |n, prev|
+    #     flaky_api.call
+    #   end
+    #
+    # @example Exponential backoff within a 5-second budget
+    #   attempt(attempts: 5, sleep: -5) do |n, prev|
+    #     unstable_socket.read
+    #   end
+    #
+    # @example Return-value mode (no exception catching)
+    #   attempt(attempts: 10, exception_class: nil) do |n, _|
+    #     parse_line(buffer)
+    #   end
     def attempt(opts = {}, &block)
       sleep           = nil
       exception_class = StandardError

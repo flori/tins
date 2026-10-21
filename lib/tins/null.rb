@@ -22,7 +22,7 @@ module Tins
   #
   #   # You can use the null object:
   #   user = find_user(id) || Tins::NULL
-  #   user.name  # => "" (instead of nil)
+  #   user.name.to_s  # => "" (instead of nil)
   #
   # @example With NullPlus for debugging
   #   user = find_user(id) || Tins::NullPlus.new(value: "Unknown", caller: caller)
