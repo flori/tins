@@ -13,7 +13,7 @@ module Tins
   #
   # @example Using eigenclass alias
   #   class MyClass
-  #     include Tins::Eigenclass
+  #     extend Tins::Eigenclass
   #   end
   #
   #   puts MyClass.eigenclass  # => MyClass singleton class
@@ -33,7 +33,7 @@ module Tins
     # @return [Object] The result of the last expression in the block
     # @example Defining class methods using attr_accessor on a class
     #   class MyClass
-    #     include Tins::Eigenclass
+    #     extend Tins::Eigenclass
     #   end
     #
     #   MyClass.eigenclass_eval { attr_accessor :foo }
@@ -71,7 +71,7 @@ module Tins
   #
   # @example Using ClassMethod module to define class methods dynamically
   #   class MyClass
-  #     include Tins::ClassMethod
+  #     extend Tins::ClassMethod
   #   end
   #
   #   # Define class methods using the ClassMethod helpers
@@ -125,9 +125,10 @@ module Tins
 
   # Provides thread-safe global variable functionality for modules and classes.
   #
-  # This module enables the definition of thread-global variables that maintain
-  # their state per thread within a given module or class scope. These variables
-  # are initialized lazily and provide thread safety through mutex synchronization.
+  # This module enables the definition of global variables within a given
+  # module or class scope. Values are shared across all threads, and access
+  # is synchronized through a mutex for thread safety. Variables are
+  # initialized lazily on first access.
   #
   # @example Basic usage with module-level thread globals
   #   class MyClass
@@ -161,9 +162,10 @@ module Tins
     # Define a thread global variable named _name_ in this module/class. If the
     # value _value_ is given, it is used to initialize the variable.
     #
-    # Thread global variables maintain their state per thread within the scope
-    # of the module or class where they are defined. The initialization is lazy,
-    # meaning the default value or block is only executed when first accessed.
+    # The value is shared across all threads within the scope of the module
+    # or class where it is defined. Access is synchronized via a mutex. The
+    # initialization is lazy, meaning the default value or block is only
+    # executed when first accessed.
     #
     # @param name [Symbol, String] The name of the thread global variable to define
     # @param default_value [Object] The default value for the variable (optional)
@@ -731,19 +733,35 @@ module Tins
 
     private_constant :UNSET
 
-    # A method to easily delegate methods to an object, stored in an
-    # instance variable or returned by a method call.
+    # A method to easily delegate methods to an object stored in an
+    # instance variable, class variable, constant, or returned by a
+    # method call.
     #
-    # It's used like this:
+    # @param method_name [Symbol] The method to delegate
+    # @param opts [Hash] Configuration options
+    # @option opts [String] :to The delegation target: an instance
+    #   variable ("@var"), class variable ("@@var"), constant
+    #   ("SomeClass"), or method name
+    # @option opts [Symbol] :as Alias for the delegated method
+    #   (defaults to +method_name+)
+    #
+    # @example Delegate to an instance variable
     #   class A
-    #     delegate :method_here, :@obj, :method_there
-    #   end
-    # or:
-    #   class A
-    #     delegate :method_here, :method_call, :method_there
+    #     extend Tins::Delegate
+    #     delegate :method_here, to: :@obj
     #   end
     #
-    # _other_method_name_ defaults to method_name, if it wasn't given.
+    # @example Delegate with an alias
+    #   class A
+    #     extend Tins::Delegate
+    #     delegate :method_here, to: :@obj, as: :method_there
+    #   end
+    #
+    # @example Delegate to a method call result
+    #   class A
+    #     extend Tins::Delegate
+    #     delegate :method_here, to: :current_target
+    #   end
     def delegate(method_name, opts = {})
       to = opts[:to] || UNSET
       as = opts[:as] || method_name
@@ -837,7 +855,7 @@ module Tins
   #
   # @example Basic usage with a custom parameterizable module
   #   module MyModule
-  #     include Tins::ParameterizedModule
+  #     extend Tins::ParameterizedModule
   #
   #     def self.parameterize(options = {})
   #       # Custom parameterization logic
@@ -933,31 +951,36 @@ module Tins
   # tracking nested contexts in multi-threaded applications.
   #
   # @example Basic stack operations
-  #   Scope.scope_push("context1")
-  #   Scope.scope_push("context2")
-  #   Scope.scope_top  # => "context2"
-  #   Scope.scope_pop  # => "context2"
-  #   Scope.scope_top  # => "context1"
+  #   class MyCtx
+  #     include Tins::Scope
+  #   end
+  #
+  #   ctx = MyCtx.new
+  #   ctx.scope_push("context1")
+  #   ctx.scope_push("context2")
+  #   ctx.scope_top  # => "context2"
+  #   ctx.scope_pop
+  #   ctx.scope_top  # => "context1"
   #
   # @example Block-based context management
-  #   Scope.scope_block("request_context") do
+  #   ctx.scope_block("request_context") do
   #     # Within this block, "request_context" is active
   #   end
   #   # Automatically cleaned up when block exits
   #
   # @example Nested scope blocks
-  #   Scope.scope_block("outer_context") do
-  #     Scope.scope_block("inner_context") do
-  #       Scope.scope_top  # => "inner_context"
+  #   ctx.scope_block("outer_context") do
+  #     ctx.scope_block("inner_context") do
+  #       ctx.scope_top  # => "inner_context"
   #     end
-  #     Scope.scope_top  # => "outer_context"
+  #     ctx.scope_top  # => "outer_context"
   #   end
-  #   Scope.scope_top  # => nil (empty stack)
+  #   ctx.scope_top  # => nil (empty stack)
   #
   # @example Multiple named scopes
-  #   Scope.scope_push("frame1", :database)
-  #   Scope.scope_push("frame2", :database)
-  #   Scope.scope_get(:database)  # => ["frame1", "frame2"]
+  #   ctx.scope_push("frame1", :database)
+  #   ctx.scope_push("frame2", :database)
+  #   ctx.scope_get(:database)  # => ["frame1", "frame2"]
   module Scope
     # Pushes a scope frame onto the top of the specified scope stack.
     #
@@ -1041,32 +1064,44 @@ module Tins
   # template engines, and context-sensitive applications.
   #
   # @example Basic dynamic scoping
-  #   include Tins::DynamicScope
+  #   class MyDsl
+  #     include Tins::DynamicScope
   #
-  #   dynamic_scope do
-  #     self.foo = "value"  # Sets variable in current scope
-  #     puts foo           # => "value" (reads from current scope)
+  #     def run
+  #       dynamic_scope do
+  #         self.foo = "value"  # Sets variable in current scope
+  #         puts foo           # => "value" (reads from current scope)
+  #       end
+  #     end
   #   end
   #
   # @example Nested scopes with variable shadowing
-  #   include Tins::DynamicScope
+  #   class MyDsl
+  #     include Tins::DynamicScope
   #
-  #   dynamic_scope do
-  #     self.foo = "outer"
-  #     dynamic_scope do
-  #       self.foo = "inner"  # Shadows outer foo only in inner scope
-  #       puts foo           # => "inner"
+  #     def run
+  #       dynamic_scope do
+  #         self.foo = "outer"
+  #         dynamic_scope do
+  #           self.foo = "inner"  # Shadows in inner scope
+  #           puts foo           # => "inner"
+  #         end
+  #         puts foo             # => "outer" (restored)
+  #       end
   #     end
-  #     puts foo             # => "outer" (restored from outer scope)
   #   end
   #
   # @example Variable existence checking
-  #   include Tins::DynamicScope
+  #   class MyDsl
+  #     include Tins::DynamicScope
   #
-  #   dynamic_scope do
-  #     assert_equal false, dynamic_defined?(:foo)
-  #     self.foo = "value"
-  #     assert_equal true, dynamic_defined?(:foo)
+  #     def run
+  #       dynamic_scope do
+  #         raise unless dynamic_defined?(:foo) == false
+  #         self.foo = "value"
+  #         raise unless dynamic_defined?(:foo) == true
+  #       end
+  #     end
   #   end
   module DynamicScope
     # A specialized Hash subclass for dynamic scope contexts.
@@ -1179,18 +1214,22 @@ end
 #
 # @example Method deflection
 #   class Calculator
+#     include Tins::Deflect
+#
 #     def add(a, b)
 #       a + b
 #     end
 #   end
 #
 #   calc = Calculator.new
-#   Tins::Deflect.deflect(Calculator, :add) do |obj, method, *args|
-#     # Custom behavior for add method
+#   deflector = Tins::Deflect::Deflector.new do |obj, meth, *args|
 #     args.sum
 #   end
 #
-#   calc.add(1, 2, 3)  # => 6 (sum instead of addition)
+#   calc.deflect(Calculator, :add, deflector) do
+#     calc.add(1, 2, 3)  # => 6 (sum instead of addition)
+#   end
+#   calc.add(1, 2)       # => 3 (deflection stopped)
 #
 # @see Tins::DSLAccessor
 # @see Tins::Constant
