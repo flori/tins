@@ -1,4 +1,37 @@
 module Tins
+  # Adds +squeeze+ and +squeeze!+ to any +Enumerable+, providing
+  # the same "collapse consecutive duplicates" semantics as
+  # +String#squeeze+ but for generic collections.
+  #
+  # Two elements are considered duplicates when +item == previous+.
+  # You can optionally restrict squeezing to a subset of elements by
+  # passing case-equality matchers (+===+) or a predicate block.
+  #
+  # @example Polite usage (include into your own class):
+  #   require 'tins/enum_squeeze'
+  #
+  #   class Repeater
+  #     include Enumerable
+  #     include Tins::EnumSqueeze
+  #
+  #     def each
+  #       [1, 1, 2, 2, 3].each { |i| yield i }
+  #     end
+  #   end
+  #
+  #   Repeater.new.squeeze  # => [1, 2, 3]
+  #
+  # @example Rude usage (mixin into ::Enumerable globally):
+  #   require 'tins/xt/enum_squeeze'
+  #
+  #   # Now any custom Enumerable gains squeeze/squeeze!:
+  #   enum = (1..5).to_a # Array already has its own #squeeze,
+  #   # so this is more useful for custom Enumerables:
+  #   class Repeater
+  #     include Enumerable
+  #     def each = [1, 1, 2, 2, 3].each { |i| yield i }
+  #   end
+  #   Repeater.new.squeeze  # => [1, 2, 3]
   module EnumSqueeze
     A_THING_THAT_IS_NOT_A_THING = Object.new.freeze
 
