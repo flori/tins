@@ -1,5 +1,7 @@
 # frozen_string_literal: false
 
+require 'tins/enum_joined'
+
 module Tins
   # A class to represent durations with support for formatting and parsing time
   # intervals.
@@ -12,6 +14,24 @@ module Tins
     # @see .parse
     class ParserError < ArgumentError
     end
+
+    # Built-in label styles for {#to_human}. Keys are the unit format
+    # directives (see {#format}); values are the literal strings appended
+    # directly after each unit's numeric value.
+    #
+    # +:abbrev+ uses single-letter suffixes (the default); +:words+ uses
+    # spelled-out units. A caller may instead pass their own +Hash+ with the
+    # same keys to {#to_human} to override either built-in, e.g. for another
+    # language.
+    #
+    # @see #to_human
+    HUMAN_STYLES = {
+      abbrev: { '%d' => 'd', '%h' => 'h', '%m' => 'm', '%s' => 's' }.freeze,
+      words:  {
+                '%d' => ' days',   '%h' => ' hours',
+                '%m' => ' minutes', '%s' => ' seconds'
+              }.freeze
+    }.freeze
 
     # Returns the number of seconds represented by the given duration string
     # according to the provided template format.
@@ -161,6 +181,77 @@ module Tins
     # false otherwise
     def fractional_seconds?
       @fractional_seconds > 0
+    end
+
+    # Returns a human-readable string representation of the duration.
+    # pass +style: :words+ for spelled-out units
+    # (e.g. `1 minutes and 30 seconds`), or pass your own +Hash+ keyed
+    # by the unit format directives (`'%d'`, `'%h'`, `'%m'`, `'%s'`) to use
+    # arbitrary wording or another language.
+    #
+    # Fractional seconds are truncated (not rounded).
+    #
+    # @param max [Integer] Maximum number of time units to include,
+     #   starting from the largest. Default: +nil+ (all units).
+    # @param words_connector [String] Separator between
+    #   items (3+ only). Default: `', '`.
+    # @param two_words_connector [String] Separator between
+    #   exactly two items. Default: `' and '`.
+    # @param last_word_connector [String] Separator before the
+    #   last item (3+ only). Default: `', and '`.
+    # @param style [Symbol, Hash] Built-in label style (+:abbrev+ or
+    #   +:words+, see {HUMAN_STYLES}) or a custom +Hash+ mapping the unit
+    #   format directives to label strings. A +Hash+ is merged onto the
+    #   +:abbrev+ defaults, so omitting a key keeps the single-letter label.
+    #   Default: +:abbrev+.
+    #
+    # @raise [ArgumentError] If +style+ is neither a +Symbol+ nor a +Hash+.
+    #
+    # @return [String] Human-readable duration string.
+    #
+    # @see Tins::EnumJoined#joined
+    #
+    # @example Basic usage (default +:abbrev+ style)
+    #   Tins::Duration.new(90).to_human       # => "1m and 30s"
+    #   Tins::Duration.new(3725).to_human     # => "1h and 2m"
+    #   Tins::Duration.new(86_400).to_human   # => "1d"
+    #   Tins::Duration.new(0).to_human        # => "0s"
+    #
+    # @example Spelled-out units
+    #   Tins::Duration.new(90).to_human(style: :words)
+    #   # => "1 minutes and 30 seconds"
+    #
+    # @example Custom labels (e.g. another language)
+    #   Tins::Duration.new(90).to_human(
+    #     style: { '%m' => ' Min.', '%s' => ' Sek.' }
+    #   )
+    #   # => "1 Min. and 30 Sek."
+    #
+    # @example Negative durations
+    #   Tins::Duration.new(-90).to_human      # => "-1m and 30s"
+    def to_human(max: nil, style: :abbrev,
+                 words_connector: ', ',
+                 two_words_connector: ' and ',
+                 last_word_connector: ', and ')
+      labels =
+        case style
+        when Hash   then HUMAN_STYLES[:abbrev].merge(style)
+        when Symbol then HUMAN_STYLES.fetch(style)
+        else raise ArgumentError,
+          "style must be a Symbol or Hash, got #{style.class}"
+        end
+      parts = [
+        [ @days, '%d' ], [ @hours, '%h' ],
+        [ @minutes, '%m' ], [ @seconds, '%s' ]
+      ].select { |v, _| v > 0 }
+      parts << [ 0, '%s' ] if parts.empty?
+      parts  = parts.first(max) if max
+      items  = parts.map { |v, d| "#{v}#{labels[d]}" }
+               .extend(EnumJoined)
+      result = items.joined(
+        words_connector:, two_words_connector:, last_word_connector:
+      )
+      @negative ? "-#{result}" : result
     end
 
     # Formats the duration according to the given template and precision.

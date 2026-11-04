@@ -125,5 +125,81 @@ module Tins
     def test_parser_error_is_argument_error
       assert_operator(Tins::Duration::ParserError, :<, ArgumentError)
     end
+
+    def test_to_human_basic
+      assert_equal '1m and 30s', Tins::Duration.new(90).to_human
+    end
+
+    def test_to_human_drops_below_max
+      assert_equal '1h and 2m', Tins::Duration.new(3725).to_human(max: 2)
+    end
+
+    def test_to_human_single_unit
+      assert_equal '1d', Tins::Duration.new(86_400).to_human
+    end
+
+    def test_to_human_zero
+      assert_equal '0s', Tins::Duration.new(0).to_human
+    end
+
+    def test_to_human_negative
+      assert_equal '-1m and 30s', Tins::Duration.new(-90).to_human
+    end
+
+    def test_to_human_custom_max
+      assert_equal '1h, 2m, and 5s',
+        Tins::Duration.new(3725).to_human(max: 3)
+    end
+
+    def test_to_human_custom_two_words_connector
+      assert_equal '1h 2m',
+        Tins::Duration.new(3725).to_human(max: 2, two_words_connector: ' ')
+    end
+
+    def test_to_human_custom_words_connector
+      assert_equal '1h / 2m / 5s',
+        Tins::Duration.new(3725).to_human(
+          max: 3, words_connector: ' / ', last_word_connector: ' / '
+        )
+    end
+
+    def test_to_human_truncates_fractional
+      assert_equal '1m and 30s', Tins::Duration.new(90.999).to_human
+    end
+
+    def test_to_human_style_words
+      assert_equal '1 minutes and 30 seconds',
+        Tins::Duration.new(90).to_human(style: :words)
+    end
+
+    def test_to_human_style_words_drops_below_max
+      assert_equal '1 hours and 2 minutes',
+        Tins::Duration.new(3725).to_human(max: 2, style: :words)
+    end
+
+    def test_to_human_style_custom_hash
+      assert_equal '1 Min. and 30 Sek.',
+        Tins::Duration.new(90).to_human(
+          style: { '%m' => ' Min.', '%s' => ' Sek.' }
+        )
+    end
+
+    def test_to_human_style_custom_hash_partial_merge
+      assert_equal '1m and 30 seconds',
+        Tins::Duration.new(90).to_human(style: { '%s' => ' seconds' })
+    end
+
+    def test_to_human_style_invalid_raises
+      assert_raise(ArgumentError) do
+        Tins::Duration.new(90).to_human(style: 'abbrev')
+      end
+    end
+
+    def test_human_styles_keys
+      %i[abbrev words].each do |style|
+        assert_equal [ '%d', '%h', '%m', '%s' ],
+          Tins::Duration::HUMAN_STYLES[style].keys
+      end
+    end
   end
 end
