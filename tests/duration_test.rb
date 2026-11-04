@@ -109,5 +109,21 @@ module Tins
       assert_equal '3', d.format('%M')
       assert_equal '4', d.format('%u')
     end
+
+    def test_parse_raises_on_literal_mismatch
+      assert_raise(Tins::Duration::ParserError) do
+        Tins::Duration.parse('1x:30', template: '%h:%m')
+      end
+    end
+
+    def test_parse_raises_on_percent_mismatch
+      assert_raise(Tins::Duration::ParserError) do
+        Tins::Duration.parse('1x', template: '%h%%%m')
+      end
+    end
+
+    def test_parser_error_is_argument_error
+      assert_operator(Tins::Duration::ParserError, :<, ArgumentError)
+    end
   end
 end

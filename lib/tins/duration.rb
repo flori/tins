@@ -6,6 +6,13 @@ module Tins
   class Duration
     include Comparable
 
+    # Raised when a duration string cannot be parsed by any of the
+    # provided templates.
+    #
+    # @see .parse
+    class ParserError < ArgumentError
+    end
+
     # Returns the number of seconds represented by the given duration string
     # according to the provided template format.
     #
@@ -15,7 +22,7 @@ module Tins
     #
     # @return [Integer, Float] The number of (fractional) seconds of the duration.
     #
-    # @raise [ArgumentError] If the string doesn't match the expected template format
+    # @raise [Duration::ParserError] If the string doesn't match the expected template format
     #
     # @example Basic parsing
     #   Tins::Duration.parse('6+05:04:03', template: '%S%d+%h:%m:%s') # => 536643
@@ -39,7 +46,7 @@ module Tins
     # The parser is greedy and consumes as much of the input string as possible
     # for each directive.
     # If a directive expects a specific format but doesn't find it, an
-    # ArgumentError is raised.
+    # Duration::ParserError is raised.
     def self.parse(string, template: '%S%d+%h:%m:%s.%f')
       s, t  = string.to_s.dup, template.dup
       d, sd = 0, 1
@@ -56,13 +63,13 @@ module Tins
             if s[0] == ?%
               s[0] = ''
             else
-              raise "expected %s, got #{s.inspect}"
+              raise ParserError, "expected %s, got #{s.inspect}"
             end
           else
             if directive == s[0]
               s[0] = ''
             else
-              raise ArgumentError, "expected #{t.inspect}, got #{s.inspect}"
+              raise ParserError, "expected #{t.inspect}, got #{s.inspect}"
             end
           end
           ''
