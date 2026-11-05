@@ -15,12 +15,52 @@ module Tins
     class ParserError < ArgumentError
     end
 
+    # Resolves a {HUMAN_CONNECTORS} preset to its connector hash.
+    #
+    # Shared by {#to_human} and {.parse_human} so that both
+    # accept the same +connector:+ keyword argument without
+    # duplicating the nil / Symbol / Hash dispatch.
+    #
+    # @see HUMAN_CONNECTORS
+    # @see STYLE_DEFAULT_CONNECTOR
+    module ConnectorResolver
+      # Resolves a connector specification to a +Hash+ with keys
+      # +:words+, +:two_words+, and +:last_word+.
+      #
+      # @param connector [Symbol, Hash, nil] A preset name from
+      #   {HUMAN_CONNECTORS}, a custom hash, or +nil+ (derive from
+      #   +style+ via {STYLE_DEFAULT_CONNECTOR}).
+      # @param style [Symbol, Hash] The label style passed alongside,
+      #   used only when +connector+ is +nil+.
+      #
+      # @return [Hash] The resolved connector hash.
+      #
+      # @raise [ArgumentError] If +connector+ is neither +nil+, a
+      #   +Symbol+, nor a +Hash+.
+      #
+      # @see HUMAN_CONNECTORS
+      # @see STYLE_DEFAULT_CONNECTOR
+      def resolve_connector(connector, style)
+        case connector
+        when nil
+          key = style.is_a?(Symbol) ? style : :abbrev
+          HUMAN_CONNECTORS.fetch(STYLE_DEFAULT_CONNECTOR.fetch(key))
+        when Symbol then HUMAN_CONNECTORS.fetch(connector)
+        when Hash   then connector
+        else raise ArgumentError,
+          "connector must be a Symbol or Hash, got #{connector.class}"
+        end
+      end
+    end
+    private_constant :ConnectorResolver
+    include ConnectorResolver
+
     # Built-in label styles for {#to_human}. Keys are the unit format
     # directives (see {#format}); values are the literal strings appended
     # directly after each unit's numeric value.
     #
-    # +:abbrev+ uses single-letter suffixes (the default); +:words+ uses
-    # spelled-out units. A caller may instead pass their own +Hash+ with the
+    # +:words+ uses spelled-out units (the default); +:abbrev+ uses
+    # single-letter suffixes. A caller may instead pass their own +Hash+ with the
     # same keys to {#to_human} to override either built-in, e.g. for another
     # language.
     #
@@ -33,7 +73,47 @@ module Tins
               }.freeze
     }.freeze
 
+    # Named connector presets for {#to_human} and {.parse_human}.
+    #
+    # Each entry maps to a +Hash+ with three keys:
+    # +:words+ (3+ items), +:two_words+ (exactly 2), and
+    # +:last_word+ (before the final item, 3+ only).
+    #
+    # +:none+ produces compact output (`"1m30s"`); +:spaces+
+    # separates with single spaces (`"1 minutes 30 seconds"`);
+    # +:prose+ uses grammatical connectors
+    # (`"1 minutes, and 30 seconds"`).
+    #
+    # {#to_human} and {.parse_human} accept a +connector:+
+    # keyword argument that is either a +Symbol+ naming one of
+    # these presets or a +Hash+ with the three keys for
+    # full control. When +connector:+ is +nil+ (the default),
+    # the preset is derived from +style:+ via
+    # {STYLE_DEFAULT_CONNECTOR}.
+    #
+    # @see HUMAN_STYLES
+    # @see STYLE_DEFAULT_CONNECTOR
+    # @see #to_human
+    # @see .parse_human
+    HUMAN_CONNECTORS = {
+      none:   { words: '',  two_words: '',  last_word: ''  }.freeze,
+      spaces: { words: ' ', two_words: ' ', last_word: ' ' }.freeze,
+      prose:  {
+                words: ', ', two_words: ' and ', last_word: ', and '
+              }.freeze
+    }.freeze
+
+    # Maps each built-in {HUMAN_STYLES} key to its default
+    # {HUMAN_CONNECTORS} preset. Used when +connector:+ is
+    # not explicitly provided.
+    #
+    # @see HUMAN_CONNECTORS
+    # @see HUMAN_STYLES
+    STYLE_DEFAULT_CONNECTOR = { abbrev: :none, words: :prose }.freeze
+
     class << self
+      include ConnectorResolver
+
       # Parses a duration string against one or more templates,
       # returning the total number of seconds.
       #
@@ -148,6 +228,65 @@ module Tins
       def from_string(string, template: nil)
         new(parse(string, template:))
       end
+
+      # Parses a human-readable duration string (the inverse of {#to_human})
+      # and returns a new {Duration} instance.
+      #
+      # All 15 possible +to_human+ output shapes (every subset of 1–4 units,
+      # in canonical order) are generated as templates for the given +style+,
+      # joined with the supplied connectors, and tried in order against
+      # {#parse}. The first template that matches wins.
+      #
+      # @param [String] string The human-readable duration string.
+      # @param style [Symbol, Hash] Built-in label style (+:abbrev+ or
+      #   +:words+, see {HUMAN_STYLES}) or a custom +Hash+. Default: +:words+.
+      # @param connector [Symbol, Hash, nil] Connector preset
+      #   ({HUMAN_CONNECTORS}) or a custom +Hash+ with keys
+      #   +:words+, +:two_words+, +:last_word+.
+      #   Default: +nil+ (derived from +style:+).
+      #
+      # @return [Duration] A new {Duration} instance.
+      #
+      # @raise [ArgumentError] If +style+ is neither a +Symbol+ nor a +Hash+.
+      # @raise [ParserError] If no generated template matches the string.
+      #
+      # @see #to_human
+      # @see .parse
+      #
+      # @example Spelled-out units (default)
+      #   Tins::Duration.parse_human('1 minutes and 30 seconds')
+      #   # => #<Tins::Duration: 00:01:30>
+      #
+      # @example Abbreviated
+      #   Tins::Duration.parse_human('1m30s', style: :abbrev)
+      #   # => #<Tins::Duration: 00:01:30>
+      #
+      # @example Round-trip with #to_human
+      #   d = Tins::Duration.new(3725)
+      #   Tins::Duration.parse_human(d.to_human).to_f  # => 3725.0
+      def parse_human(string, style: :words, connector: nil)
+        labels =
+          case style
+          when Hash   then HUMAN_STYLES[:abbrev].merge(style)
+          when Symbol then HUMAN_STYLES.fetch(style)
+          else raise ArgumentError,
+            "style must be a Symbol or Hash, got #{style.class}"
+          end
+        conn = resolve_connector(connector, style)
+        units     = %w[%d %h %m %s]
+        templates = (1..4).reverse_each.flat_map do |n|
+          units.combination(n).map do |combo|
+            parts = combo.map { |d| "#{d}#{labels[d]}" }
+                       .extend(EnumJoined)
+            parts.joined(
+              words_connector: conn[:words],
+              two_words_connector: conn[:two_words],
+              last_word_connector: conn[:last_word]
+            )
+          end
+        end
+        new(parse(string, template: templates))
+      end
     end
 
     # Initializes a new Duration object with the specified number of seconds.
@@ -242,26 +381,24 @@ module Tins
     end
 
     # Returns a human-readable string representation of the duration.
-    # pass +style: :words+ for spelled-out units
-    # (e.g. `1 minutes and 30 seconds`), or pass your own +Hash+ keyed
-    # by the unit format directives (`'%d'`, `'%h'`, `'%m'`, `'%s'`) to use
-    # arbitrary wording or another language.
+    # By default, uses spelled-out units (e.g. `1 minutes and 30 seconds`);
+    # pass +style: :abbrev+ for compact single-letter suffixes
+    # (e.g. `1m30s`), or pass your own +Hash+ keyed by the unit format
+    # directives (`'%d'`, `'%h'`, `'%m'`, `'%s'`) for arbitrary wording.
     #
     # Fractional seconds are truncated (not rounded).
     #
     # @param max [Integer] Maximum number of time units to include,
-     #   starting from the largest. Default: +nil+ (all units).
-    # @param words_connector [String] Separator between
-    #   items (3+ only). Default: `', '`.
-    # @param two_words_connector [String] Separator between
-    #   exactly two items. Default: `' and '`.
-    # @param last_word_connector [String] Separator before the
-    #   last item (3+ only). Default: `', and '`.
+    #   starting from the largest. Default: +nil+ (all units).
+    # @param connector [Symbol, Hash, nil] Connector preset
+    #   ({HUMAN_CONNECTORS}) or a custom +Hash+ with keys
+    #   +:words+, +:two_words+, +:last_word+.
+    #   Default: +nil+ (derived from +style:+).
     # @param style [Symbol, Hash] Built-in label style (+:abbrev+ or
     #   +:words+, see {HUMAN_STYLES}) or a custom +Hash+ mapping the unit
     #   format directives to label strings. A +Hash+ is merged onto the
     #   +:abbrev+ defaults, so omitting a key keeps the single-letter label.
-    #   Default: +:abbrev+.
+    #   Default: +:words+.
     #
     # @raise [ArgumentError] If +style+ is neither a +Symbol+ nor a +Hash+.
     #
@@ -269,28 +406,28 @@ module Tins
     #
     # @see Tins::EnumJoined#joined
     #
-    # @example Basic usage (default +:abbrev+ style)
-    #   Tins::Duration.new(90).to_human       # => "1m and 30s"
-    #   Tins::Duration.new(3725).to_human     # => "1h and 2m"
-    #   Tins::Duration.new(86_400).to_human   # => "1d"
-    #   Tins::Duration.new(0).to_human        # => "0s"
-    #
-    # @example Spelled-out units
-    #   Tins::Duration.new(90).to_human(style: :words)
+    # @example Basic usage (default +:words+ style)
+    #   Tins::Duration.new(90).to_human
     #   # => "1 minutes and 30 seconds"
+    #   Tins::Duration.new(3725).to_human
+    #   # => "1 hours, 2 minutes, and 5 seconds"
+    #   Tins::Duration.new(86_400).to_human  # => "1 days"
+    #   Tins::Duration.new(0).to_human       # => "0 seconds"
+    #
+    # @example Abbreviated units
+    #   Tins::Duration.new(90).to_human(style: :abbrev)
+    #   # => "1m30s"
     #
     # @example Custom labels (e.g. another language)
     #   Tins::Duration.new(90).to_human(
     #     style: { '%m' => ' Min.', '%s' => ' Sek.' }
     #   )
-    #   # => "1 Min. and 30 Sek."
+    #   # => "1 Min.30 Sek."
     #
     # @example Negative durations
-    #   Tins::Duration.new(-90).to_human      # => "-1m and 30s"
-    def to_human(max: nil, style: :abbrev,
-                 words_connector: ', ',
-                 two_words_connector: ' and ',
-                 last_word_connector: ', and ')
+    #   Tins::Duration.new(-90).to_human
+    #   # => "-1 minutes and 30 seconds"
+    def to_human(max: nil, style: :words, connector: nil)
       labels =
         case style
         when Hash   then HUMAN_STYLES[:abbrev].merge(style)
@@ -298,6 +435,7 @@ module Tins
         else raise ArgumentError,
           "style must be a Symbol or Hash, got #{style.class}"
         end
+      conn = resolve_connector(connector, style)
       parts = [
         [ @days, '%d' ], [ @hours, '%h' ],
         [ @minutes, '%m' ], [ @seconds, '%s' ]
@@ -307,7 +445,9 @@ module Tins
       items  = parts.map { |v, d| "#{v}#{labels[d]}" }
                .extend(EnumJoined)
       result = items.joined(
-        words_connector:, two_words_connector:, last_word_connector:
+        words_connector: conn[:words],
+        two_words_connector: conn[:two_words],
+        last_word_connector: conn[:last_word]
       )
       @negative ? "-#{result}" : result
     end

@@ -154,6 +154,29 @@ module Tins
       end
     end
 
+    def test_parse_template_prefix_consumption
+      # The parser is greedy and does not require the input to be
+      # fully consumed. '%m' matches '1' in '1m and 30s' and
+      # returns; the remaining 'm and 30s' is silently ignored.
+      assert_equal 60,
+        Tins::Duration.parse('1m and 30s', template: '%m')
+    end
+
+    def test_parse_template_array_order_matters_for_prefix
+      # '%m' alone matches the prefix '1' of '1m and 30s',
+      # returning 60. '%mm and %ss' matches the full string,
+      # returning 90. The first template in the array wins,
+      # so the order is critical for prefix-matching templates.
+      assert_equal 60,
+        Tins::Duration.parse(
+          '1m and 30s', template: [ '%m', '%mm and %ss' ]
+        )
+      assert_equal 90,
+        Tins::Duration.parse(
+          '1m and 30s', template: [ '%mm and %ss', '%m' ]
+        )
+    end
+
     def test_from_string_default
       d = Tins::Duration.from_string('6+05:04:03.210')
       assert_instance_of Tins::Duration, d
@@ -187,66 +210,135 @@ module Tins
       )
     end
 
+    def test_parse_human_basic
+      d = Tins::Duration.parse_human('1 minutes and 30 seconds')
+      assert_instance_of Tins::Duration, d
+      assert_in_delta 90.0, d.to_f, 1e-9
+    end
+
+    def test_parse_human_single_unit
+      assert_in_delta 86_400.0,
+        Tins::Duration.parse_human('1 days').to_f, 1e-9
+    end
+
+    def test_parse_human_three_units
+      assert_in_delta 3725.0,
+        Tins::Duration.parse_human(
+          '1 hours, 2 minutes, and 5 seconds'
+        ).to_f, 1e-9
+    end
+
+    def test_parse_human_four_units
+      assert_in_delta 93_784.0,
+        Tins::Duration.parse_human(
+          '1 days, 2 hours, 3 minutes, and 4 seconds'
+        ).to_f, 1e-9
+    end
+
+    def test_parse_human_style_abbrev
+      assert_in_delta 90.0,
+        Tins::Duration.parse_human(
+          '1m30s', style: :abbrev
+        ).to_f, 1e-9
+    end
+
+    def test_parse_human_roundtrip_abbrev
+      [ 90, 3725, 86_400, 93_784, 5_000_000 ].each do |s|
+        d = Tins::Duration.new(s)
+        round = Tins::Duration.parse_human(
+          d.to_human(style: :abbrev), style: :abbrev
+        )
+        assert_equal d, round
+      end
+    end
+
+    def test_parse_human_roundtrip
+      [ 90, 3725, 86_400, 93_784 ].each do |s|
+        d = Tins::Duration.new(s)
+        round = Tins::Duration.parse_human(d.to_human)
+        assert_equal d, round
+      end
+    end
+
+    def test_parse_human_custom_connector
+      assert_in_delta 3725.0,
+        Tins::Duration.parse_human(
+          '1h / 2m / 5s', style: :abbrev,
+          connector: { words: ' / ', two_words: ' / ', last_word: ' / ' }
+        ).to_f, 1e-9
+    end
+
+    def test_parse_human_invalid_style
+      assert_raise(ArgumentError) do
+        Tins::Duration.parse_human('1m', style: 'abbrev')
+      end
+    end
+
+    def test_parse_human_raises_on_mismatch
+      assert_raise(Tins::Duration::ParserError) do
+        Tins::Duration.parse_human('1x and 30y')
+      end
+    end
+
     def test_to_human_basic
-      assert_equal '1m and 30s', Tins::Duration.new(90).to_human
+      assert_equal '1 minutes and 30 seconds',
+        Tins::Duration.new(90).to_human
     end
 
     def test_to_human_drops_below_max
-      assert_equal '1h and 2m', Tins::Duration.new(3725).to_human(max: 2)
+      assert_equal '1 hours and 2 minutes',
+        Tins::Duration.new(3725).to_human(max: 2)
     end
 
     def test_to_human_single_unit
-      assert_equal '1d', Tins::Duration.new(86_400).to_human
+      assert_equal '1 days', Tins::Duration.new(86_400).to_human
     end
 
     def test_to_human_zero
-      assert_equal '0s', Tins::Duration.new(0).to_human
+      assert_equal '0 seconds', Tins::Duration.new(0).to_human
     end
 
     def test_to_human_negative
-      assert_equal '-1m and 30s', Tins::Duration.new(-90).to_human
+      assert_equal '-1 minutes and 30 seconds',
+        Tins::Duration.new(-90).to_human
     end
 
     def test_to_human_custom_max
-      assert_equal '1h, 2m, and 5s',
+      assert_equal '1 hours, 2 minutes, and 5 seconds',
         Tins::Duration.new(3725).to_human(max: 3)
     end
 
-    def test_to_human_custom_two_words_connector
-      assert_equal '1h 2m',
-        Tins::Duration.new(3725).to_human(max: 2, two_words_connector: ' ')
-    end
-
-    def test_to_human_custom_words_connector
-      assert_equal '1h / 2m / 5s',
-        Tins::Duration.new(3725).to_human(
-          max: 3, words_connector: ' / ', last_word_connector: ' / '
-        )
+    def test_to_human_connector_presets_distinct
+      assert_equal '1 hours 2 minutes',
+        Tins::Duration.new(3725).to_human(max: 2, connector: :spaces)
+      assert_equal '1 hours2 minutes',
+        Tins::Duration.new(3725).to_human(max: 2, connector: :none)
     end
 
     def test_to_human_truncates_fractional
-      assert_equal '1m and 30s', Tins::Duration.new(90.999).to_human
-    end
-
-    def test_to_human_style_words
       assert_equal '1 minutes and 30 seconds',
-        Tins::Duration.new(90).to_human(style: :words)
+        Tins::Duration.new(90.999).to_human
     end
 
-    def test_to_human_style_words_drops_below_max
-      assert_equal '1 hours and 2 minutes',
-        Tins::Duration.new(3725).to_human(max: 2, style: :words)
+    def test_to_human_style_abbrev
+      assert_equal '1m30s',
+        Tins::Duration.new(90).to_human(style: :abbrev)
+    end
+
+    def test_to_human_style_abbrev_drops_below_max
+      assert_equal '1h2m',
+        Tins::Duration.new(3725).to_human(max: 2, style: :abbrev)
     end
 
     def test_to_human_style_custom_hash
-      assert_equal '1 Min. and 30 Sek.',
+      assert_equal '1 Min.30 Sek.',
         Tins::Duration.new(90).to_human(
           style: { '%m' => ' Min.', '%s' => ' Sek.' }
         )
     end
 
     def test_to_human_style_custom_hash_partial_merge
-      assert_equal '1m and 30 seconds',
+      assert_equal '1m30 seconds',
         Tins::Duration.new(90).to_human(style: { '%s' => ' seconds' })
     end
 
@@ -260,6 +352,52 @@ module Tins
       %i[abbrev words].each do |style|
         assert_equal [ '%d', '%h', '%m', '%s' ],
           Tins::Duration::HUMAN_STYLES[style].keys
+      end
+    end
+
+    def test_human_connectors_keys
+      assert_equal %i[none spaces prose],
+        Tins::Duration::HUMAN_CONNECTORS.keys
+    end
+
+    def test_style_default_connector
+      assert_equal :none,
+        Tins::Duration::STYLE_DEFAULT_CONNECTOR[:abbrev]
+      assert_equal :prose,
+        Tins::Duration::STYLE_DEFAULT_CONNECTOR[:words]
+    end
+
+    def test_to_human_connector_spaces
+      assert_equal '1 minutes 30 seconds',
+        Tins::Duration.new(90).to_human(connector: :spaces)
+    end
+
+    def test_to_human_connector_none_with_words
+      assert_equal '1 minutes30 seconds',
+        Tins::Duration.new(90).to_human(connector: :none)
+    end
+
+    def test_to_human_connector_custom_hash
+      assert_equal '1 hours / 2 minutes / 5 seconds',
+        Tins::Duration.new(3725).to_human(
+          max: 3,
+          connector: { words: ' / ', two_words: ' / ', last_word: ' / ' }
+        )
+    end
+
+    def test_to_human_connector_invalid_raises
+      assert_raise(ArgumentError) do
+        Tins::Duration.new(90).to_human(connector: 'spaces')
+      end
+    end
+
+    def test_parse_human_roundtrip_spaces
+      [ 90, 3725, 86_400, 93_784 ].each do |s|
+        d = Tins::Duration.new(s)
+        round = Tins::Duration.parse_human(
+          d.to_human(connector: :spaces), connector: :spaces
+        )
+        assert_equal d, round
       end
     end
   end
