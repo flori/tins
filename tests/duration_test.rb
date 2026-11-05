@@ -126,6 +126,34 @@ module Tins
       assert_operator(Tins::Duration::ParserError, :<, ArgumentError)
     end
 
+    def test_parse_template_array_first_match_wins
+      # Both templates match '53' but yield different values; order decides.
+      assert_equal 190_800,
+        Tins::Duration.parse('53', template: [ '%h', '%m' ])
+      assert_equal 3180,
+        Tins::Duration.parse('53', template: [ '%m', '%h' ])
+    end
+
+    def test_parse_template_array_second_match
+      # First template fails on the string, second succeeds.
+      assert_equal 18_243,
+        Tins::Duration.parse('05:04:03',
+          template: [ '%S%d+%h:%m:%s.%f', '%h:%m:%s' ])
+    end
+
+    def test_parse_template_array_single_element
+      # A one-element array behaves like a plain template string.
+      assert_equal 18_243,
+        Tins::Duration.parse('05:04:03', template: [ '%h:%m:%s' ])
+    end
+
+    def test_parse_template_array_none_match
+      assert_raise(Tins::Duration::ParserError) do
+        Tins::Duration.parse('1x:30',
+          template: [ '%h:%m', '%S%d+%h:%m:%s' ])
+      end
+    end
+
     def test_from_string_default
       d = Tins::Duration.from_string('6+05:04:03.210')
       assert_instance_of Tins::Duration, d
