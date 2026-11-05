@@ -126,6 +126,39 @@ module Tins
       assert_operator(Tins::Duration::ParserError, :<, ArgumentError)
     end
 
+    def test_from_string_default
+      d = Tins::Duration.from_string('6+05:04:03.210')
+      assert_instance_of Tins::Duration, d
+      assert_in_delta 536_643.21, d.to_f, 1e-9
+      assert_equal '6+05:04:03.210', d.to_s
+    end
+
+    def test_from_string_custom_template
+      d = Tins::Duration.from_string('05:04:03', template: '%h:%m:%s')
+      assert_in_delta 18_243.0, d.to_f, 1e-9
+    end
+
+    def test_from_string_negative
+      d = Tins::Duration.from_string(
+        '-00:00:42', template: '%S%h:%m:%s'
+      )
+      assert_true d.negative?
+      assert_in_delta 42.0, d.to_f, 1e-9
+    end
+
+    def test_from_string_raises_on_mismatch
+      assert_raise(Tins::Duration::ParserError) do
+        Tins::Duration.from_string('1x:30', template: '%h:%m')
+      end
+    end
+
+    def test_from_string_roundtrip
+      d = Tins::Duration.new(93_784)
+      assert_equal d, Tins::Duration.from_string(
+        d.to_s, template: '%d+%h:%m:%s'
+      )
+    end
+
     def test_to_human_basic
       assert_equal '1m and 30s', Tins::Duration.new(90).to_human
     end

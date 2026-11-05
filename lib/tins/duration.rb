@@ -33,69 +33,99 @@ module Tins
               }.freeze
     }.freeze
 
-    # Returns the number of seconds represented by the given duration string
-    # according to the provided template format.
-    #
-    # @param [String] string The duration string to parse.
-    # @param [String] template for the duration format, see {#format}.
-    #   Default: '%S%d+%h:%m:%s.%f'
-    #
-    # @return [Integer, Float] The number of (fractional) seconds of the duration.
-    #
-    # @raise [Duration::ParserError] If the string doesn't match the expected template format
-    #
-    # @example Basic parsing
-    #   Tins::Duration.parse('6+05:04:03', template: '%S%d+%h:%m:%s') # => 536643
-    #   Tins::Duration.parse('6+05:04:03.21', template: '%S%d+%h:%m:%s.%f') # => 536643.21
-    #
-    # @example Parsing negative durations
-    #   Tins::Duration.parse('-6+05:04:03', template: '%S%d+%h:%m:%s') # => -536643
-    #
-    # @example Custom template parsing
-    #   Tins::Duration.parse('05:04:03.21', template: '%h:%m:%s.%f') # => 18243.21
-    #
-    # The parser supports the following directives in templates:
-    # - `%S` - Sign indicator (optional negative sign)
-    # - `%d` - Days component (integer)
-    # - `%h` - Hours component (integer)
-    # - `%m` - Minutes component (integer)
-    # - `%s` - Seconds component (integer)
-    # - `%f` - Fractional seconds component (decimal)
-    # - `%%` - Literal percent character
-    #
-    # The parser is greedy and consumes as much of the input string as possible
-    # for each directive.
-    # If a directive expects a specific format but doesn't find it, an
-    # Duration::ParserError is raised.
-    def self.parse(string, template: '%S%d+%h:%m:%s.%f')
-      s, t  = string.to_s.dup, template.dup
-      d, sd = 0, 1
-      loop do
-        t.sub!(/\A(%[Sdhmsf%]|.)/) { |directive|
-          case directive
-          when '%S' then s.sub!(/\A-?/)   { sd *= -1 if _1 == ?-; '' }
-          when '%d' then s.sub!(/\A\d+/)  { d += 86_400 * _1.to_i; '' }
-          when '%h' then s.sub!(/\A\d+/)  { d += 3_600 * _1.to_i; '' }
-          when '%m' then s.sub!(/\A\d+/)  { d += 60 * _1.to_i; '' }
-          when '%s' then s.sub!(/\A\d+/)  { d += _1.to_i; '' }
-          when '%f' then s.sub!(/\A\d+/)  { d += Float(?. + _1); '' }
-          when '%%' then
-            if s[0] == ?%
-              s[0] = ''
+    class << self
+      # Returns the number of seconds represented by the given duration string
+      # according to the provided template format.
+      #
+      # @param [String] string The duration string to parse.
+      # @param [String] template for the duration format, see {#format}.
+      #   Default: '%S%d+%h:%m:%s.%f'
+      #
+      # @return [Integer, Float] The number of (fractional) seconds of the
+      #   duration.
+      #
+      # @raise [Duration::ParserError] If the string doesn't match the expected
+      #   template format
+      #
+      # @example Basic parsing
+      #   Tins::Duration.parse('6+05:04:03', template: '%S%d+%h:%m:%s') # => 536643
+      #   Tins::Duration.parse('6+05:04:03.21', template: '%S%d+%h:%m:%s.%f') # => 536643.21
+      #
+      # @example Parsing negative durations
+      #   Tins::Duration.parse('-6+05:04:03', template: '%S%d+%h:%m:%s') # => -536643
+      #
+      # @example Custom template parsing
+      #   Tins::Duration.parse('05:04:03.21', template: '%h:%m:%s.%f') # => 18243.21
+      #
+      # The parser supports the following directives in templates:
+      # - `%S` - Sign indicator (optional negative sign)
+      # - `%d` - Days component (integer)
+      # - `%h` - Hours component (integer)
+      # - `%m` - Minutes component (integer)
+      # - `%s` - Seconds component (integer)
+      # - `%f` - Fractional seconds component (decimal)
+      # - `%%` - Literal percent character
+      #
+      # The parser is greedy and consumes as much of the input string as
+      # possible for each directive.
+      # If a directive expects a specific format but doesn't find it, an
+      # Duration::ParserError is raised.
+      def parse(string, template: nil)
+        template ||= '%S%d+%h:%m:%s.%f'
+        s, t  = string.to_s.dup, template.dup
+        d, sd = 0, 1
+        loop do
+          t.sub!(/\A(%[Sdhmsf%]|.)/) { |directive|
+            case directive
+            when '%S' then s.sub!(/\A-?/)   { sd *= -1 if _1 == ?-; '' }
+            when '%d' then s.sub!(/\A\d+/)  { d += 86_400 * _1.to_i; '' }
+            when '%h' then s.sub!(/\A\d+/)  { d += 3_600 * _1.to_i; '' }
+            when '%m' then s.sub!(/\A\d+/)  { d += 60 * _1.to_i; '' }
+            when '%s' then s.sub!(/\A\d+/)  { d += _1.to_i; '' }
+            when '%f' then s.sub!(/\A\d+/)  { d += Float(?. + _1); '' }
+            when '%%' then
+              if s[0] == ?%
+                s[0] = ''
+              else
+                raise ParserError, "expected %s, got #{s.inspect}"
+              end
             else
-              raise ParserError, "expected %s, got #{s.inspect}"
+              if directive == s[0]
+                s[0] = ''
+              else
+                raise ParserError, "expected #{t.inspect}, got #{s.inspect}"
+              end
             end
-          else
-            if directive == s[0]
-              s[0] = ''
-            else
-              raise ParserError, "expected #{t.inspect}, got #{s.inspect}"
-            end
-          end
-          ''
-        } or break
+            ''
+          } or break
+        end
+        sd * d
       end
-      sd * d
+
+      # Creates a new {Duration} instance by parsing the given string
+      # with {#parse}.
+      #
+      # @param [String] string The duration string to parse.
+      # @param [String, nil] template for the duration format, see
+      #   {#format}. Default: +nil+ (falls back to the built-in format).
+      #
+      # @return [Duration] A new {Duration} instance.
+      #
+      # @raise [Duration::ParserError] If the string doesn't match the
+      #   expected template format.
+      #
+      # @see .parse
+      #
+      # @example Basic usage
+      #   Tins::Duration.from_string('6+05:04:03.21')
+      #   # => #<Tins::Duration: 6+05:04:03.210>
+      #
+      # @example Custom template
+      #   Tins::Duration.from_string('05:04:03', template: '%h:%m:%s')
+      #   # => #<Tins::Duration: 0+05:04:03.000>
+      def from_string(string, template: nil)
+        new(parse(string, template:))
+      end
     end
 
     # Initializes a new Duration object with the specified number of seconds.
@@ -118,9 +148,15 @@ module Tins
         }
     end
 
-    # Converts the original seconds value to a floating-point number.
+    # Returns the duration's magnitude in seconds as a floating-point
+    # number.
     #
-    # @return [Float] the original seconds value as a floating-point number
+    # A duration represents the time span between two points; the span
+    # itself is always non-negative. The sign is a direction qualifier,
+    # tracked separately — see {#negative?}.
+    #
+    # @return [Float] The magnitude of the duration in seconds.
+    #   Always non-negative.
     def to_f
       @original_seconds.to_f
     end
