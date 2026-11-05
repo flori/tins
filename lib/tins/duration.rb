@@ -278,11 +278,7 @@ module Tins
           units.combination(n).map do |combo|
             parts = combo.map { |d| "#{d}#{labels[d]}" }
                        .extend(EnumJoined)
-            parts.joined(
-              words_connector: conn[:words],
-              two_words_connector: conn[:two_words],
-              last_word_connector: conn[:last_word]
-            )
+            parts.joined(**conn)
           end
         end
         new(parse(string, template: templates))
@@ -444,11 +440,7 @@ module Tins
       parts  = parts.first(max) if max
       items  = parts.map { |v, d| "#{v}#{labels[d]}" }
                .extend(EnumJoined)
-      result = items.joined(
-        words_connector: conn[:words],
-        two_words_connector: conn[:two_words],
-        last_word_connector: conn[:last_word]
-      )
+      result = items.joined(**conn)
       @negative ? "-#{result}" : result
     end
 

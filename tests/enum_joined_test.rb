@@ -25,19 +25,19 @@ module Tins
 
     def test_custom_two_words_connector
       assert_equal 'foo-bar',
-        %w[foo bar].joined(two_words_connector: '-')
+        %w[foo bar].joined(two_words: '-')
     end
 
     def test_custom_words_connector
       assert_equal 'foo / bar / baz',
         %w[foo bar baz].joined(
-          words_connector: ' / ', last_word_connector: ' / '
+          words: ' / ', last_word: ' / '
         )
     end
 
     def test_custom_last_word_connector
       assert_equal 'foo, barbaz',
-        %w[foo bar baz].joined(last_word_connector: '')
+        %w[foo bar baz].joined(last_word: '')
     end
 
     def test_to_s_coercion

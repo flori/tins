@@ -27,20 +27,20 @@ module Tins
     #
     # Uses three connectors, mirroring Rails' +Array#to_sentence+:
     #
-    # | elements | connectors used                       |
-    # |----------|---------------------------------------|
-    # | 0        | (none) — returns `""`                 |
-    # | 1        | (none) — returns the element          |
-    # | 2        | +two_words_connector+                 |
-    # | 3+       | +words_connector+ + +last_word_connector+ |
+    # | elements | connectors used               |
+    # |----------|-------------------------------|
+    # | 0        | (none) — returns `""`         |
+    # | 1        | (none) — returns the element  |
+    # | 2        | +two_words+                   |
+    # | 3+       | +words+ + +last_word+         |
     #
-    # @param [String] words_connector
+    # @param [String] words
     #   Separator between all items except the last two.
     #   Default: `', '`.
-    # @param [String] two_words_connector
+    # @param [String] two_words
     #   Separator between the only two items.
     #   Default: `' and '`.
-    # @param [String] last_word_connector
+    # @param [String] last_word
     #   Separator before the last item (3+ items only).
     #   Default: `', and '` (Oxford comma).
     #
@@ -51,20 +51,17 @@ module Tins
     #   [1, 2, 3].joined     # => "1, 2, and 3"
     #
     # @example Custom connectors
-    #   [1, 2, 3].joined(words_connector: ' / ',
-    #                     last_word_connector: ' / ')
+    #   [1, 2, 3].joined(words: ' / ', last_word: ' / ')
     #   # => "1 / 2 / 3"
-    def joined(words_connector: ', ',
-               two_words_connector: ' and ',
-               last_word_connector: ', and ')
+    def joined(words: ', ', two_words: ' and ', last_word: ', and ')
       items = map(&:to_s)
       case items.size
       when 0 then ''
       when 1 then items.first
-      when 2 then items.first + two_words_connector + items.last
+      when 2 then items.first + two_words + items.last
       else
         head, tail = items[0..-2], items.last
-        head.join(words_connector) + last_word_connector + tail
+        head.join(words) + last_word + tail
       end
     end
   end
