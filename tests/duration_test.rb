@@ -110,6 +110,28 @@ module Tins
       assert_equal '4', d.format('%u')
     end
 
+    def test_format_and_parse_literal_suffix
+      d = Tins::Duration.new(9000) # 2h 30m
+      assert_equal '2h 30m', d.format('%Hh %Mm')
+      assert_equal 9000,
+        Tins::Duration.parse('2h 30m', template: '%hh %mm')
+    end
+
+    def test_parse_literal_suffix_array
+      assert_equal 9000,
+        Tins::Duration.parse(
+          '2h 30m', template: [ '%hh %mm', '%hh', '%mm' ]
+        )
+      assert_equal 7200,
+        Tins::Duration.parse(
+          '2h', template: [ '%hh %mm', '%hh', '%mm' ]
+        )
+      assert_equal 1800,
+        Tins::Duration.parse(
+          '30m', template: [ '%hh %mm', '%hh', '%mm' ]
+        )
+    end
+
     def test_parse_raises_on_literal_mismatch
       assert_raise(Tins::Duration::ParserError) do
         Tins::Duration.parse('1x:30', template: '%h:%m')
