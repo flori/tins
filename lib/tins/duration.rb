@@ -55,9 +55,9 @@ module Tins
     private_constant :ConnectorResolver
     include ConnectorResolver
 
-    # Built-in label styles for {#to_human}. Keys are the unit format
-    # directives (see {#format}); values are the literal strings appended
-    # directly after each unit's numeric value.
+    # Built-in label styles for {#to_human}. Keys are the unit symbols
+    # (+:days+, +:hours+, +:minutes+, +:seconds+); values are the literal
+    # strings appended directly after each unit's numeric value.
     #
     # +:words+ uses spelled-out units (the default); +:abbrev+ uses
     # single-letter suffixes. A caller may instead pass their own +Hash+ with the
@@ -66,10 +66,10 @@ module Tins
     #
     # @see #to_human
     HUMAN_STYLES = {
-      abbrev: { '%d' => 'd', '%h' => 'h', '%m' => 'm', '%s' => 's' }.freeze,
+      abbrev: { days: 'd', hours: 'h', minutes: 'm', seconds: 's' }.freeze,
       words:  {
-                '%d' => ' days',   '%h' => ' hours',
-                '%m' => ' minutes', '%s' => ' seconds'
+                days: ' days',   hours: ' hours',
+                minutes: ' minutes', seconds: ' seconds'
               }.freeze
     }.freeze
 
@@ -273,10 +273,11 @@ module Tins
             "style must be a Symbol or Hash, got #{style.class}"
           end
         conn = resolve_connector(connector, style)
-        units     = %w[%d %h %m %s]
+        units     = [ [ :days, '%d' ], [ :hours, '%h' ],
+                      [ :minutes, '%m' ], [ :seconds, '%s' ] ]
         templates = (1..4).reverse_each.flat_map do |n|
           units.combination(n).map do |combo|
-            parts = combo.map { |d| "#{d}#{labels[d]}" }
+            parts = combo.map { |k, d| "#{d}#{labels[k]}" }
                        .extend(EnumJoined)
             parts.joined(**conn)
           end
@@ -379,8 +380,8 @@ module Tins
     # Returns a human-readable string representation of the duration.
     # By default, uses spelled-out units (e.g. `1 minutes and 30 seconds`);
     # pass +style: :abbrev+ for compact single-letter suffixes
-    # (e.g. `1m30s`), or pass your own +Hash+ keyed by the unit format
-    # directives (`'%d'`, `'%h'`, `'%m'`, `'%s'`) for arbitrary wording.
+    # (e.g. `1m30s`), or pass your own +Hash+ keyed by the unit symbols
+    # (+:days+, +:hours+, +:minutes+, +:seconds+) for arbitrary wording.
     #
     # Fractional seconds are truncated (not rounded).
     #
@@ -392,7 +393,7 @@ module Tins
     #   Default: +nil+ (derived from +style:+).
     # @param style [Symbol, Hash] Built-in label style (+:abbrev+ or
     #   +:words+, see {HUMAN_STYLES}) or a custom +Hash+ mapping the unit
-    #   format directives to label strings. A +Hash+ is merged onto the
+    #   symbols to label strings. A +Hash+ is merged onto the
     #   +:abbrev+ defaults, so omitting a key keeps the single-letter label.
     #   Default: +:words+.
     #
@@ -416,7 +417,7 @@ module Tins
     #
     # @example Custom labels (e.g. another language)
     #   Tins::Duration.new(90).to_human(
-    #     style: { '%m' => ' Min.', '%s' => ' Sek.' }
+    #     style: { minutes: ' Min.', seconds: ' Sek.' }
     #   )
     #   # => "1 Min.30 Sek."
     #
@@ -433,12 +434,12 @@ module Tins
         end
       conn = resolve_connector(connector, style)
       parts = [
-        [ @days, '%d' ], [ @hours, '%h' ],
-        [ @minutes, '%m' ], [ @seconds, '%s' ]
+        [ @days, :days ], [ @hours, :hours ],
+        [ @minutes, :minutes ], [ @seconds, :seconds ]
       ].select { |v, _| v > 0 }
-      parts << [ 0, '%s' ] if parts.empty?
+      parts << [ 0, :seconds ] if parts.empty?
       parts  = parts.first(max) if max
-      items  = parts.map { |v, d| "#{v}#{labels[d]}" }
+      items  = parts.map { |v, k| "#{v}#{labels[k]}" }
                .extend(EnumJoined)
       result = items.joined(**conn)
       @negative ? "-#{result}" : result

@@ -355,13 +355,13 @@ module Tins
     def test_to_human_style_custom_hash
       assert_equal '1 Min.30 Sek.',
         Tins::Duration.new(90).to_human(
-          style: { '%m' => ' Min.', '%s' => ' Sek.' }
+          style: { minutes: ' Min.', seconds: ' Sek.' }
         )
     end
 
     def test_to_human_style_custom_hash_partial_merge
       assert_equal '1m30 seconds',
-        Tins::Duration.new(90).to_human(style: { '%s' => ' seconds' })
+        Tins::Duration.new(90).to_human(style: { seconds: ' seconds' })
     end
 
     def test_to_human_style_invalid_raises
@@ -372,7 +372,7 @@ module Tins
 
     def test_human_styles_keys
       %i[abbrev words].each do |style|
-        assert_equal [ '%d', '%h', '%m', '%s' ],
+        assert_equal %i[days hours minutes seconds],
           Tins::Duration::HUMAN_STYLES[style].keys
       end
     end
