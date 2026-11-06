@@ -1,5 +1,72 @@
 # Changes
 
+## 2026-11-06 v1.62.0
+
+### Features
+
+- Added `Tins::EnumJoined` module providing `#joined` for human-friendly
+  sentence-style joining of `Enumerable` objects.
+- Added `Tins::Duration#to_human` for generating human-readable duration
+  strings with configurable styles and connectors.
+- Added `Tins::Duration.parse_human` class method to parse human-readable
+  duration strings (inverse of `#to_human`).
+- Added `Tins::Duration.from_string` class method to create a `Duration`
+  instance from a parsed string.
+- `Tins::Duration.parse` now accepts an `Array` of template strings, trying
+  them in order until a match is found.
+- Added `Tins::Duration::HUMAN_CONNECTORS` constant with `:none`, `:spaces`,
+  and `:prose` presets.
+- Added `Tins::Duration::STYLE_DEFAULT_CONNECTOR` constant mapping styles to
+  default connector presets.
+
+### Fixes
+
+- `Tins::Duration.parse`: Fixed a bug where a literal mismatch raised a
+  `RuntimeError` instead of `Tins::Duration::ParserError`.
+- `Tins::Null`: Fixed documentation example to correctly show `user.name.to_s`
+  instead of `user.name`.
+
+### Improvements
+
+- `Tins::Duration`: Refactored parsing logic to extract `parse_template` as a
+  private method.
+- `Tins::Duration`: Updated `to_f` documentation to clarify that it returns the
+  magnitude (always non-negative) and that sign is tracked via `negative?`.
+- `Tins::Duration`: Changed `template:` default in `parse` to `nil` to support
+  multi-template detection.
+- `Tins::Duration`: Extracted connector resolution logic into a private
+  `ConnectorResolver` module.
+
+### Build & CI
+
+- Bumped development dependency `gem_hadar` to require version **2.21.0** or
+  later.
+
+### Testing
+
+- Added tests for `Tins::EnumJoined#joined` covering empty, single, multiple
+  elements, custom connectors, and type coercion.
+- Added tests for `Tins::Duration#to_human` covering styles, connectors, max
+  units, and negative durations.
+- Added tests for `Tins::Duration.parse_human` covering roundtrips, custom
+  connectors, and error cases.
+- Added tests for `Tins::Duration.from_string` covering default and custom
+  templates.
+- Added tests for `Tins::Duration.parse` with template arrays, including order
+  sensitivity and error handling.
+- Added tests for `Tins::Duration::ParserError` inheritance and specific
+  mismatch scenarios.
+
+### Documentation
+
+- `Tins::Attempt`: Rewrote documentation using YARD tags and added examples for
+  fixed sleep, exponential backoff, and return-value mode.
+- `Tins::EnumSqueeze`: Added module-level documentation explaining
+  `squeeze`/`squeeze!` semantics and usage examples.
+- `Tins::DslKit`: Fixed documentation examples for `Eigenclass`, `ClassMethod`,
+  `ThreadGlobal`, `Delegate`, `Scope`, `DynamicScope`, and `Deflect` to
+  accurately reflect API usage.
+
 ## 2026-10-11 v1.61.0
 
 *   `only_once`/`try_only_once` now accept a `touch:` option to automatically
