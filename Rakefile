@@ -1,5 +1,3 @@
-# vim: set filetype=ruby et sw=2 ts=2:
-
 require 'gem_hadar'
 
 GemHadar do
@@ -10,7 +8,6 @@ GemHadar do
   summary           'Useful stuff.'
   description       'All the stuff that isn\'t good/big enough for a real library.'
   test_dir          'tests'
-  test_files.concat Dir["#{test_dir}/*_test.rb"]
   doc_code_files    files.grep(%r(\Alib/))
   ignore            '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.rvmrc', 'coverage',
     '.rbx', '.AppleDouble', '.DS_Store', 'tags', 'cscope.out', '.bundle',
