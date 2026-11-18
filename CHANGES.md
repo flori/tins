@@ -1,5 +1,28 @@
 # Changes
 
+## 2026-11-19 v1.63.0
+
+### Fixes
+
+- Removed redundant `test_files.concat Dir[...]` line from the `Rakefile` to
+  prevent duplicate test file entries in the gemspec, as `GemHadar` already
+  populates this list via `test_dir`.
+
+### Build & CI
+
+- Bumped the `gem_hadar` development dependency constraint to `>= **2.24.1**`.
+- Updated `rubygems_version` in the gemspec to `**4.0.24**`.
+- Removed Vim modeline comments from `Gemfile` and `Rakefile`.
+
+### Documentation
+
+- Replaced the legacy YARD cheatsheet in `.contexts/yard.md` with new
+  instructions for AI-generated documentation.
+- Added a `Document` class example demonstrating YARD tags such as `@param`,
+  `@return`, and `@overload`.
+- Established rules prohibiting the generation of executable code and `@return
+  void` clauses in documentation comments.
+
 ## 2026-11-06 v1.62.0
 
 ### Features
